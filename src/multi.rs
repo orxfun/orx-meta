@@ -1,6 +1,7 @@
 use crate::MetaQueue;
 use core::marker::PhantomData;
 
+/// A meta queue containing at least two types.
 pub struct Multi<T, U> {
     p: PhantomData<(T, U)>,
 }

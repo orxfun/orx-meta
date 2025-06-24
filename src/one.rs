@@ -1,6 +1,7 @@
 use crate::MetaQueue;
 use core::marker::PhantomData;
 
+/// A meta queue containing exactly one type, which is the generic argument `T`.
 pub struct One<T> {
     p: PhantomData<T>,
 }
