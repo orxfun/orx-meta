@@ -1,4 +1,4 @@
-use crate::MetaQueue;
+use crate::{Empty, MetaQueue, Multi};
 use core::marker::PhantomData;
 
 /// A meta queue containing exactly one type, which is the generic argument `T`.
@@ -15,9 +15,9 @@ impl<T> Default for One<T> {
 }
 
 impl<T> MetaQueue for One<T> {
-    type Push<X> = Self;
+    type Push<X> = Multi<T, One<X>>;
 
-    type Front = Self;
+    type Front = One<T>;
 
-    type Back = Self;
+    type Back = Empty;
 }

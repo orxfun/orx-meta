@@ -2,11 +2,11 @@ use crate::MetaQueue;
 use core::marker::PhantomData;
 
 /// A meta queue containing at least two types.
-pub struct Multi<T, U> {
-    p: PhantomData<(T, U)>,
+pub struct Multi<F, U> {
+    p: PhantomData<(F, U)>,
 }
 
-impl<T, U> Default for Multi<T, U> {
+impl<F, U> Default for Multi<F, U> {
     fn default() -> Self {
         Self {
             p: Default::default(),
@@ -14,7 +14,10 @@ impl<T, U> Default for Multi<T, U> {
     }
 }
 
-impl<T, U> MetaQueue for Multi<T, U> {
+impl<F, U> MetaQueue for Multi<F, U>
+where
+    U: MetaQueue,
+{
     type Push<X> = Self;
 
     type Front = Self;
