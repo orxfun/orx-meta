@@ -1,1 +1,22 @@
+use crate::MetaQueue;
+use core::marker::PhantomData;
 
+pub struct One<T> {
+    p: PhantomData<T>,
+}
+
+impl<T> Default for One<T> {
+    fn default() -> Self {
+        Self {
+            p: Default::default(),
+        }
+    }
+}
+
+impl<T> MetaQueue for One<T> {
+    type Push<X> = Self;
+
+    type Front = Self;
+
+    type Back = Self;
+}
