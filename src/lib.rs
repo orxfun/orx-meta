@@ -13,5 +13,7 @@
 #![no_std]
 
 mod meta_queue;
+mod never;
 
 pub use meta_queue::MetaQueue;
+pub use never::Never;
