@@ -1,4 +1,4 @@
-use crate::{MetaQueue, One};
+use crate::MetaQueue;
 use core::marker::PhantomData;
 
 /// A meta queue containing at least two types.
@@ -20,7 +20,7 @@ where
 {
     type Push<X> = Multi<F, B::Push<X>>;
 
-    type Front = One<F>;
+    type Front = F;
 
     type Back = B;
 }
