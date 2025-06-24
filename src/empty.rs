@@ -1,13 +1,13 @@
-use crate::MetaQueue;
+use crate::{MetaQueue, One};
 
 /// An empty [`MetaQueue`].
 #[derive(Default)]
 pub struct Empty;
 
 impl MetaQueue for Empty {
-    type Push<X> = Self;
+    type Push<X> = One<X>;
 
-    type Front = Self;
+    type Front = Empty;
 
-    type Back = Self;
+    type Back = Empty;
 }
