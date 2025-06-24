@@ -8,6 +8,10 @@ pub fn format(type_name: impl ToString) -> String {
         .replace(" ", &"")
         .trim()
         .replace("orx_meta_queue::", "")
+        .replace("empty::", "")
+        .replace("one::", "")
+        .replace("multi::", "")
+        .replace("alloc::string::", "")
 }
 
 pub fn assert_type<T>(t: &T, type_name: impl ToString) {
