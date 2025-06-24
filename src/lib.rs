@@ -1,14 +1,17 @@
-pub fn add(left: u64, right: u64) -> u64 {
-    left + right
-}
+#![doc = include_str!("../README.md")]
+#![warn(
+    missing_docs,
+    clippy::unwrap_in_result,
+    clippy::unwrap_used,
+    clippy::panic,
+    clippy::panic_in_result_fn,
+    clippy::float_cmp,
+    clippy::float_cmp_const,
+    clippy::missing_panics_doc,
+    clippy::todo
+)]
+#![no_std]
 
-#[cfg(test)]
-mod tests {
-    use super::*;
+mod meta_queue;
 
-    #[test]
-    fn it_works() {
-        let result = add(2, 2);
-        assert_eq!(result, 4);
-    }
-}
+pub use meta_queue::MetaQueue;
