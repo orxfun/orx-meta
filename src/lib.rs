@@ -10,7 +10,10 @@
     clippy::missing_panics_doc,
     clippy::todo
 )]
-#![no_std]
+#![cfg_attr(not(test), no_std)]
+
+#[cfg(test)]
+mod tests;
 
 mod empty;
 mod meta_queue;
