@@ -15,12 +15,16 @@
 #[cfg(test)]
 mod tests;
 
+mod builder;
+mod data_composer;
+mod data_queue;
 mod empty;
 mod meta_queue;
 mod multi;
 mod never;
 mod one;
 
+pub use data_composer::DataComposer;
 pub use empty::Empty;
 pub use meta_queue::MetaQueue;
 pub use multi::Multi;
