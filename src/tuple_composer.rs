@@ -29,11 +29,8 @@ impl DataComposer for TupleComposer {
     }
 
     #[inline(always)]
-    fn multi_to_multi<X, Y, Z>(
-        (x, y): Self::Multi<X, Y>,
-        z: Z,
-    ) -> Self::Multi<Self::Multi<X, Y>, Z> {
-        ((x, y), z)
+    fn multi_to_multi<X, Y, Z>(xy: Self::Multi<X, Y>, z: Z) -> Self::Multi<Self::Multi<X, Y>, Z> {
+        (xy, z)
     }
 }
 
