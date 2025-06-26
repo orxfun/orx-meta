@@ -37,7 +37,7 @@ impl DataComposer for TupleComposer {
     }
 }
 
-pub type TupleQueueEmpty<M> = DataQueueEmpty<TupleComposer, M>;
+pub type TupleQueue<M> = DataQueueEmpty<TupleComposer, M>;
 
 pub type TupleQueueOne<M, T> = DataQueueOne<TupleComposer, M, T>;
 

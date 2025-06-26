@@ -29,4 +29,4 @@ pub use meta_queue::MetaQueue;
 pub use multi::Multi;
 pub use never::Never;
 pub use one::One;
-pub use tuple_composer::{TupleQueueEmpty, TupleQueueMulti, TupleQueueOne};
+pub use tuple_composer::{TupleQueue, TupleQueueMulti, TupleQueueOne};

@@ -1,4 +1,4 @@
-use crate::{Empty, MetaQueue, data_composer::DataComposer, data_queue::one::DataQueueOne};
+use crate::{Empty, MetaQueue, Never, data_composer::DataComposer, data_queue::one::DataQueueOne};
 use core::marker::PhantomData;
 
 pub struct DataQueueEmpty<D, M>
@@ -7,7 +7,16 @@ where
     M: MetaQueue,
 {
     p: PhantomData<(D, M)>,
-    data: D::Empty,
+}
+
+impl<D, M> Default for DataQueueEmpty<D, M>
+where
+    D: DataComposer,
+    M: MetaQueue,
+{
+    fn default() -> Self {
+        Self::new()
+    }
 }
 
 impl<D, M> DataQueueEmpty<D, M>
@@ -15,9 +24,13 @@ where
     D: DataComposer,
     M: MetaQueue,
 {
+    pub fn new() -> Self {
+        Self { p: PhantomData }
+    }
+
     pub fn value(self) -> D::Empty
     where
-        M: MetaQueue<Back = Empty>,
+        M: MetaQueue<Front = Never, Back = Empty>,
     {
         D::empty()
     }

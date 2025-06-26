@@ -1,4 +1,4 @@
-use crate::{Empty, MetaQueue, data_composer::DataComposer};
+use crate::{Empty, MetaQueue, Never, data_composer::DataComposer};
 use core::marker::PhantomData;
 
 pub struct DataQueueMulti<D, M, T, U>
@@ -24,7 +24,7 @@ where
 
     pub fn value(self) -> D::Multi<T, U>
     where
-        M: MetaQueue<Back = Empty>,
+        M: MetaQueue<Front = Never, Back = Empty>,
     {
         self.data
     }
