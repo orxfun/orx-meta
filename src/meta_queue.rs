@@ -8,6 +8,7 @@ pub trait MetaQueue: Default {
     /// The queue obtained by pushing the type `X` to the back of this queue.
     type Push<X>: MetaQueue;
 
+    /// The queue obtained by extending this queue by appending the other queue `X` to the back.
     type Extend<X>: MetaQueue
     where
         X: MetaQueue;
