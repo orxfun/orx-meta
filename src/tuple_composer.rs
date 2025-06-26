@@ -37,13 +37,19 @@ impl DataComposer for TupleComposer {
     }
 }
 
+/// A type-safe tuple composer such that:
+///
+/// * the target sequence of types to be stored as recursive tuples is defined by the meta queue `M`,
+/// * we can keep calling `add` on the builder until the target sequence is obtained,
+/// * we can call `value` iff instances of all types are added to obtain the resulting value.
+///
+/// # Examples
+///
+/// TODO
 pub type TupleQueue<M> = DataQueueEmpty<TupleComposer, M>;
 
+/// A [`TupleQueue`] currently containing one piece of data, of type `T`.
 pub type TupleQueueOne<M, T> = DataQueueOne<TupleComposer, M, T>;
 
+/// A [`TupleQueue`] currently containing multiple pieces of data of types `T` and `U`,
 pub type TupleQueueMulti<M, T, U> = DataQueueMulti<TupleComposer, M, T, U>;
-
-#[cfg(test)]
-mod testament {
-    use crate::*;
-}
