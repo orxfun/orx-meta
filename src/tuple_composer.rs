@@ -1,4 +1,7 @@
-use crate::data_composer::DataComposer;
+use crate::{
+    data_composer::DataComposer,
+    data_queue::{DataQueueEmpty, DataQueueMulti, DataQueueOne},
+};
 
 /// A data composer where the composition of data pieces `a` and `b`
 /// is the tuple `(a, b)`.
@@ -8,20 +11,39 @@ pub struct TupleComposer;
 impl DataComposer for TupleComposer {
     type Empty = ();
 
-    type Singleton<X> = X;
+    type One<X> = X;
 
-    type Compose<X, Y> = (X, Y);
+    type Multi<X, Y> = (X, Y);
 
     #[inline(always)]
     fn empty() -> Self::Empty {}
 
     #[inline(always)]
-    fn singleton<X>(x: X) -> Self::Singleton<X> {
+    fn one<X>(x: X) -> Self::One<X> {
         x
     }
 
     #[inline(always)]
-    fn compose<X, Y>(x: X, y: Y) -> Self::Compose<X, Y> {
+    fn one_to_multi<X, Y>(x: Self::One<X>, y: Y) -> Self::Multi<X, Y> {
         (x, y)
     }
+
+    #[inline(always)]
+    fn multi_to_multi<X, Y, Z>(
+        (x, y): Self::Multi<X, Y>,
+        z: Z,
+    ) -> Self::Multi<Self::Multi<X, Y>, Z> {
+        ((x, y), z)
+    }
+}
+
+pub type TupleQueueEmpty<M> = DataQueueEmpty<TupleComposer, M>;
+
+pub type TupleQueueOne<M, T> = DataQueueOne<TupleComposer, M, T>;
+
+pub type TupleQueueMulti<M, T, U> = DataQueueMulti<TupleComposer, M, T, U>;
+
+#[cfg(test)]
+mod testament {
+    use crate::*;
 }

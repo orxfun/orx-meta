@@ -4,17 +4,18 @@ pub trait DataComposer: Default {
     type Empty;
 
     /// Type of a single data piece of type `X`.
-    type Singleton<X>;
+    type One<X>;
 
     /// Type resulting from composing data of type `X` with data of type `Y`.
-    type Compose<X, Y>;
+    type Multi<X, Y>;
 
     /// Returns empty data.
     fn empty() -> Self::Empty;
 
     /// Returns the single data piece `x`.
-    fn singleton<X>(x: X) -> Self::Singleton<X>;
+    fn one<X>(x: X) -> Self::One<X>;
 
-    /// Returns data obtained by composing `x` and `y`.
-    fn compose<X, Y>(x: X, y: Y) -> Self::Compose<X, Y>;
+    fn one_to_multi<X, Y>(x: Self::One<X>, y: Y) -> Self::Multi<X, Y>;
+
+    fn multi_to_multi<X, Y, Z>(xy: Self::Multi<X, Y>, z: Z) -> Self::Multi<Self::Multi<X, Y>, Z>;
 }

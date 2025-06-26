@@ -15,7 +15,6 @@
 #[cfg(test)]
 mod tests;
 
-mod builder;
 mod data_composer;
 mod data_queue;
 mod empty;
@@ -30,3 +29,4 @@ pub use meta_queue::MetaQueue;
 pub use multi::Multi;
 pub use never::Never;
 pub use one::One;
+pub use tuple_composer::{TupleQueueEmpty, TupleQueueMulti, TupleQueueOne};
