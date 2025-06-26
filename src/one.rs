@@ -17,6 +17,11 @@ impl<T> Default for One<T> {
 impl<T> MetaQueue for One<T> {
     type Push<X> = Multi<T, One<X>>;
 
+    type Extend<X>
+        = Multi<T, X>
+    where
+        X: MetaQueue;
+
     type Front = T;
 
     type Back = Empty;

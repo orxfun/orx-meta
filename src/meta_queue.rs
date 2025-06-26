@@ -8,6 +8,10 @@ pub trait MetaQueue: Default {
     /// The queue obtained by pushing the type `X` to the back of this queue.
     type Push<X>: MetaQueue;
 
+    type Extend<X>: MetaQueue
+    where
+        X: MetaQueue;
+
     /// Type in the front of the queue.
     ///
     /// When it is [`Never`], it marks the end of the queue.

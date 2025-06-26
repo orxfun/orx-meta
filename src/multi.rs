@@ -20,6 +20,11 @@ where
 {
     type Push<X> = Multi<F, B::Push<X>>;
 
+    type Extend<X>
+        = Multi<F, B::Extend<X>>
+    where
+        X: MetaQueue;
+
     type Front = F;
 
     type Back = B;

@@ -27,6 +27,14 @@ where
     Default::default()
 }
 
+pub fn extend<Q, T>(_: Q) -> <Q as MetaQueue>::Extend<T>
+where
+    Q: MetaQueue,
+    T: MetaQueue,
+{
+    Default::default()
+}
+
 pub fn pop<Q>(_: Q) -> (<Q as MetaQueue>::Front, <Q as MetaQueue>::Back)
 where
     Q: MetaQueue,
