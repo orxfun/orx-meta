@@ -23,8 +23,8 @@ mod meta_queue;
 mod multi;
 mod never;
 mod one;
+mod tuple_composer;
 
-pub use data_composer::DataComposer;
 pub use empty::Empty;
 pub use meta_queue::MetaQueue;
 pub use multi::Multi;
