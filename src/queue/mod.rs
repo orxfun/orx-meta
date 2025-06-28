@@ -9,5 +9,8 @@ mod multi;
 mod one;
 mod tuple_composer;
 
+pub use empty::Empty;
 pub use meta_queue::MetaQueue;
+pub use multi::Multi;
+pub use one::One;
 pub use tuple_composer::{TupleQueue, TupleQueueMulti, TupleQueueOne};
