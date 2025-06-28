@@ -1,7 +1,5 @@
-use crate::{
-    Empty,
-    tests::utils::{assert_type, push},
-};
+use super::utils::{assert_type, push};
+use crate::queue::empty::Empty;
 
 #[test]
 fn empty() {

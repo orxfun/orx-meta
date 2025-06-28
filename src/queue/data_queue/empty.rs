@@ -1,4 +1,7 @@
-use crate::{Empty, MetaQueue, Never, data_composer::DataComposer, data_queue::one::DataQueueOne};
+use super::super::{
+    data_composer::DataComposer, data_queue::one::DataQueueOne, empty::Empty, meta_queue::MetaQueue,
+};
+use crate::Never;
 use core::marker::PhantomData;
 
 pub struct DataQueueEmpty<D, M>

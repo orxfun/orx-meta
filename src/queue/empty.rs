@@ -1,4 +1,5 @@
-use crate::{MetaQueue, Never, One};
+use super::{meta_queue::MetaQueue, one::One};
+use crate::Never;
 
 /// An empty [`MetaQueue`].
 #[derive(Default)]

@@ -3,5 +3,5 @@
 version = 4
 
 [[package]]
-name = "orx-meta-queue"
+name = "orx-meta"
 version = "1.0.0"
