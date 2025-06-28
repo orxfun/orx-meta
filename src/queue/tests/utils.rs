@@ -7,7 +7,7 @@ pub fn format(type_name: impl ToString) -> String {
         .replace("\n", &"")
         .replace(" ", &"")
         .trim()
-        .replace("orx_meta_queue::", "")
+        .replace("orx_meta::", "")
         .replace("queue::", "")
         .replace("empty::", "")
         .replace("one::", "")
