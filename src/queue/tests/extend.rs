@@ -1,7 +1,5 @@
-use crate::{
-    Empty, Multi, One,
-    tests::utils::{assert_type, extend, push},
-};
+use super::utils::{assert_type, extend, push};
+use crate::queue::{empty::Empty, multi::Multi, one::One};
 
 #[test]
 fn one() {

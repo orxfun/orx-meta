@@ -1,4 +1,4 @@
-use crate::{Empty, MetaQueue, Multi};
+use super::{empty::Empty, meta_queue::MetaQueue, multi::Multi};
 use core::marker::PhantomData;
 
 /// A meta queue containing exactly one type, which is the generic argument `T`.

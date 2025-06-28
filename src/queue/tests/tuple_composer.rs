@@ -1,4 +1,4 @@
-use crate::{Empty, Multi, One, TupleQueue};
+use crate::queue::{empty::Empty, multi::Multi, one::One, tuple_composer::TupleQueue};
 
 #[test]
 fn empty() {
