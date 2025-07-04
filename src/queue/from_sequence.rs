@@ -9,6 +9,8 @@ pub type MetaQueueOf0 = Empty;
 pub type MetaQueueOf1<T1> = <MetaQueueOf0 as MetaQueue>::Push<T1>;
 
 /// Creates the [`MetaQueue`] with two types; i.e., returns [`Multi`] of `T1` and `T2`.
+///
+/// [`Multi`]: crate::queue::Multi
 pub type MetaQueueOf2<T1, T2> = <MetaQueueOf1<T1> as MetaQueue>::Push<T2>;
 
 /// Creates the [`MetaQueue`] of the given type arguments.
@@ -16,7 +18,7 @@ pub type MetaQueueOf2<T1, T2> = <MetaQueueOf1<T1> as MetaQueue>::Push<T2>;
 /// # Examples
 ///
 /// ```
-/// use orx_meta::*;
+/// use orx_meta::queue::*;
 ///
 /// fn format(type_name: impl ToString) -> String {
 ///     type_name
@@ -52,7 +54,7 @@ pub type MetaQueueOf3<T1, T2, T3> = <MetaQueueOf2<T1, T2> as MetaQueue>::Push<T3
 /// # Examples
 ///
 /// ```
-/// use orx_meta::*;
+/// use orx_meta::queue::*;
 ///
 /// fn format(type_name: impl ToString) -> String {
 ///     type_name
@@ -88,7 +90,7 @@ pub type MetaQueueOf4<T1, T2, T3, T4> = <MetaQueueOf3<T1, T2, T3> as MetaQueue>:
 /// # Examples
 ///
 /// ```
-/// use orx_meta::*;
+/// use orx_meta::queue::*;
 ///
 /// fn format(type_name: impl ToString) -> String {
 ///     type_name
@@ -124,7 +126,7 @@ pub type MetaQueueOf5<T1, T2, T3, T4, T5> = <MetaQueueOf4<T1, T2, T3, T4> as Met
 /// # Examples
 ///
 /// ```
-/// use orx_meta::*;
+/// use orx_meta::queue::*;
 ///
 /// fn format(type_name: impl ToString) -> String {
 ///     type_name
@@ -161,7 +163,7 @@ pub type MetaQueueOf6<T1, T2, T3, T4, T5, T6> =
 /// # Examples
 ///
 /// ```
-/// use orx_meta::*;
+/// use orx_meta::queue::*;
 ///
 /// fn format(type_name: impl ToString) -> String {
 ///     type_name
@@ -198,7 +200,7 @@ pub type MetaQueueOf7<T1, T2, T3, T4, T5, T6, T7> =
 /// # Examples
 ///
 /// ```
-/// use orx_meta::*;
+/// use orx_meta::queue::*;
 ///
 /// fn format(type_name: impl ToString) -> String {
 ///     type_name
