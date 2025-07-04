@@ -13,6 +13,7 @@ pub fn format(type_name: impl ToString) -> String {
         .replace("one::", "")
         .replace("multi::", "")
         .replace("alloc::string::", "")
+        .replace("alloc::vec::", "")
 }
 
 pub fn assert_type<T>(t: &T, type_name: impl ToString) {

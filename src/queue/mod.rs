@@ -11,6 +11,7 @@ mod one;
 mod tuple_composer;
 
 pub use empty::Empty;
+pub use from_sequence::*;
 pub use meta_queue::MetaQueue;
 pub use multi::Multi;
 pub use one::One;
