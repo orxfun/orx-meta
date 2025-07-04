@@ -4,6 +4,7 @@ mod tests;
 mod data_composer;
 mod data_queue;
 mod empty;
+mod from_sequence;
 mod meta_queue;
 mod multi;
 mod one;
