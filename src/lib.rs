@@ -11,3 +11,7 @@
     clippy::todo
 )]
 #![cfg_attr(not(test), no_std)]
+
+mod never;
+
+pub use never::Never;
