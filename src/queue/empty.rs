@@ -1,5 +1,5 @@
 use super::{meta_queue::MetaQueue, one::One};
-use crate::Never;
+use crate::{Never, composition::Composition};
 
 /// An empty [`MetaQueue`].
 #[derive(Default)]
@@ -16,4 +16,6 @@ impl MetaQueue for Empty {
     type Front = Never;
 
     type Back = Empty;
+
+    type Map<C: Composition> = C::Empty;
 }

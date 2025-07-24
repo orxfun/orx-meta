@@ -12,6 +12,8 @@
 )]
 #![cfg_attr(not(test), no_std)]
 
+/// Module defining type composition.
+pub mod composition;
 mod never;
 /// Module including `MetaQueue` and its implementations.
 pub mod queue;

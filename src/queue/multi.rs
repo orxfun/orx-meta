@@ -1,4 +1,5 @@
 use super::meta_queue::MetaQueue;
+use crate::composition::Composition;
 use core::marker::PhantomData;
 
 /// A meta queue containing at least two types.
@@ -28,4 +29,6 @@ where
     type Front = F;
 
     type Back = B;
+
+    type Map<C: Composition> = C::Multi<F, B::Map<C>>;
 }
