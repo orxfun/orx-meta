@@ -1,4 +1,4 @@
-use crate::queue::meta_queue::MetaQueue;
+use crate::meta_queue::queue::MetaQueue;
 use core::any::type_name_of_val;
 
 pub fn format(type_name: impl ToString) -> String {
@@ -8,7 +8,7 @@ pub fn format(type_name: impl ToString) -> String {
         .replace(" ", &"")
         .trim()
         .replace("orx_meta::", "")
-        .replace("queue::", "")
+        .replace("meta_queue::", "")
         .replace("empty::", "")
         .replace("single::", "")
         .replace("pair::", "")

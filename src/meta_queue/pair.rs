@@ -1,4 +1,4 @@
-use super::meta_queue::MetaQueue;
+use super::queue::MetaQueue;
 use core::marker::PhantomData;
 
 /// A meta queue containing at least two types.

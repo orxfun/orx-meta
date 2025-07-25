@@ -1,5 +1,5 @@
 use crate::Never;
-use crate::queue::{meta_queue::MetaQueue, single::Single};
+use crate::meta_queue::{queue::MetaQueue, single::Single};
 
 /// An empty [`MetaQueue`].
 #[derive(Default)]

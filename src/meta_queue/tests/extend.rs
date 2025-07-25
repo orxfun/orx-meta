@@ -1,5 +1,5 @@
 use super::utils::{assert_type, extend, push};
-use crate::queue::{empty::Empty, pair::Pair, single::Single};
+use crate::meta_queue::{empty::Empty, pair::Pair, single::Single};
 
 #[test]
 fn one() {

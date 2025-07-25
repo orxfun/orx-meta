@@ -13,7 +13,7 @@
 #![cfg_attr(not(test), no_std)]
 
 pub mod composition;
+pub mod meta_queue;
 mod never;
-pub mod queue;
 
 pub use never::Never;
