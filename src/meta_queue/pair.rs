@@ -20,11 +20,6 @@ where
 {
     type Push<X> = Pair<F, B::Push<X>>;
 
-    type Extend<X>
-        = Pair<F, B::Extend<X>>
-    where
-        X: MetaQueue;
-
     type Front = F;
 
     type Back = B;

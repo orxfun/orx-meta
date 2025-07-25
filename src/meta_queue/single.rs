@@ -17,11 +17,6 @@ impl<T> Default for Single<T> {
 impl<T> MetaQueue for Single<T> {
     type Push<X> = Pair<T, Single<X>>;
 
-    type Extend<X>
-        = Pair<T, X>
-    where
-        X: MetaQueue;
-
     type Front = T;
 
     type Back = Empty;

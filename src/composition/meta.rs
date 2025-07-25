@@ -1,19 +1,23 @@
-pub trait Composition {
-    type Empty;
+pub trait MetaComposition: Default {
+    type Empty: Default;
 
-    type Single<X>;
+    type Compose<X, Y>: Default
+    where
+        X: MetaComposable;
 
-    type Pair<X, Y>;
+    fn empty() -> Self::Empty {
+        Default::default()
+    }
 
-    type Trio<X, Y, Z>;
+    fn compose<X: MetaComposable, Y>(_: X) -> Self::Compose<X, Y> {
+        Default::default()
+    }
+}
 
-    fn empty() -> Self::Empty;
+pub trait MetaComposable {
+    type Compose<X>: Default;
 
-    fn single<X>(x: X) -> Self::Single<X>;
-
-    fn pair<X, Y>(x: X, y: Y) -> Self::Pair<X, Y>;
-
-    fn compose_with_single<X, Y>(single: Self::Single<X>, y: Y) -> Self::Pair<X, Y>;
-
-    fn compose_with_pair<X, Y, Z>(pair: Self::Pair<X, Y>, z: Z) -> Self::Trio<X, Y, Z>;
+    fn compose<X>(&self) -> Self::Compose<X> {
+        Default::default()
+    }
 }
