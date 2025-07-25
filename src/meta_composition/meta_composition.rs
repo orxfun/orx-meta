@@ -1,4 +1,4 @@
-use crate::composition::meta_composable::MetaComposable;
+use crate::meta_composition::meta_composable::MetaComposable;
 
 pub trait MetaComposition: Default {
     type Empty: MetaComposable;

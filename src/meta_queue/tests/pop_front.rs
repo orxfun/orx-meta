@@ -1,6 +1,6 @@
 use super::utils::assert_type;
 use crate::{
-    composition::{MetaComposable, MetaComposition},
+    meta_composition::{MetaComposable, MetaComposition},
     meta_queue::{composition::MetaQueueComposition, queue::MetaQueue},
 };
 

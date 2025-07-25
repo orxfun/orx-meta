@@ -1,5 +1,5 @@
 use crate::{
-    composition::{MetaComposable, MetaComposition},
+    meta_composition::{MetaComposable, MetaComposition},
     meta_queue::{empty::Empty, queue::MetaQueue},
 };
 

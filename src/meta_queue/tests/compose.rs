@@ -1,5 +1,5 @@
 use super::utils::assert_type;
-use crate::{composition::MetaComposable, meta_queue::empty::Empty};
+use crate::{meta_composition::MetaComposable, meta_queue::empty::Empty};
 
 #[test]
 fn single() {
