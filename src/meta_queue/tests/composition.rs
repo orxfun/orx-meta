@@ -1,5 +1,8 @@
 use super::utils::assert_type;
-use crate::{composition::MetaComposition, meta_queue::composition::MetaQueueComposition};
+use crate::{
+    composition::{MetaComposable, MetaComposition},
+    meta_queue::composition::MetaQueueComposition,
+};
 
 type C = MetaQueueComposition;
 
@@ -13,7 +16,7 @@ fn empty() {
 #[test]
 fn single() {
     let x = C::empty();
-    let x = C::compose::<_, char>(x);
+    let x = x.compose::<char>();
 
     assert_type(&x, "Single<char>");
 }
@@ -21,8 +24,8 @@ fn single() {
 #[test]
 fn two() {
     let x = C::empty();
-    let x = C::compose::<_, char>(x);
-    let x = C::compose::<_, u32>(x);
+    let x = x.compose::<char>();
+    let x = x.compose::<u32>();
 
     assert_type(&x, "Pair<char,Single<u32>>");
 }
@@ -30,9 +33,9 @@ fn two() {
 #[test]
 fn three() {
     let x = C::empty();
-    let x = C::compose::<_, char>(x);
-    let x = C::compose::<_, u32>(x);
-    let x = C::compose::<_, String>(x);
+    let x = x.compose::<char>();
+    let x = x.compose::<u32>();
+    let x = x.compose::<String>();
 
     assert_type(&x, "Pair<char,Pair<u32,Single<String>>>");
 }
@@ -40,10 +43,10 @@ fn three() {
 #[test]
 fn four() {
     let x = C::empty();
-    let x = C::compose::<_, char>(x);
-    let x = C::compose::<_, u32>(x);
-    let x = C::compose::<_, String>(x);
-    let x = C::compose::<_, bool>(x);
+    let x = x.compose::<char>();
+    let x = x.compose::<u32>();
+    let x = x.compose::<String>();
+    let x = x.compose::<bool>();
 
     assert_type(&x, "Pair<char,Pair<u32,Pair<String,Single<bool>>>>");
 }

@@ -5,11 +5,19 @@ pub trait MetaComposition: Default {
     where
         X: MetaComposable;
 
+    fn compose<X: MetaComposable, Y>(_: X) -> Self::Compose<X, Y> {
+        Default::default()
+    }
+
     fn empty() -> Self::Empty {
         Default::default()
     }
 
-    fn compose<X: MetaComposable, Y>(_: X) -> Self::Compose<X, Y> {
+    fn single<X>() -> Self::Compose<Self::Empty, X> {
+        Default::default()
+    }
+
+    fn pair<X, Y>() -> Self::Compose<Self::Compose<Self::Empty, X>, Y> {
         Default::default()
     }
 }
