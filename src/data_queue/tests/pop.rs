@@ -1,23 +1,23 @@
 use crate::data_queue::{
-    empty::Empty,
+    empty::EmptyQueue,
     queue::{NonEmptyQueue, Queue},
 };
 
 #[test]
 fn one() {
-    let x = Empty;
+    let x = EmptyQueue;
     let x = x.push('x');
 
     assert_eq!(x.front(), &'x');
     let (f, x) = x.pop_front();
     assert_eq!(f, 'x');
 
-    assert_eq!(x, Empty);
+    assert_eq!(x, EmptyQueue);
 }
 
 #[test]
 fn two() {
-    let x = Empty;
+    let x = EmptyQueue;
     let x = x.push('x');
     let x = x.push(32);
 
@@ -29,12 +29,12 @@ fn two() {
     let (f, x) = x.pop_front();
     assert_eq!(f, 32);
 
-    assert_eq!(x, Empty);
+    assert_eq!(x, EmptyQueue);
 }
 
 #[test]
 fn three() {
-    let x = Empty;
+    let x = EmptyQueue;
     let x = x.push('x');
     let x = x.push(32);
     let x = x.push(String::from("xyz"));
@@ -51,12 +51,12 @@ fn three() {
     let (f, x) = x.pop_front();
     assert_eq!(f, String::from("xyz"));
 
-    assert_eq!(x, Empty);
+    assert_eq!(x, EmptyQueue);
 }
 
 #[test]
 fn four() {
-    let x = Empty;
+    let x = EmptyQueue;
     let x = x.push('x');
     let x = x.push(32);
     let x = x.push(String::from("xyz"));
@@ -78,5 +78,5 @@ fn four() {
     let (f, x) = x.pop_front();
     assert_eq!(f, true);
 
-    assert_eq!(x, Empty);
+    assert_eq!(x, EmptyQueue);
 }

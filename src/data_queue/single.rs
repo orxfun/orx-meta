@@ -1,5 +1,5 @@
 use crate::data_queue::{
-    empty::Empty,
+    empty::EmptyQueue,
     pair::Pair,
     queue::{NonEmptyQueue, Queue},
 };
@@ -12,7 +12,7 @@ impl<T> Queue for Single<T> {
 
     type Front = T;
 
-    type Back = Empty;
+    type Back = EmptyQueue;
 
     fn push<X>(self, x: X) -> Self::Push<X> {
         Pair(self.0, Single(x))
@@ -29,6 +29,6 @@ impl<T> NonEmptyQueue for Single<T> {
     }
 
     fn pop_front(self) -> (Self::Front, Self::Back) {
-        (self.0, Empty)
+        (self.0, EmptyQueue)
     }
 }

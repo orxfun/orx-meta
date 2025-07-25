@@ -1,11 +1,11 @@
 use crate::data_queue::{
-    empty::Empty,
+    empty::EmptyQueue,
     queue::{NonEmptyQueue, Queue},
 };
 
 #[test]
 fn mixed_pop_push() {
-    let x = Empty
+    let x = EmptyQueue
         .push('x')
         .push(32)
         .push(String::from("xyz"))
@@ -26,5 +26,5 @@ fn mixed_pop_push() {
     let (f, x) = x.pop_front();
     assert_eq!(f, 32);
 
-    assert_eq!(x, Empty);
+    assert_eq!(x, EmptyQueue);
 }

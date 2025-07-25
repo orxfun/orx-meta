@@ -1,11 +1,11 @@
 use crate::data_queue::{
-    empty::Empty,
+    empty::EmptyQueue,
     queue::{NonEmptyQueue, Queue},
 };
 
 #[test]
 fn one() {
-    let x = Empty;
+    let x = EmptyQueue;
     let x = x.push('x');
 
     assert_eq!(x.front(), &'x');
@@ -13,7 +13,7 @@ fn one() {
 
 #[test]
 fn two() {
-    let x = Empty;
+    let x = EmptyQueue;
     let x = x.push('x');
     let x = x.push(32);
 
@@ -22,7 +22,7 @@ fn two() {
 
 #[test]
 fn three() {
-    let x = Empty;
+    let x = EmptyQueue;
     let x = x.push('x');
     let x = x.push(32);
     let x = x.push(String::from("xyz"));
@@ -32,7 +32,7 @@ fn three() {
 
 #[test]
 fn four() {
-    let x = Empty;
+    let x = EmptyQueue;
     let x = x.push('x');
     let x = x.push(32);
     let x = x.push(String::from("xyz"));

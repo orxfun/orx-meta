@@ -4,14 +4,14 @@ use crate::{
 };
 
 #[derive(Default, Debug, Clone, Copy, PartialEq, Eq)]
-pub struct Empty;
+pub struct EmptyQueue;
 
-impl Queue for Empty {
+impl Queue for EmptyQueue {
     type Push<X> = Single<X>;
 
     type Front = Never;
 
-    type Back = Empty;
+    type Back = EmptyQueue;
 
     fn push<X>(self, x: X) -> Self::Push<X> {
         Single(x)
