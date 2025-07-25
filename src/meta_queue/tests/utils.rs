@@ -1,4 +1,3 @@
-use crate::meta_queue::queue::MetaQueue;
 use core::any::type_name_of_val;
 
 pub fn format(type_name: impl ToString) -> String {
@@ -20,12 +19,4 @@ pub fn assert_type<T>(t: &T, type_name: impl ToString) {
     let a = format(type_name_of_val(t));
     let b = format(type_name);
     assert_eq!(a, b);
-}
-
-pub fn pop_front<Q>(_: Q) -> (<Q as MetaQueue>::Front, <Q as MetaQueue>::Back)
-where
-    Q: MetaQueue,
-    <Q as MetaQueue>::Front: Default,
-{
-    Default::default()
 }

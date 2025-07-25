@@ -1,3 +1,5 @@
+use crate::meta_queue::single::Single;
+
 /// A queue of types with push and pop operations:
 ///
 /// * pushes the type to the back, and
@@ -20,6 +22,10 @@ pub trait MetaQueue: Default {
     type Back: MetaQueue;
 
     fn push<X>(self) -> Self::Push<X> {
+        Default::default()
+    }
+
+    fn pop_front(self) -> (Single<Self::Front>, Self::Back) {
         Default::default()
     }
 }

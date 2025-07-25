@@ -1,7 +1,7 @@
-use super::utils::{assert_type, pop_front};
+use super::utils::assert_type;
 use crate::{
     composition::{MetaComposable, MetaComposition},
-    meta_queue::composition::MetaQueueComposition,
+    meta_queue::{composition::MetaQueueComposition, queue::MetaQueue},
 };
 
 type C = MetaQueueComposition;
@@ -10,8 +10,8 @@ type C = MetaQueueComposition;
 fn one() {
     let x = C::single::<char>();
 
-    let (l, x) = pop_front(x);
-    assert_type(&l, "char");
+    let (f, x) = x.pop_front();
+    assert_type(&f, "Single<char>");
 
     assert_type(&x, "Empty");
 }
@@ -20,11 +20,11 @@ fn one() {
 fn two() {
     let x = C::pair::<char, u32>();
 
-    let (l, x) = pop_front(x);
-    assert_type(&l, "char");
+    let (f, x) = x.pop_front();
+    assert_type(&f, "Single<char>");
 
-    let (l, x) = pop_front(x);
-    assert_type(&l, "u32");
+    let (f, x) = x.pop_front();
+    assert_type(&f, "Single<u32>");
 
     assert_type(&x, "Empty");
 }
@@ -36,14 +36,14 @@ fn three() {
     let x = x.compose::<u32>();
     let x = x.compose::<String>();
 
-    let (l, x) = pop_front(x);
-    assert_type(&l, "char");
+    let (f, x) = x.pop_front();
+    assert_type(&f, "Single<char>");
 
-    let (l, x) = pop_front(x);
-    assert_type(&l, "u32");
+    let (f, x) = x.pop_front();
+    assert_type(&f, "Single<u32>");
 
-    let (l, x) = pop_front(x);
-    assert_type(&l, "String");
+    let (f, x) = x.pop_front();
+    assert_type(&f, "Single<String>");
 
     assert_type(&x, "Empty");
 }
@@ -56,17 +56,17 @@ fn four() {
     let x = x.compose::<String>();
     let x = x.compose::<bool>();
 
-    let (l, x) = pop_front(x);
-    assert_type(&l, "char");
+    let (f, x) = x.pop_front();
+    assert_type(&f, "Single<char>");
 
-    let (l, x) = pop_front(x);
-    assert_type(&l, "u32");
+    let (f, x) = x.pop_front();
+    assert_type(&f, "Single<u32>");
 
-    let (l, x) = pop_front(x);
-    assert_type(&l, "String");
+    let (f, x) = x.pop_front();
+    assert_type(&f, "Single<String>");
 
-    let (l, x) = pop_front(x);
-    assert_type(&l, "bool");
+    let (f, x) = x.pop_front();
+    assert_type(&f, "Single<bool>");
 
     assert_type(&x, "Empty");
 }
