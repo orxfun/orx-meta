@@ -1,3 +1,3 @@
-mod r#trait;
+mod meta;
 
-pub use r#trait::Composition;
+pub use meta::Composition;
