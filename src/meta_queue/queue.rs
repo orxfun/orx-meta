@@ -18,4 +18,8 @@ pub trait MetaQueue: Default {
     /// The queue succeeding the `Front`; i.e., the remaining queue after popping one
     /// element from the front of this queue.
     type Back: MetaQueue;
+
+    fn push<X>(self) -> Self::Push<X> {
+        Default::default()
+    }
 }

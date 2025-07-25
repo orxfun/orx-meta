@@ -1,5 +1,5 @@
-use super::utils::{assert_type, push};
-use crate::meta_queue::empty::Empty;
+use super::utils::assert_type;
+use crate::meta_queue::{empty::Empty, queue::MetaQueue};
 
 #[test]
 fn empty() {
@@ -11,7 +11,7 @@ fn empty() {
 #[test]
 fn single() {
     let x = Empty;
-    let x = push::<_, char>(x);
+    let x = x.push::<char>();
 
     assert_type(&x, "Single<char>");
 }
@@ -19,8 +19,8 @@ fn single() {
 #[test]
 fn two() {
     let x = Empty;
-    let x = push::<_, char>(x);
-    let x = push::<_, u32>(x);
+    let x = x.push::<char>();
+    let x = x.push::<u32>();
 
     assert_type(&x, "Pair<char,Single<u32>>");
 }
@@ -28,9 +28,9 @@ fn two() {
 #[test]
 fn three() {
     let x = Empty;
-    let x = push::<_, char>(x);
-    let x = push::<_, u32>(x);
-    let x = push::<_, String>(x);
+    let x = x.push::<char>();
+    let x = x.push::<u32>();
+    let x = x.push::<String>();
 
     assert_type(&x, "Pair<char,Pair<u32,Single<String>>>");
 }
@@ -38,10 +38,10 @@ fn three() {
 #[test]
 fn four() {
     let x = Empty;
-    let x = push::<_, char>(x);
-    let x = push::<_, u32>(x);
-    let x = push::<_, String>(x);
-    let x = push::<_, bool>(x);
+    let x = x.push::<char>();
+    let x = x.push::<u32>();
+    let x = x.push::<String>();
+    let x = x.push::<bool>();
 
     assert_type(&x, "Pair<char,Pair<u32,Pair<String,Single<bool>>>>");
 }

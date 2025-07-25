@@ -22,13 +22,6 @@ pub fn assert_type<T>(t: &T, type_name: impl ToString) {
     assert_eq!(a, b);
 }
 
-pub fn push<Q, T>(_: Q) -> <Q as MetaQueue>::Push<T>
-where
-    Q: MetaQueue,
-{
-    Default::default()
-}
-
 pub fn pop_front<Q>(_: Q) -> (<Q as MetaQueue>::Front, <Q as MetaQueue>::Back)
 where
     Q: MetaQueue,
