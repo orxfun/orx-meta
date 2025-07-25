@@ -37,7 +37,7 @@ where
     Default::default()
 }
 
-pub fn pop<Q>(_: Q) -> (<Q as MetaQueue>::Front, <Q as MetaQueue>::Back)
+pub fn pop_front<Q>(_: Q) -> (<Q as MetaQueue>::Front, <Q as MetaQueue>::Back)
 where
     Q: MetaQueue,
     <Q as MetaQueue>::Front: Default,
