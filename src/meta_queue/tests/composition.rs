@@ -15,6 +15,9 @@ fn empty() {
 
 #[test]
 fn single() {
+    let x = C::single::<char>();
+    assert_type(&x, "Single<char>");
+
     let x = C::empty();
     let x = x.compose::<char>();
 
@@ -23,6 +26,9 @@ fn single() {
 
 #[test]
 fn two() {
+    let x = C::pair::<char, u32>();
+    assert_type(&x, "Pair<char,Single<u32>>");
+
     let x = C::empty();
     let x = x.compose::<char>();
     let x = x.compose::<u32>();
