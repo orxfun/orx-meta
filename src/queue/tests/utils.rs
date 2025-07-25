@@ -10,8 +10,8 @@ pub fn format(type_name: impl ToString) -> String {
         .replace("orx_meta::", "")
         .replace("queue::", "")
         .replace("empty::", "")
-        .replace("one::", "")
-        .replace("multi::", "")
+        .replace("single::", "")
+        .replace("pair::", "")
         .replace("alloc::string::", "")
         .replace("alloc::vec::", "")
 }
