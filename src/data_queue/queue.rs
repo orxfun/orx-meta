@@ -10,6 +10,10 @@ pub trait Queue {
     fn push<X>(self, x: X) -> Self::Push<X>;
 
     fn len(&self) -> usize;
+
+    fn is_empty(&self) -> bool {
+        self.len() == 0
+    }
 }
 
 pub trait NonEmptyQueue: Queue {
@@ -95,37 +99,46 @@ mod tests {
         let a = 0;
 
         let q = Empty;
+        assert!(q.is_empty());
         assert_eq!(q.len(), 0);
 
         let q = q.push(12);
+        assert!(!q.is_empty());
         assert_eq!(q.len(), 1);
         dbg!(&q);
 
         let q = q.push('a');
+        assert!(!q.is_empty());
         assert_eq!(q.len(), 2);
         dbg!(&q);
 
         let q = q.push(true);
+        assert!(!q.is_empty());
         assert_eq!(q.len(), 3);
         dbg!(&q);
 
         let q = q.push(String::from("xyz"));
+        assert!(!q.is_empty());
         assert_eq!(q.len(), 4);
         dbg!(&q);
 
         let (f, q) = q.pop_front();
+        assert!(!q.is_empty());
         assert_eq!(q.len(), 3);
         dbg!(f);
 
         let (f, q) = q.pop_front();
+        assert!(!q.is_empty());
         assert_eq!(q.len(), 2);
         dbg!(f);
 
         let (f, q) = q.pop_front();
+        assert!(!q.is_empty());
         assert_eq!(q.len(), 1);
         dbg!(f);
 
         let (f, q) = q.pop_front();
+        assert!(q.is_empty());
         assert_eq!(q.len(), 0);
         dbg!(f);
 
