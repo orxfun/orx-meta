@@ -1,4 +1,4 @@
-use crate::data_queue::{
+use crate::queue::{
     empty::EmptyQueue,
     pair::Pair,
     queue::{NonEmptyQueue, Queue},

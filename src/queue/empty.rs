@@ -1,6 +1,6 @@
 use crate::{
     Never,
-    data_queue::{queue::Queue, single::Single},
+    queue::{queue::Queue, single::Single},
 };
 
 #[derive(Default, Debug, Clone, Copy, PartialEq, Eq)]

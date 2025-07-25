@@ -1,4 +1,4 @@
-use crate::data_queue::queue::{NonEmptyQueue, Queue};
+use crate::queue::queue::{NonEmptyQueue, Queue};
 
 #[derive(Debug)]
 pub struct Pair<F, B>(pub(super) F, pub(super) B);
