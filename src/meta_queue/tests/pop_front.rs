@@ -1,10 +1,14 @@
-use super::utils::{assert_type, pop_front, push};
-use crate::meta_queue::empty::Empty;
+use super::utils::{assert_type, pop_front};
+use crate::{
+    composition::{MetaComposable, MetaComposition},
+    meta_queue::composition::MetaQueueComposition,
+};
+
+type C = MetaQueueComposition;
 
 #[test]
 fn one() {
-    let x = Empty;
-    let x = push::<_, char>(x);
+    let x = C::single::<char>();
 
     let (l, x) = pop_front(x);
     assert_type(&l, "char");
@@ -14,9 +18,7 @@ fn one() {
 
 #[test]
 fn two() {
-    let x = Empty;
-    let x = push::<_, char>(x);
-    let x = push::<_, u32>(x);
+    let x = C::pair::<char, u32>();
 
     let (l, x) = pop_front(x);
     assert_type(&l, "char");
@@ -29,10 +31,10 @@ fn two() {
 
 #[test]
 fn three() {
-    let x = Empty;
-    let x = push::<_, char>(x);
-    let x = push::<_, u32>(x);
-    let x = push::<_, String>(x);
+    let x = C::empty();
+    let x = x.compose::<char>();
+    let x = x.compose::<u32>();
+    let x = x.compose::<String>();
 
     let (l, x) = pop_front(x);
     assert_type(&l, "char");
@@ -48,11 +50,11 @@ fn three() {
 
 #[test]
 fn four() {
-    let x = Empty;
-    let x = push::<_, char>(x);
-    let x = push::<_, u32>(x);
-    let x = push::<_, String>(x);
-    let x = push::<_, bool>(x);
+    let x = C::empty();
+    let x = x.compose::<char>();
+    let x = x.compose::<u32>();
+    let x = x.compose::<String>();
+    let x = x.compose::<bool>();
 
     let (l, x) = pop_front(x);
     assert_type(&l, "char");
