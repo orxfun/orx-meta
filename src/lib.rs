@@ -12,9 +12,13 @@
 )]
 #![cfg_attr(not(test), no_std)]
 
+mod composable;
+mod composition;
 pub mod meta_composition;
 pub mod meta_queue;
 mod never;
 pub mod queue;
 
+pub use composable::Composable;
+pub use composition::Composition;
 pub use never::Never;
