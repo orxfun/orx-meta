@@ -1,7 +1,7 @@
 pub trait MetaComposition: Default {
-    type Empty: Default;
+    type Empty: MetaComposable;
 
-    type Compose<X, Y>: Default
+    type Compose<X, Y>: MetaComposable
     where
         X: MetaComposable;
 
@@ -14,8 +14,8 @@ pub trait MetaComposition: Default {
     }
 }
 
-pub trait MetaComposable {
-    type Compose<X>: Default;
+pub trait MetaComposable: Default {
+    type Compose<X>: MetaComposable;
 
     fn compose<X>(&self) -> Self::Compose<X> {
         Default::default()
