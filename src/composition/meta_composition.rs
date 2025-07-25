@@ -1,3 +1,5 @@
+use crate::composition::meta_composable::MetaComposable;
+
 pub trait MetaComposition: Default {
     type Empty: MetaComposable;
 
@@ -18,14 +20,6 @@ pub trait MetaComposition: Default {
     }
 
     fn pair<X, Y>() -> Self::Compose<Self::Compose<Self::Empty, X>, Y> {
-        Default::default()
-    }
-}
-
-pub trait MetaComposable: Default {
-    type Compose<X>: MetaComposable;
-
-    fn compose<X>(&self) -> Self::Compose<X> {
         Default::default()
     }
 }
