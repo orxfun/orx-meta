@@ -7,14 +7,14 @@ impl<F, B> Stack for Pair<F, B>
 where
     F: Stack,
 {
-    type PushBack<X> = Pair<F, Pair<B, X>>;
+    type PushBack<X> = Pair<Self, X>;
 
     type Front = F;
 
     type Back = B;
 
     fn push_back<X>(self, x: X) -> Self::PushBack<X> {
-        Pair(self.0, Pair(self.1, x))
+        Pair(self, x)
     }
 
     fn len(&self) -> usize {
