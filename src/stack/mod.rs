@@ -8,7 +8,7 @@ mod pair;
 mod single;
 mod stack;
 
-// pub use composition::StackComposition;
+pub use composition::StackComposition;
 pub use empty::EmptyStack;
 pub use pair::Pair;
 pub use single::Single;
