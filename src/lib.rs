@@ -14,11 +14,11 @@
 
 mod composable;
 mod composition;
-pub mod list;
 pub mod meta_composition;
 pub mod meta_queue;
 mod never;
 pub mod queue;
+pub mod stack;
 
 pub use composable::Composable;
 pub use composition::Composition;
