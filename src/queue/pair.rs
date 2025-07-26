@@ -21,6 +21,7 @@ where
         1 + self.1.len()
     }
 }
+
 impl<F, B> NonEmptyQueue for Pair<F, B>
 where
     B: Queue,
