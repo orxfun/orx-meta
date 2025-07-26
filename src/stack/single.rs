@@ -8,7 +8,7 @@ use crate::stack::{
 pub struct Single<T>(pub(super) T);
 
 impl<T> Stack for Single<T> {
-    type PushBack<X> = Pair<Single<T>, X>;
+    type PushBack<X> = Pair<Self, X>;
 
     type Front = EmptyStack;
 
