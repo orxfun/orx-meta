@@ -7,13 +7,13 @@ use crate::{
 pub struct EmptyQueue;
 
 impl Queue for EmptyQueue {
-    type Push<X> = Single<X>;
+    type PushBack<X> = Single<X>;
 
     type Front = Never;
 
     type Back = EmptyQueue;
 
-    fn push<X>(self, x: X) -> Self::Push<X> {
+    fn push_back<X>(self, x: X) -> Self::PushBack<X> {
         Single(x)
     }
 

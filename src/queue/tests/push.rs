@@ -10,7 +10,7 @@ fn empty() {
 #[test]
 fn one() {
     let x = EmptyQueue;
-    let x = x.push('x');
+    let x = x.push_back('x');
 
     assert_eq!(x.len(), 1);
 }
@@ -18,8 +18,8 @@ fn one() {
 #[test]
 fn two() {
     let x = EmptyQueue;
-    let x = x.push('x');
-    let x = x.push(32);
+    let x = x.push_back('x');
+    let x = x.push_back(32);
 
     assert_eq!(x.len(), 2);
 }
@@ -27,9 +27,9 @@ fn two() {
 #[test]
 fn three() {
     let x = EmptyQueue;
-    let x = x.push('x');
-    let x = x.push(32);
-    let x = x.push(String::from("xyz"));
+    let x = x.push_back('x');
+    let x = x.push_back(32);
+    let x = x.push_back(String::from("xyz"));
 
     assert_eq!(x.len(), 3);
 }
@@ -37,10 +37,10 @@ fn three() {
 #[test]
 fn four() {
     let x = EmptyQueue;
-    let x = x.push('x');
-    let x = x.push(32);
-    let x = x.push(String::from("xyz"));
-    let x = x.push(true);
+    let x = x.push_back('x');
+    let x = x.push_back(32);
+    let x = x.push_back(String::from("xyz"));
+    let x = x.push_back(true);
 
     assert_eq!(x.len(), 4);
 }

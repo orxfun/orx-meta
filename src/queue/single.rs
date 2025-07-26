@@ -8,13 +8,13 @@ use crate::queue::{
 pub struct Single<T>(pub(super) T);
 
 impl<T> Queue for Single<T> {
-    type Push<X> = Pair<T, Single<X>>;
+    type PushBack<X> = Pair<T, Single<X>>;
 
     type Front = T;
 
     type Back = EmptyQueue;
 
-    fn push<X>(self, x: X) -> Self::Push<X> {
+    fn push_back<X>(self, x: X) -> Self::PushBack<X> {
         Pair(self.0, Single(x))
     }
 

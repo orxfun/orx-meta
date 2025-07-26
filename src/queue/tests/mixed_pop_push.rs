@@ -6,14 +6,14 @@ use crate::queue::{
 #[test]
 fn mixed_pop_push() {
     let x = EmptyQueue
-        .push('x')
-        .push(32)
-        .push(String::from("xyz"))
-        .push(true);
+        .push_back('x')
+        .push_back(32)
+        .push_back(String::from("xyz"))
+        .push_back(true);
 
     let x = x.pop_front().1.pop_front().1;
 
-    let x = x.push('x').push(32);
+    let x = x.push_back('x').push_back(32);
 
     let x = x.pop_front().1; // true, x, 32
 

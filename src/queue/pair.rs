@@ -7,14 +7,14 @@ impl<F, B> Queue for Pair<F, B>
 where
     B: Queue,
 {
-    type Push<X> = Pair<F, B::Push<X>>;
+    type PushBack<X> = Pair<F, B::PushBack<X>>;
 
     type Front = F;
 
     type Back = B;
 
-    fn push<X>(self, x: X) -> Self::Push<X> {
-        Pair(self.0, self.1.push(x))
+    fn push_back<X>(self, x: X) -> Self::PushBack<X> {
+        Pair(self.0, self.1.push_back(x))
     }
 
     fn len(&self) -> usize {

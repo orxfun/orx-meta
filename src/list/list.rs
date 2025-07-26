@@ -1,11 +1,11 @@
-pub trait Queue {
-    type PushBack<X>: Queue;
+pub trait List {
+    type Push<X>: List;
 
     type Front;
 
-    type Back: Queue;
+    type Back: List;
 
-    fn push_back<X>(self, x: X) -> Self::PushBack<X>;
+    fn push<X>(self, x: X) -> Self::Push<X>;
 
     fn len(&self) -> usize;
 
@@ -14,7 +14,7 @@ pub trait Queue {
     }
 }
 
-pub trait NonEmptyQueue: Queue {
+pub trait NonEmptyQueue: List {
     fn front(&self) -> &Self::Front;
 
     fn pop_front(self) -> (Self::Front, Self::Back);
