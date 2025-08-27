@@ -1,6 +1,6 @@
 use crate::queue::queue::{NonEmptyQueue, Queue};
 
-#[derive(Debug)]
+#[derive(Debug, Clone, Copy)]
 pub struct Pair<F, B>(pub(super) F, pub(super) B);
 
 impl<F, B> Queue for Pair<F, B>

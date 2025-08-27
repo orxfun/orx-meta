@@ -1,3 +1,4 @@
+mod clone_copy;
 mod composable;
 mod composition;
 mod front;

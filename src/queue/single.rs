@@ -4,7 +4,7 @@ use crate::queue::{
     queue::{NonEmptyQueue, Queue},
 };
 
-#[derive(Debug)]
+#[derive(Debug, Clone, Copy)]
 pub struct Single<T>(pub(super) T);
 
 impl<T> Queue for Single<T> {
