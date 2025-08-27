@@ -1,6 +1,6 @@
 use crate::stack::stack::{NonEmptyStack, Stack};
 
-#[derive(Debug)]
+#[derive(Debug, Clone, Copy)]
 pub struct Pair<F, B>(pub(super) F, pub(super) B);
 
 impl<F, B> Stack for Pair<F, B>

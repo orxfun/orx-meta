@@ -4,7 +4,7 @@ use crate::stack::{
     stack::{NonEmptyStack, Stack},
 };
 
-#[derive(Debug)]
+#[derive(Debug, Clone, Copy)]
 pub struct Single<T>(pub(super) T);
 
 impl<T> Stack for Single<T> {
