@@ -1,5 +1,5 @@
 pub trait Stack {
-    type PushBack<X>: Stack;
+    type PushBack<X>: NonEmptyStack;
 
     type Front: Stack;
 

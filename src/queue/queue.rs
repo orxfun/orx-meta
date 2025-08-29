@@ -1,5 +1,5 @@
 pub trait Queue {
-    type PushBack<X>: Queue;
+    type PushBack<X>: NonEmptyQueue;
 
     type Front;
 
