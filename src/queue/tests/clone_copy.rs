@@ -1,7 +1,4 @@
-use crate::queue::{
-    empty::EmptyQueue,
-    queue::{NonEmptyQueue, Queue},
-};
+use crate::queue::{EmptyQueue, NonEmptyQueue, Queue};
 
 #[test]
 fn copy() {

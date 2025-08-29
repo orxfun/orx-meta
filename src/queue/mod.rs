@@ -3,13 +3,10 @@ mod tests;
 
 mod composable;
 mod composition;
-mod empty;
-mod pair;
-mod queue;
-mod single;
+mod impl_meta_queue;
 
 pub use composition::QueueComposition;
-pub use empty::EmptyQueue;
-pub use pair::Pair;
-pub use queue::{NonEmptyQueue, Queue};
-pub use single::Single;
+
+use crate::{Never, impl_meta_queue};
+
+impl_meta_queue!([], Never, Queue, NonEmptyQueue, EmptyQueue, Single, Pair);

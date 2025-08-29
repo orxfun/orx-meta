@@ -1,4 +1,4 @@
-use crate::queue::{empty::EmptyQueue, queue::Queue};
+use crate::queue::{EmptyQueue, Queue};
 
 #[test]
 fn empty() {
