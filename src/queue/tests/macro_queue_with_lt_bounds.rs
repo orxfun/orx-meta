@@ -1,141 +1,29 @@
-use core::marker::PhantomData;
-
 // bounds
 
 // each item must be of Sth<'i> and Clone; we reduce them to marker trait Req<'i> (one trait & one lifetime)
 
+use crate::impl_queue;
+
 trait Sth<'i> {} // actual requirement
 
-trait Req<'i> {} // marker requirement that combines Sth<'i> and Clone
+pub trait Req<'i> {} // marker requirement that combines Sth<'i> and Clone
 
 impl<'i, X> Req<'i> for X where X: Sth<'i> + Clone {}
 
-// traits
-
-trait Queue<'i> {
-    type PushBack<X: Req<'i>>: NonEmptyQueue<'i>;
-
-    type Front: Req<'i>;
-
-    type Back: Queue<'i>;
-
-    fn push_back<X: Req<'i>>(self, x: X) -> Self::PushBack<X>;
-
-    fn len(&self) -> usize;
-
-    fn is_empty(&self) -> bool {
-        self.len() == 0
-    }
-}
-
-trait NonEmptyQueue<'i>: Queue<'i> {
-    fn front(&self) -> &Self::Front;
-
-    fn pop_front(self) -> (Self::Front, Self::Back);
-}
-
-// impl: empty
-
-enum Never {}
+pub enum Never {}
 impl<'i> Req<'i> for Never {}
 
-#[derive(Default)]
-struct EmptyQueue;
-
-impl<'i> Queue<'i> for EmptyQueue {
-    type PushBack<X: Req<'i>> = Single<'i, X>;
-
-    type Front = Never;
-
-    type Back = Self;
-
-    fn push_back<X: Req<'i>>(self, x: X) -> Self::PushBack<X> {
-        Single(x, PhantomData)
-    }
-
-    fn len(&self) -> usize {
-        0
-    }
-}
-
-// impl: single
-
-struct Single<'i, F: Req<'i>>(F, PhantomData<&'i ()>);
-
-impl<'i, F: Req<'i>> Queue<'i> for Single<'i, F> {
-    type PushBack<X: Req<'i>> = Pair<'i, F, Single<'i, X>>;
-
-    type Front = F;
-
-    type Back = EmptyQueue;
-
-    fn push_back<X: Req<'i>>(self, x: X) -> Self::PushBack<X> {
-        Pair(self.0, Single(x, PhantomData), PhantomData)
-    }
-
-    fn len(&self) -> usize {
-        1
-    }
-}
-
-impl<'i, F: Req<'i>> NonEmptyQueue<'i> for Single<'i, F> {
-    fn front(&self) -> &Self::Front {
-        &self.0
-    }
-
-    fn pop_front(self) -> (Self::Front, Self::Back) {
-        (self.0, EmptyQueue)
-    }
-}
-
-// impl: pair
-
-struct Pair<'i, F: Req<'i>, B: Queue<'i>>(F, B, PhantomData<&'i ()>);
-
-impl<'i, F: Req<'i>, B: Queue<'i>> Queue<'i> for Pair<'i, F, B> {
-    type PushBack<X: Req<'i>> = Pair<'i, F, B::PushBack<X>>;
-
-    type Front = F;
-
-    type Back = B;
-
-    fn push_back<X: Req<'i>>(self, x: X) -> Self::PushBack<X> {
-        Pair(self.0, self.1.push_back(x), PhantomData)
-    }
-
-    fn len(&self) -> usize {
-        1 + self.1.len()
-    }
-}
-
-impl<'i, F: Req<'i>, B: Queue<'i>> NonEmptyQueue<'i> for Pair<'i, F, B> {
-    fn front(&self) -> &Self::Front {
-        &self.0
-    }
-
-    fn pop_front(self) -> (Self::Front, Self::Back) {
-        (self.0, self.1)
-    }
-}
-
-// composition
-
-#[derive(Clone, Copy, Default)]
-struct QueueComposition;
-
-impl QueueComposition {
-    fn empty() -> EmptyQueue {
-        Default::default()
-    }
-
-    fn single<'i, X: Req<'i>>(x: X) -> Single<'i, X> {
-        Single(x, PhantomData)
-    }
-
-    fn compose<'i, C: Queue<'i>, X: Req<'i>>(q: C, x: X) -> C::PushBack<X> {
-        q.push_back(x)
-    }
-}
+impl_queue!(
+    Queue,
+    NonEmptyQueue,
+    EmptyQueue,
+    Single,
+    Pair,
+    QueueComposition,
+    Never,
+    Req,
+    'a
+);
 
 // tests
 
