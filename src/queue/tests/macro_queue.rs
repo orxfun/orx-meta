@@ -1,8 +1,8 @@
-use crate::impl_queue;
+use crate::define_queue;
 
 pub enum Never {}
 
-impl_queue!(
+define_queue!(
     Queue,
     NonEmptyQueue,
     EmptyQueue,

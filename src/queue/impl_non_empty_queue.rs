@@ -1,5 +1,5 @@
 #[macro_export]
-macro_rules! impl_non_empty_queue {
+macro_rules! define_non_empty_queue {
     // no bounds
     (
         $trait_queue:ident,

@@ -1,6 +1,6 @@
-use crate::impl_non_empty_queue;
+use crate::define_non_empty_queue;
 
-impl_non_empty_queue!(Queue, MultiQueue, Single, Pair, QueueComposition);
+define_non_empty_queue!(Queue, MultiQueue, Single, Pair, QueueComposition);
 
 // tests
 

@@ -1,8 +1,8 @@
-use crate::impl_non_empty_queue;
+use crate::define_non_empty_queue;
 
 pub trait Req {}
 
-impl_non_empty_queue!(Queue, MultiQueue, Single, Pair, QueueComposition, Req);
+define_non_empty_queue!(Queue, MultiQueue, Single, Pair, QueueComposition, Req);
 
 // tests
 

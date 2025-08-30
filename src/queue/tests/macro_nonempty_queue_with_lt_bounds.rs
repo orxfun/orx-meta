@@ -1,4 +1,4 @@
-use crate::impl_non_empty_queue;
+use crate::define_non_empty_queue;
 
 // bounds
 
@@ -10,7 +10,7 @@ pub trait Req<'i> {} // marker requirement that combines Sth<'i> and Clone
 
 impl<'i, X> Req<'i> for X where X: Sth<'i> + Clone {}
 
-impl_non_empty_queue!(Queue, MultiQueue, Single, Pair, QueueComposition, Req, 'a);
+define_non_empty_queue!(Queue, MultiQueue, Single, Pair, QueueComposition, Req, 'a);
 
 // tests
 

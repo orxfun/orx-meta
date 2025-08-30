@@ -1,4 +1,4 @@
-use crate::impl_queue;
+use crate::define_queue;
 
 // bounds
 
@@ -7,7 +7,7 @@ pub trait Req {}
 pub enum Never {}
 impl Req for Never {}
 
-impl_queue!(
+define_queue!(
     Queue,
     NonEmptyQueue,
     EmptyQueue,

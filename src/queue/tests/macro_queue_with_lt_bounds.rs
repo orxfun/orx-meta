@@ -1,4 +1,4 @@
-use crate::impl_queue;
+use crate::define_queue;
 
 // bounds
 
@@ -13,7 +13,7 @@ impl<'i, X> Req<'i> for X where X: Sth<'i> + Clone {}
 pub enum Never {}
 impl<'i> Req<'i> for Never {}
 
-impl_queue!(
+define_queue!(
     Queue,
     NonEmptyQueue,
     EmptyQueue,
