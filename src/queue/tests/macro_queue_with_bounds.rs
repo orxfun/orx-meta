@@ -2,16 +2,10 @@ use crate::impl_queue;
 
 // bounds
 
-// each item must be of Sth<'i> and Clone; we reduce them to marker trait Req<'i> (one trait & one lifetime)
-
-trait Sth<'i> {} // actual requirement
-
-pub trait Req<'i> {} // marker requirement that combines Sth<'i> and Clone
-
-impl<'i, X> Req<'i> for X where X: Sth<'i> + Clone {}
+pub trait Req {}
 
 pub enum Never {}
-impl<'i> Req<'i> for Never {}
+impl Req for Never {}
 
 impl_queue!(
     Queue,
@@ -21,16 +15,15 @@ impl_queue!(
     Pair,
     QueueComposition,
     Never,
-    Req,
-    'a
+    Req
 );
 
 // tests
 
-impl<'i> Sth<'i> for char {}
-impl<'i> Sth<'i> for i32 {}
-impl<'i> Sth<'i> for String {}
-impl<'i> Sth<'i> for bool {}
+impl Req for char {}
+impl Req for i32 {}
+impl Req for String {}
+impl Req for bool {}
 
 #[test]
 fn one() {
