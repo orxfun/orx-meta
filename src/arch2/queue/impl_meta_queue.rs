@@ -3,6 +3,7 @@ macro_rules! impl_meta_queue {
     // with item bounds
     (
         [$($item_bounds:ident),*],
+        [$($trait_bounds:ident),*],
         $never:ident,
         $queue_trait:ident,
         $non_empty_queue_trait:ident,
@@ -12,7 +13,7 @@ macro_rules! impl_meta_queue {
     ) => {
 
         // traits
-        pub trait $queue_trait {
+        pub trait $queue_trait: $( $trait_bounds + )* {
             type PushBack<X>: $non_empty_queue_trait
             where
                 X: $( $item_bounds + )*;
@@ -332,6 +333,7 @@ impl Ooo for Never {}
 
 impl_meta_queue!(
     [Xyz, Www],
+    [],
     Never,
     Queue2,
     NonEmptyQueue2,

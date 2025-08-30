@@ -1,11 +1,9 @@
-use crate::Composable;
-
 pub trait Composition {
-    type Empty: Composable;
+    type Empty: Default;
 
-    fn empty() -> Self::Empty;
+    type Single<X>;
 
-    fn compose<X: Composable, Y>(x: X, y: Y) -> <X as Composable>::Compose<Y> {
-        x.compose(y)
-    }
+    type Compose<X, Y>;
+
+    fn compose<X, Y>(x: X, y: Y) -> Self::Compose<X, Y>;
 }
