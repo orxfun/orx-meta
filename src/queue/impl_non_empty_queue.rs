@@ -219,11 +219,9 @@ macro_rules! impl_non_empty_queue {
     (
         $trait_queue:ident,
         $trait_non_empty_queue:ident,
-        $empty:ident,
         $single:ident,
         $pair:ident,
         $composition:ident,
-        $never:ident,
         $req:ident,
         $lt:lifetime
     ) => {
@@ -240,35 +238,13 @@ macro_rules! impl_non_empty_queue {
 
             fn len(&self) -> usize;
 
-            fn is_empty(&self) -> bool {
-                self.len() == 0
-            }
+            fn front(&self) -> &Self::Front;
+
+            fn into_front(self) -> Self::Front;
         }
 
         pub trait $trait_non_empty_queue<$lt>: $trait_queue<$lt> {
-            fn front(&self) -> &Self::Front;
-
             fn pop_front(self) -> (Self::Front, Self::Back);
-        }
-
-        // impl: empty
-
-        pub struct $empty;
-
-        impl<$lt> $trait_queue<$lt> for $empty {
-            type PushBack<X: $req<$lt>> = $single<$lt, X>;
-
-            type Front = $never;
-
-            type Back = Self;
-
-            fn push_back<X: $req<$lt>>(self, x: X) -> Self::PushBack<X> {
-                $single(x, core::marker::PhantomData)
-            }
-
-            fn len(&self) -> usize {
-                0
-            }
         }
 
         // impl: single
@@ -280,7 +256,7 @@ macro_rules! impl_non_empty_queue {
 
             type Front = F;
 
-            type Back = $empty;
+            type Back = Self;
 
             fn push_back<X: $req<$lt>>(self, x: X) -> Self::PushBack<X> {
                 $pair(
@@ -293,15 +269,13 @@ macro_rules! impl_non_empty_queue {
             fn len(&self) -> usize {
                 1
             }
-        }
 
-        impl<$lt, F: $req<$lt>> $trait_non_empty_queue<$lt> for $single<$lt, F> {
             fn front(&self) -> &Self::Front {
                 &self.0
             }
 
-            fn pop_front(self) -> (Self::Front, Self::Back) {
-                (self.0, $empty)
+            fn into_front(self) -> Self::Front {
+                self.0
             }
         }
 
@@ -327,15 +301,19 @@ macro_rules! impl_non_empty_queue {
             fn len(&self) -> usize {
                 1 + self.1.len()
             }
+
+            fn front(&self) -> &Self::Front {
+                &self.0
+            }
+
+            fn into_front(self) -> Self::Front {
+                self.0
+            }
         }
 
         impl<$lt, F: $req<$lt>, B: $trait_queue<$lt>> $trait_non_empty_queue<$lt>
             for $pair<$lt, F, B>
         {
-            fn front(&self) -> &Self::Front {
-                &self.0
-            }
-
             fn pop_front(self) -> (Self::Front, Self::Back) {
                 (self.0, self.1)
             }
@@ -346,10 +324,6 @@ macro_rules! impl_non_empty_queue {
         pub struct $composition;
 
         impl $composition {
-            fn empty() -> $empty {
-                $empty
-            }
-
             fn single<$lt, X: $req<$lt>>(x: X) -> $single<$lt, X> {
                 $single(x, core::marker::PhantomData)
             }
