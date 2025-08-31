@@ -14,5 +14,3 @@
 
 /// Module including `MetaQueue` and its implementations.
 pub mod queue;
-
-mod test_builder;
