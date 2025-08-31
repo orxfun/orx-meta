@@ -15,6 +15,7 @@ define_queue!(
     Pair,
     QueueComposition,
     Never,
+    Builder,
     Req
 );
 

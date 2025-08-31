@@ -1,0 +1,174 @@
+// traits
+
+trait Queue {
+    type PushBack<X>: NonEmptyQueue;
+
+    type Front;
+
+    type Back: Queue;
+
+    fn push_back<X>(self, x: X) -> Self::PushBack<X>;
+
+    fn len(&self) -> usize;
+
+    fn is_empty(&self) -> bool {
+        self.len() == 0
+    }
+}
+
+trait NonEmptyQueue: Queue {
+    fn front(&self) -> &Self::Front;
+
+    fn pop_front(self) -> (Self::Front, Self::Back);
+}
+
+// impl: empty
+
+enum Never {}
+
+#[derive(Default)]
+struct EmptyQueue;
+
+impl Queue for EmptyQueue {
+    type PushBack<X> = Single<X>;
+
+    type Front = Never;
+
+    type Back = Self;
+
+    fn push_back<X>(self, x: X) -> Self::PushBack<X> {
+        Single(x)
+    }
+
+    fn len(&self) -> usize {
+        0
+    }
+}
+
+// impl: single
+
+struct Single<F>(F);
+
+impl<F> Queue for Single<F> {
+    type PushBack<X> = Pair<F, Single<X>>;
+
+    type Front = F;
+
+    type Back = EmptyQueue;
+
+    fn push_back<X>(self, x: X) -> Self::PushBack<X> {
+        Pair(self.0, Single(x))
+    }
+
+    fn len(&self) -> usize {
+        1
+    }
+}
+
+impl<F> NonEmptyQueue for Single<F> {
+    fn front(&self) -> &Self::Front {
+        &self.0
+    }
+
+    fn pop_front(self) -> (Self::Front, Self::Back) {
+        (self.0, EmptyQueue)
+    }
+}
+
+// impl: pair
+
+struct Pair<F, B: Queue>(F, B);
+
+impl<F, B: Queue> Queue for Pair<F, B> {
+    type PushBack<X> = Pair<F, B::PushBack<X>>;
+
+    type Front = F;
+
+    type Back = B;
+
+    fn push_back<X>(self, x: X) -> Self::PushBack<X> {
+        Pair(self.0, self.1.push_back(x))
+    }
+
+    fn len(&self) -> usize {
+        1 + self.1.len()
+    }
+}
+
+impl<F, B: Queue> NonEmptyQueue for Pair<F, B> {
+    fn front(&self) -> &Self::Front {
+        &self.0
+    }
+
+    fn pop_front(self) -> (Self::Front, Self::Back) {
+        (self.0, self.1)
+    }
+}
+
+// composition
+
+struct QueueComposition;
+
+impl QueueComposition {
+    fn empty() -> EmptyQueue {
+        Default::default()
+    }
+
+    fn single<X>(x: X) -> Single<X> {
+        Single(x)
+    }
+
+    fn compose<C: Queue, X>(q: C, x: X) -> C::PushBack<X> {
+        q.push_back(x)
+    }
+}
+
+// builder
+
+// C = EmptyQueue
+// T = Pair<X, Pair<Y, Single<Z>>>
+
+struct QueueBuilder<Rem, Cur>(Cur, core::marker::PhantomData<Rem>)
+where
+    Rem: Queue,
+    Cur: Queue;
+
+impl<Rem> QueueBuilder<Rem, EmptyQueue>
+where
+    Rem: Queue,
+{
+    pub fn new() -> Self {
+        Self(EmptyQueue, core::marker::PhantomData)
+    }
+}
+
+impl<Rem, Cur> QueueBuilder<Rem, Cur>
+where
+    Rem: Queue,
+    Cur: Queue,
+{
+    fn push_back(self, x: Rem::Front) -> QueueBuilder<Rem::Back, Cur::PushBack<Rem::Front>> {
+        let current = self.0.push_back(x);
+        QueueBuilder(current, core::marker::PhantomData)
+    }
+
+    fn finish(self) -> Cur
+    where
+        Rem: Queue<Front = Never>,
+    {
+        self.0
+    }
+}
+
+#[test]
+fn abc() {
+    type T = Pair<char, Pair<u32, Single<bool>>>;
+
+    let b0 = QueueBuilder::<T, _>::new();
+
+    let b1 = b0.push_back('x');
+    let b2 = b1.push_back(42);
+    let b3 = b2.push_back(true);
+
+    let r = b3.finish();
+}

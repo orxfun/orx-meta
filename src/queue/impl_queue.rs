@@ -8,7 +8,8 @@ macro_rules! define_queue {
         $single:ident,
         $pair:ident,
         $composition:ident,
-        $never:ident
+        $never:ident,
+        $builder:ident
     ) => {
         // traits
 
@@ -119,16 +120,53 @@ macro_rules! define_queue {
         pub struct $composition;
 
         impl $composition {
-            fn empty() -> $empty {
+            pub fn empty() -> $empty {
                 $empty
             }
 
-            fn single<X>(x: X) -> $single<X> {
+            pub fn single<X>(x: X) -> $single<X> {
                 $single(x)
             }
 
-            fn compose<C: $trait_queue, X>(q: C, x: X) -> C::PushBack<X> {
+            pub fn compose<C: $trait_queue, X>(q: C, x: X) -> C::PushBack<X> {
                 q.push_back(x)
+            }
+        }
+
+        // builder
+
+        pub struct $builder<Rem, Cur>(Cur, core::marker::PhantomData<Rem>)
+        where
+            Rem: $trait_queue,
+            Cur: $trait_queue;
+
+        impl<Rem> $builder<Rem, $empty>
+        where
+            Rem: $trait_queue,
+        {
+            pub fn new() -> Self {
+                Self($empty, core::marker::PhantomData)
+            }
+        }
+
+        impl<Rem, Cur> $builder<Rem, Cur>
+        where
+            Rem: $trait_queue,
+            Cur: $trait_queue,
+        {
+            pub fn push_back(
+                self,
+                x: Rem::Front,
+            ) -> $builder<Rem::Back, Cur::PushBack<Rem::Front>> {
+                let current = self.0.push_back(x);
+                $builder(current, core::marker::PhantomData)
+            }
+
+            pub fn finish(self) -> Cur
+            where
+                Rem: $trait_queue<Front = Never>,
+            {
+                self.0
             }
         }
     };
@@ -142,6 +180,7 @@ macro_rules! define_queue {
         $pair:ident,
         $composition:ident,
         $never:ident,
+        $builder:ident,
         $req:ident
     ) => {
         // traits
@@ -253,15 +292,15 @@ macro_rules! define_queue {
         pub struct $composition;
 
         impl $composition {
-            fn empty() -> $empty {
+            pub fn empty() -> $empty {
                 $empty
             }
 
-            fn single<X: $req>(x: X) -> $single<X> {
+            pub fn single<X: $req>(x: X) -> $single<X> {
                 $single(x)
             }
 
-            fn compose<C: $trait_queue, X: $req>(q: C, x: X) -> C::PushBack<X> {
+            pub fn compose<C: $trait_queue, X: $req>(q: C, x: X) -> C::PushBack<X> {
                 q.push_back(x)
             }
         }
@@ -276,6 +315,7 @@ macro_rules! define_queue {
         $pair:ident,
         $composition:ident,
         $never:ident,
+        $builder:ident,
         $req:ident,
         $lt:lifetime
     ) => {
@@ -398,15 +438,15 @@ macro_rules! define_queue {
         pub struct $composition;
 
         impl $composition {
-            fn empty() -> $empty {
+            pub fn empty() -> $empty {
                 $empty
             }
 
-            fn single<$lt, X: $req<$lt>>(x: X) -> $single<$lt, X> {
+            pub fn single<$lt, X: $req<$lt>>(x: X) -> $single<$lt, X> {
                 $single(x, core::marker::PhantomData)
             }
 
-            fn compose<$lt, C: $trait_queue<$lt>, X: $req<$lt>>(q: C, x: X) -> C::PushBack<X> {
+            pub fn compose<$lt, C: $trait_queue<$lt>, X: $req<$lt>>(q: C, x: X) -> C::PushBack<X> {
                 q.push_back(x)
             }
         }

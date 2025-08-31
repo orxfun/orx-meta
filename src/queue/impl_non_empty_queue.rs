@@ -97,11 +97,11 @@ macro_rules! define_non_empty_queue {
         pub struct $composition;
 
         impl $composition {
-            fn single<X>(x: X) -> $single<X> {
+            pub fn single<X>(x: X) -> $single<X> {
                 $single(x)
             }
 
-            fn compose<C: $trait_queue, X>(q: C, x: X) -> C::PushBack<X> {
+            pub fn compose<C: $trait_queue, X>(q: C, x: X) -> C::PushBack<X> {
                 q.push_back(x)
             }
         }
@@ -205,11 +205,11 @@ macro_rules! define_non_empty_queue {
         pub struct $composition;
 
         impl $composition {
-            fn single<X: $req>(x: X) -> $single<X> {
+            pub fn single<X: $req>(x: X) -> $single<X> {
                 $single(x)
             }
 
-            fn compose<C: $trait_queue, X: $req>(q: C, x: X) -> C::PushBack<X> {
+            pub fn compose<C: $trait_queue, X: $req>(q: C, x: X) -> C::PushBack<X> {
                 q.push_back(x)
             }
         }
@@ -324,11 +324,11 @@ macro_rules! define_non_empty_queue {
         pub struct $composition;
 
         impl $composition {
-            fn single<$lt, X: $req<$lt>>(x: X) -> $single<$lt, X> {
+            pub fn single<$lt, X: $req<$lt>>(x: X) -> $single<$lt, X> {
                 $single(x, core::marker::PhantomData)
             }
 
-            fn compose<$lt, C: $trait_queue<$lt>, X: $req<$lt>>(q: C, x: X) -> C::PushBack<X> {
+            pub fn compose<$lt, C: $trait_queue<$lt>, X: $req<$lt>>(q: C, x: X) -> C::PushBack<X> {
                 q.push_back(x)
             }
         }
