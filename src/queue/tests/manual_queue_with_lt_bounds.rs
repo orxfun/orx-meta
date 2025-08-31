@@ -165,7 +165,7 @@ where
 
     fn finish(self) -> Cur
     where
-        Rem: Queue<'i, Front = Never>,
+        Rem: Queue<'i, Back = Rem>,
     {
         self.0
     }

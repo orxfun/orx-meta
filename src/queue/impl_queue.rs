@@ -164,7 +164,7 @@ macro_rules! define_queue {
 
             pub fn finish(self) -> Cur
             where
-                Rem: $trait_queue<Front = Never>,
+                Rem: $trait_queue<Back = Rem>,
             {
                 self.0
             }
@@ -336,7 +336,7 @@ macro_rules! define_queue {
 
             pub fn finish(self) -> Cur
             where
-                Rem: $trait_queue<Front = Never>,
+                Rem: $trait_queue<Back = Rem>,
             {
                 self.0
             }
@@ -519,7 +519,7 @@ macro_rules! define_queue {
 
             pub fn finish(self) -> Cur
             where
-                Rem: $trait_queue<$lt, Front = Never>,
+                Rem: $trait_queue<$lt, Back = Rem>,
             {
                 self.0
             }
