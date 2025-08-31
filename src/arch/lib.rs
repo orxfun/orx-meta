@@ -1,6 +1,6 @@
 #![doc = include_str!("../README.md")]
 #![warn(
-    // missing_docs,
+    missing_docs,
     clippy::unwrap_in_result,
     clippy::unwrap_used,
     clippy::panic,
@@ -12,5 +12,10 @@
 )]
 #![cfg_attr(not(test), no_std)]
 
+/// Module defining type composition.
+pub mod composition;
+mod never;
 /// Module including `MetaQueue` and its implementations.
 pub mod queue;
+
+pub use never::Never;

@@ -1,18 +1,5 @@
 #[cfg(test)]
 mod tests;
 
-mod data_composer;
-mod data_queue;
-mod empty;
-mod from_sequence;
-mod meta_queue;
-mod multi;
-mod one;
-mod tuple_composer;
-
-pub use empty::Empty;
-pub use from_sequence::*;
-pub use meta_queue::MetaQueue;
-pub use multi::Multi;
-pub use one::One;
-pub use tuple_composer::{TupleQueue, TupleQueueMulti, TupleQueueOne};
+mod impl_non_empty_queue;
+mod impl_queue;

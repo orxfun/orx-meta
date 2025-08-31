@@ -12,5 +12,15 @@
 )]
 #![cfg_attr(not(test), no_std)]
 
-/// Module including `MetaQueue` and its implementations.
+mod composable;
+mod composition;
+pub mod meta_composition;
+pub mod meta_queue;
+mod never;
+// mod play_around;
 pub mod queue;
+pub mod stack;
+
+pub use composable::Composable;
+pub use composition::Composition;
+pub use never::Never;

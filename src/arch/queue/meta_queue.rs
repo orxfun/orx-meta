@@ -1,3 +1,5 @@
+use crate::composition::Composition;
+
 /// A queue of types with push and pop operations:
 ///
 /// * pushes the type to the back, and
@@ -23,4 +25,6 @@ pub trait MetaQueue: Default {
     /// The queue succeeding the `Front`; i.e., the remaining queue after popping one
     /// element from the front of this queue.
     type Back: MetaQueue;
+
+    type Map<C: Composition>;
 }
