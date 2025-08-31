@@ -29,6 +29,8 @@ trait Queue<'i> {
 }
 
 trait NonEmptyQueue<'i>: Queue<'i> {
+    fn into_front(self) -> Self::Front;
+
     fn front(&self) -> &Self::Front;
 
     fn pop_front(self) -> (Self::Front, Self::Back);
@@ -79,6 +81,10 @@ impl<'i, F: Req<'i>> Queue<'i> for Single<'i, F> {
 }
 
 impl<'i, F: Req<'i>> NonEmptyQueue<'i> for Single<'i, F> {
+    fn into_front(self) -> Self::Front {
+        self.0
+    }
+
     fn front(&self) -> &Self::Front {
         &self.0
     }
@@ -109,6 +115,10 @@ impl<'i, F: Req<'i>, B: Queue<'i>> Queue<'i> for Pair<'i, F, B> {
 }
 
 impl<'i, F: Req<'i>, B: Queue<'i>> NonEmptyQueue<'i> for Pair<'i, F, B> {
+    fn into_front(self) -> Self::Front {
+        self.0
+    }
+
     fn front(&self) -> &Self::Front {
         &self.0
     }
@@ -340,8 +350,6 @@ fn builder() {
     assert_eq!(f, String::from("xyz"));
 
     assert_eq!(x.front(), &true);
-    let (f, x) = x.pop_front();
+    let f = x.into_front();
     assert_eq!(f, true);
-
-    assert!(x.is_empty());
 }

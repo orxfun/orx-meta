@@ -30,6 +30,8 @@ macro_rules! define_queue {
         }
 
         pub trait $trait_non_empty_queue: $trait_queue {
+            fn into_front(self) -> Self::Front;
+
             fn front(&self) -> &Self::Front;
 
             fn pop_front(self) -> (Self::Front, Self::Back);
@@ -76,6 +78,10 @@ macro_rules! define_queue {
         }
 
         impl<F> $trait_non_empty_queue for $single<F> {
+            fn into_front(self) -> Self::Front {
+                self.0
+            }
+
             fn front(&self) -> &Self::Front {
                 &self.0
             }
@@ -106,6 +112,10 @@ macro_rules! define_queue {
         }
 
         impl<F, B: $trait_queue> $trait_non_empty_queue for $pair<F, B> {
+            fn into_front(self) -> Self::Front {
+                self.0
+            }
+
             fn front(&self) -> &Self::Front {
                 &self.0
             }
@@ -202,6 +212,8 @@ macro_rules! define_queue {
         }
 
         pub trait $trait_non_empty_queue: $trait_queue {
+            fn into_front(self) -> Self::Front;
+
             fn front(&self) -> &Self::Front;
 
             fn pop_front(self) -> (Self::Front, Self::Back);
@@ -248,6 +260,10 @@ macro_rules! define_queue {
         }
 
         impl<F: $req> $trait_non_empty_queue for $single<F> {
+            fn into_front(self) -> Self::Front {
+                self.0
+            }
+
             fn front(&self) -> &Self::Front {
                 &self.0
             }
@@ -278,6 +294,10 @@ macro_rules! define_queue {
         }
 
         impl<F: $req, B: $trait_queue> $trait_non_empty_queue for $pair<F, B> {
+            fn into_front(self) -> Self::Front {
+                self.0
+            }
+
             fn front(&self) -> &Self::Front {
                 &self.0
             }
@@ -375,6 +395,8 @@ macro_rules! define_queue {
         }
 
         pub trait $trait_non_empty_queue<$lt>: $trait_queue<$lt> {
+            fn into_front(self) -> Self::Front;
+
             fn front(&self) -> &Self::Front;
 
             fn pop_front(self) -> (Self::Front, Self::Back);
@@ -425,6 +447,10 @@ macro_rules! define_queue {
         }
 
         impl<$lt, F: $req<$lt>> $trait_non_empty_queue<$lt> for $single<$lt, F> {
+            fn into_front(self) -> Self::Front {
+                self.0
+            }
+
             fn front(&self) -> &Self::Front {
                 &self.0
             }
@@ -461,6 +487,10 @@ macro_rules! define_queue {
         impl<$lt, F: $req<$lt>, B: $trait_queue<$lt>> $trait_non_empty_queue<$lt>
             for $pair<$lt, F, B>
         {
+            fn into_front(self) -> Self::Front {
+                self.0
+            }
+
             fn front(&self) -> &Self::Front {
                 &self.0
             }
