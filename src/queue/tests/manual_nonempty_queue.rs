@@ -96,40 +96,6 @@ impl QueueComposition {
     }
 }
 
-// builder
-
-struct Builder<Rem, Cur>(Cur, core::marker::PhantomData<Rem>)
-where
-    Rem: Queue,
-    Cur: Queue;
-
-impl<Rem, F> Builder<Rem, Single<F>>
-where
-    Rem: Queue,
-{
-    pub fn new(f: F) -> Self {
-        Self(Single(f), core::marker::PhantomData)
-    }
-}
-
-impl<Rem, Cur> Builder<Rem, Cur>
-where
-    Rem: Queue,
-    Cur: Queue,
-{
-    fn push_back(self, x: Rem::Front) -> Builder<Rem::Back, Cur::PushBack<Rem::Front>> {
-        let current = self.0.push_back(x);
-        Builder(current, core::marker::PhantomData)
-    }
-
-    fn finish(self) -> Cur
-    where
-        Rem: Queue<Back = Rem>,
-    {
-        self.0
-    }
-}
-
 // tests
 
 #[test]
