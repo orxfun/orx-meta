@@ -304,6 +304,43 @@ macro_rules! define_queue {
                 q.push_back(x)
             }
         }
+
+        // builder
+
+        pub struct $builder<Rem, Cur>(Cur, core::marker::PhantomData<Rem>)
+        where
+            Rem: $trait_queue,
+            Cur: $trait_queue;
+
+        impl<Rem> $builder<Rem, $empty>
+        where
+            Rem: $trait_queue,
+        {
+            pub fn new() -> Self {
+                Self($empty, core::marker::PhantomData)
+            }
+        }
+
+        impl<Rem, Cur> $builder<Rem, Cur>
+        where
+            Rem: $trait_queue,
+            Cur: $trait_queue,
+        {
+            pub fn push_back(
+                self,
+                x: Rem::Front,
+            ) -> $builder<Rem::Back, Cur::PushBack<Rem::Front>> {
+                let current = self.0.push_back(x);
+                $builder(current, core::marker::PhantomData)
+            }
+
+            pub fn finish(self) -> Cur
+            where
+                Rem: $trait_queue<Front = Never>,
+            {
+                self.0
+            }
+        }
     };
 
     // with lt bounds
@@ -448,6 +485,43 @@ macro_rules! define_queue {
 
             pub fn compose<$lt, C: $trait_queue<$lt>, X: $req<$lt>>(q: C, x: X) -> C::PushBack<X> {
                 q.push_back(x)
+            }
+        }
+
+        // builder
+
+        pub struct $builder<$lt, Rem, Cur>(Cur, core::marker::PhantomData<&$lt Rem>)
+        where
+            Rem: $trait_queue<$lt>,
+            Cur: $trait_queue<$lt>;
+
+        impl<$lt, Rem> $builder<$lt, Rem, $empty>
+        where
+            Rem: $trait_queue<$lt>,
+        {
+            pub fn new() -> Self {
+                Self($empty, core::marker::PhantomData)
+            }
+        }
+
+        impl<$lt, Rem, Cur> $builder<$lt, Rem, Cur>
+        where
+            Rem: $trait_queue<$lt>,
+            Cur: $trait_queue<$lt>,
+        {
+            pub fn push_back(
+                self,
+                x: Rem::Front,
+            ) -> $builder<$lt, Rem::Back, Cur::PushBack<Rem::Front>> {
+                let current = self.0.push_back(x);
+                $builder(current, core::marker::PhantomData)
+            }
+
+            pub fn finish(self) -> Cur
+            where
+                Rem: $trait_queue<$lt, Front = Never>,
+            {
+                self.0
             }
         }
     };
