@@ -41,6 +41,7 @@ macro_rules! define_queue {
 
         // impl: empty
 
+        #[derive(Clone, Copy, Debug, Default)]
         pub struct $empty;
 
         impl $trait_queue for $empty {
@@ -61,6 +62,7 @@ macro_rules! define_queue {
 
         // impl: single
 
+        #[derive(Clone, Copy, Debug)]
         pub struct $single<F>(F);
 
         impl<F> $trait_queue for $single<F> {
@@ -99,6 +101,7 @@ macro_rules! define_queue {
 
         // impl: pair
 
+        #[derive(Clone, Copy, Debug)]
         pub struct $pair<F, B: $trait_queue>(F, B);
 
         impl<F, B: $trait_queue> $trait_queue for $pair<F, B> {
@@ -189,6 +192,179 @@ macro_rules! define_queue {
                 self.0
             }
         }
+
+        // tuple support - 1
+
+        impl<X1> $single<X1> {
+            pub fn into_tuple(self) -> X1 {
+                self.0
+            }
+        }
+
+        impl<X1> From<X1> for $single<X1> {
+            fn from(x: X1) -> Self {
+                $single(x)
+            }
+        }
+
+        // tuple support - 2
+
+        impl<X1, X2> $pair<X1, $single<X2>> {
+            pub fn into_tuple(self) -> (X1, X2) {
+                (self.0, self.1.0)
+            }
+        }
+
+        impl<X1, X2> From<(X1, X2)> for $pair<X1, $single<X2>> {
+            fn from(x: (X1, X2)) -> Self {
+                $single::from(x.0).push_back(x.1)
+            }
+        }
+
+        // tuple support - 3
+
+        impl<X1, X2, X3> $pair<X1, $pair<X2, $single<X3>>> {
+            pub fn into_tuple(self) -> (X1, X2, X3) {
+                (self.0, self.1.0, self.1.1.0)
+            }
+        }
+
+        impl<X1, X2, X3> From<(X1, X2, X3)> for $pair<X1, $pair<X2, $single<X3>>> {
+            fn from(x: (X1, X2, X3)) -> Self {
+                $single::from(x.0).push_back(x.1).push_back(x.2)
+            }
+        }
+
+        // tuple support - 4
+
+        impl<X1, X2, X3, X4> $pair<X1, $pair<X2, $pair<X3, $single<X4>>>> {
+            pub fn into_tuple(self) -> (X1, X2, X3, X4) {
+                (self.0, self.1.0, self.1.1.0, self.1.1.1.0)
+            }
+        }
+
+        impl<X1, X2, X3, X4> From<(X1, X2, X3, X4)> for $pair<X1, $pair<X2, $pair<X3, $single<X4>>>> {
+            fn from(x: (X1, X2, X3, X4)) -> Self {
+                $single::from(x.0)
+                    .push_back(x.1)
+                    .push_back(x.2)
+                    .push_back(x.3)
+            }
+        }
+
+        // tuple support - 5
+
+        impl<X1, X2, X3, X4, X5> $pair<X1, $pair<X2, $pair<X3, $pair<X4, $single<X5>>>>> {
+            pub fn into_tuple(self) -> (X1, X2, X3, X4, X5) {
+                (self.0, self.1.0, self.1.1.0, self.1.1.1.0, self.1.1.1.1.0)
+            }
+        }
+
+        impl<X1, X2, X3, X4, X5> From<(X1, X2, X3, X4, X5)>
+            for $pair<X1, $pair<X2, $pair<X3, $pair<X4, $single<X5>>>>>
+        {
+            fn from(x: (X1, X2, X3, X4, X5)) -> Self {
+                $single::from(x.0)
+                    .push_back(x.1)
+                    .push_back(x.2)
+                    .push_back(x.3)
+                    .push_back(x.4)
+            }
+        }
+
+        // tuple support - 6
+
+        impl<X1, X2, X3, X4, X5, X6> $pair<X1, $pair<X2, $pair<X3, $pair<X4, $pair<X5, $single<X6>>>>>> {
+            pub fn into_tuple(self) -> (X1, X2, X3, X4, X5, X6) {
+                (
+                    self.0,
+                    self.1.0,
+                    self.1.1.0,
+                    self.1.1.1.0,
+                    self.1.1.1.1.0,
+                    self.1.1.1.1.1.0,
+                )
+            }
+        }
+
+        impl<X1, X2, X3, X4, X5, X6> From<(X1, X2, X3, X4, X5, X6)>
+            for $pair<X1, $pair<X2, $pair<X3, $pair<X4, $pair<X5, $single<X6>>>>>>
+        {
+            fn from(x: (X1, X2, X3, X4, X5, X6)) -> Self {
+                $single::from(x.0)
+                    .push_back(x.1)
+                    .push_back(x.2)
+                    .push_back(x.3)
+                    .push_back(x.4)
+                    .push_back(x.5)
+            }
+        }
+
+        // tuple support - 7
+
+        impl<X1, X2, X3, X4, X5, X6, X7>
+            $pair<X1, $pair<X2, $pair<X3, $pair<X4, $pair<X5, $pair<X6, $single<X7>>>>>>>
+        {
+            pub fn into_tuple(self) -> (X1, X2, X3, X4, X5, X6, X7) {
+                (
+                    self.0,
+                    self.1.0,
+                    self.1.1.0,
+                    self.1.1.1.0,
+                    self.1.1.1.1.0,
+                    self.1.1.1.1.1.0,
+                    self.1.1.1.1.1.1.0,
+                )
+            }
+        }
+
+        impl<X1, X2, X3, X4, X5, X6, X7> From<(X1, X2, X3, X4, X5, X6, X7)>
+            for $pair<X1, $pair<X2, $pair<X3, $pair<X4, $pair<X5, $pair<X6, $single<X7>>>>>>>
+        {
+            fn from(x: (X1, X2, X3, X4, X5, X6, X7)) -> Self {
+                $single::from(x.0)
+                    .push_back(x.1)
+                    .push_back(x.2)
+                    .push_back(x.3)
+                    .push_back(x.4)
+                    .push_back(x.5)
+                    .push_back(x.6)
+            }
+        }
+
+        // tuple support - 8
+
+        impl<X1, X2, X3, X4, X5, X6, X7, X8>
+            $pair<X1, $pair<X2, $pair<X3, $pair<X4, $pair<X5, $pair<X6, $pair<X7, $single<X8>>>>>>>>
+        {
+            pub fn into_tuple(self) -> (X1, X2, X3, X4, X5, X6, X7, X8) {
+                (
+                    self.0,
+                    self.1.0,
+                    self.1.1.0,
+                    self.1.1.1.0,
+                    self.1.1.1.1.0,
+                    self.1.1.1.1.1.0,
+                    self.1.1.1.1.1.1.0,
+                    self.1.1.1.1.1.1.1.0,
+                )
+            }
+        }
+
+        impl<X1, X2, X3, X4, X5, X6, X7, X8> From<(X1, X2, X3, X4, X5, X6, X7, X8)>
+            for $pair<X1, $pair<X2, $pair<X3, $pair<X4, $pair<X5, $pair<X6, $pair<X7, $single<X8>>>>>>>>
+        {
+            fn from(x: (X1, X2, X3, X4, X5, X6, X7, X8)) -> Self {
+                $single::from(x.0)
+                    .push_back(x.1)
+                    .push_back(x.2)
+                    .push_back(x.3)
+                    .push_back(x.4)
+                    .push_back(x.5)
+                    .push_back(x.6)
+                    .push_back(x.7)
+            }
+        }
     };
 
     // with bounds
@@ -233,6 +409,7 @@ macro_rules! define_queue {
 
         // impl: empty
 
+        #[derive(Clone, Copy, Debug, Default)]
         pub struct $empty;
 
         impl $trait_queue for $empty {
@@ -253,6 +430,7 @@ macro_rules! define_queue {
 
         // impl: single
 
+        #[derive(Clone, Copy, Debug)]
         pub struct $single<F: $req>(F);
 
         impl<F: $req> $trait_queue for $single<F> {
@@ -291,6 +469,7 @@ macro_rules! define_queue {
 
         // impl: pair
 
+        #[derive(Clone, Copy, Debug)]
         pub struct $pair<F: $req, B: $trait_queue>(F, B);
 
         impl<F: $req, B: $trait_queue> $trait_queue for $pair<F, B> {
@@ -426,6 +605,7 @@ macro_rules! define_queue {
 
         // impl: empty
 
+        #[derive(Clone, Copy, Debug, Default)]
         pub struct $empty;
 
         impl<$lt> $trait_queue<$lt> for $empty {
@@ -446,6 +626,7 @@ macro_rules! define_queue {
 
         // impl: single
 
+        #[derive(Clone, Copy, Debug)]
         pub struct $single<$lt, F: $req<$lt>>(F, core::marker::PhantomData<&$lt()>);
 
         impl<$lt, F: $req<$lt>> $trait_queue<$lt> for $single<$lt, F> {
@@ -488,6 +669,7 @@ macro_rules! define_queue {
 
         // impl: pair
 
+        #[derive(Clone, Copy, Debug)]
         pub struct $pair<$lt, F: $req<$lt>, B: $trait_queue<$lt>>(
             F,
             B,

@@ -1,3 +1,5 @@
+#![allow(dead_code)]
+
 // bounds
 
 // each item must be of Sth<'i> and Clone; we reduce them to marker trait Req<'i> (one trait & one lifetime)

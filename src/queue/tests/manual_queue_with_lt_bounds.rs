@@ -1,3 +1,5 @@
+#![allow(dead_code)]
+
 use core::marker::PhantomData;
 
 // bounds
@@ -40,10 +42,11 @@ trait NonEmptyQueue<'i>: Queue<'i> {
 
 // impl: empty
 
+#[derive(Clone, Copy, Debug)]
 enum Never {}
 impl<'i> Req<'i> for Never {}
 
-#[derive(Default)]
+#[derive(Clone, Copy, Debug, Default)]
 struct EmptyQueue;
 
 impl<'i> Queue<'i> for EmptyQueue {
@@ -64,6 +67,7 @@ impl<'i> Queue<'i> for EmptyQueue {
 
 // impl: single
 
+#[derive(Clone, Copy, Debug)]
 struct Single<'i, F: Req<'i>>(F, PhantomData<&'i ()>);
 
 impl<'i, F: Req<'i>> Queue<'i> for Single<'i, F> {
@@ -102,6 +106,7 @@ impl<'i, F: Req<'i>> NonEmptyQueue<'i> for Single<'i, F> {
 
 // impl: pair
 
+#[derive(Clone, Copy, Debug)]
 struct Pair<'i, F: Req<'i>, B: Queue<'i>>(F, B, PhantomData<&'i ()>);
 
 impl<'i, F: Req<'i>, B: Queue<'i>> Queue<'i> for Pair<'i, F, B> {
@@ -188,6 +193,303 @@ where
         Rem: Queue<'i, Back = Rem>,
     {
         self.0
+    }
+}
+
+// tuple support - 1
+
+impl<'i, X1> Single<'i, X1>
+where
+    X1: Req<'i>,
+{
+    pub fn into_tuple(self) -> X1 {
+        self.0
+    }
+}
+
+impl<'i, X1> From<X1> for Single<'i, X1>
+where
+    X1: Req<'i>,
+{
+    fn from(x: X1) -> Self {
+        Single(x, Default::default())
+    }
+}
+
+// tuple support - 2
+
+impl<'i, X1, X2> Pair<'i, X1, Single<'i, X2>>
+where
+    X1: Req<'i>,
+    X2: Req<'i>,
+{
+    pub fn into_tuple(self) -> (X1, X2) {
+        (self.0, self.1.0)
+    }
+}
+
+impl<'i, X1, X2> From<(X1, X2)> for Pair<'i, X1, Single<'i, X2>>
+where
+    X1: Req<'i>,
+    X2: Req<'i>,
+{
+    fn from(x: (X1, X2)) -> Self {
+        Single::from(x.0).push_back(x.1)
+    }
+}
+
+// tuple support - 3
+
+impl<'i, X1, X2, X3> Pair<'i, X1, Pair<'i, X2, Single<'i, X3>>>
+where
+    X1: Req<'i>,
+    X2: Req<'i>,
+    X3: Req<'i>,
+{
+    pub fn into_tuple(self) -> (X1, X2, X3) {
+        (self.0, self.1.0, self.1.1.0)
+    }
+}
+
+impl<'i, X1, X2, X3> From<(X1, X2, X3)> for Pair<'i, X1, Pair<'i, X2, Single<'i, X3>>>
+where
+    X1: Req<'i>,
+    X2: Req<'i>,
+    X3: Req<'i>,
+{
+    fn from(x: (X1, X2, X3)) -> Self {
+        Single::from(x.0).push_back(x.1).push_back(x.2)
+    }
+}
+
+// tuple support - 4
+
+impl<'i, X1, X2, X3, X4> Pair<'i, X1, Pair<'i, X2, Pair<'i, X3, Single<'i, X4>>>>
+where
+    X1: Req<'i>,
+    X2: Req<'i>,
+    X3: Req<'i>,
+    X4: Req<'i>,
+{
+    pub fn into_tuple(self) -> (X1, X2, X3, X4) {
+        (self.0, self.1.0, self.1.1.0, self.1.1.1.0)
+    }
+}
+
+impl<'i, X1, X2, X3, X4> From<(X1, X2, X3, X4)>
+    for Pair<'i, X1, Pair<'i, X2, Pair<'i, X3, Single<'i, X4>>>>
+where
+    X1: Req<'i>,
+    X2: Req<'i>,
+    X3: Req<'i>,
+    X4: Req<'i>,
+{
+    fn from(x: (X1, X2, X3, X4)) -> Self {
+        Single::from(x.0)
+            .push_back(x.1)
+            .push_back(x.2)
+            .push_back(x.3)
+    }
+}
+
+// tuple support - 5
+
+impl<'i, X1, X2, X3, X4, X5> Pair<'i, X1, Pair<'i, X2, Pair<'i, X3, Pair<'i, X4, Single<'i, X5>>>>>
+where
+    X1: Req<'i>,
+    X2: Req<'i>,
+    X3: Req<'i>,
+    X4: Req<'i>,
+    X5: Req<'i>,
+{
+    pub fn into_tuple(self) -> (X1, X2, X3, X4, X5) {
+        (self.0, self.1.0, self.1.1.0, self.1.1.1.0, self.1.1.1.1.0)
+    }
+}
+
+impl<'i, X1, X2, X3, X4, X5> From<(X1, X2, X3, X4, X5)>
+    for Pair<'i, X1, Pair<'i, X2, Pair<'i, X3, Pair<'i, X4, Single<'i, X5>>>>>
+where
+    X1: Req<'i>,
+    X2: Req<'i>,
+    X3: Req<'i>,
+    X4: Req<'i>,
+    X5: Req<'i>,
+{
+    fn from(x: (X1, X2, X3, X4, X5)) -> Self {
+        Single::from(x.0)
+            .push_back(x.1)
+            .push_back(x.2)
+            .push_back(x.3)
+            .push_back(x.4)
+    }
+}
+
+// tuple support - 6
+
+impl<'i, X1, X2, X3, X4, X5, X6>
+    Pair<'i, X1, Pair<'i, X2, Pair<'i, X3, Pair<'i, X4, Pair<'i, X5, Single<'i, X6>>>>>>
+where
+    X1: Req<'i>,
+    X2: Req<'i>,
+    X3: Req<'i>,
+    X4: Req<'i>,
+    X5: Req<'i>,
+    X6: Req<'i>,
+{
+    pub fn into_tuple(self) -> (X1, X2, X3, X4, X5, X6) {
+        (
+            self.0,
+            self.1.0,
+            self.1.1.0,
+            self.1.1.1.0,
+            self.1.1.1.1.0,
+            self.1.1.1.1.1.0,
+        )
+    }
+}
+
+impl<'i, X1, X2, X3, X4, X5, X6> From<(X1, X2, X3, X4, X5, X6)>
+    for Pair<'i, X1, Pair<'i, X2, Pair<'i, X3, Pair<'i, X4, Pair<'i, X5, Single<'i, X6>>>>>>
+where
+    X1: Req<'i>,
+    X2: Req<'i>,
+    X3: Req<'i>,
+    X4: Req<'i>,
+    X5: Req<'i>,
+    X6: Req<'i>,
+{
+    fn from(x: (X1, X2, X3, X4, X5, X6)) -> Self {
+        Single::from(x.0)
+            .push_back(x.1)
+            .push_back(x.2)
+            .push_back(x.3)
+            .push_back(x.4)
+            .push_back(x.5)
+    }
+}
+
+// tuple support - 7
+
+impl<'i, X1, X2, X3, X4, X5, X6, X7>
+    Pair<
+        'i,
+        X1,
+        Pair<'i, X2, Pair<'i, X3, Pair<'i, X4, Pair<'i, X5, Pair<'i, X6, Single<'i, X7>>>>>>,
+    >
+where
+    X1: Req<'i>,
+    X2: Req<'i>,
+    X3: Req<'i>,
+    X4: Req<'i>,
+    X5: Req<'i>,
+    X6: Req<'i>,
+    X7: Req<'i>,
+{
+    pub fn into_tuple(self) -> (X1, X2, X3, X4, X5, X6, X7) {
+        (
+            self.0,
+            self.1.0,
+            self.1.1.0,
+            self.1.1.1.0,
+            self.1.1.1.1.0,
+            self.1.1.1.1.1.0,
+            self.1.1.1.1.1.1.0,
+        )
+    }
+}
+
+impl<'i, X1, X2, X3, X4, X5, X6, X7> From<(X1, X2, X3, X4, X5, X6, X7)>
+    for Pair<
+        'i,
+        X1,
+        Pair<'i, X2, Pair<'i, X3, Pair<'i, X4, Pair<'i, X5, Pair<'i, X6, Single<'i, X7>>>>>>,
+    >
+where
+    X1: Req<'i>,
+    X2: Req<'i>,
+    X3: Req<'i>,
+    X4: Req<'i>,
+    X5: Req<'i>,
+    X6: Req<'i>,
+    X7: Req<'i>,
+{
+    fn from(x: (X1, X2, X3, X4, X5, X6, X7)) -> Self {
+        Single::from(x.0)
+            .push_back(x.1)
+            .push_back(x.2)
+            .push_back(x.3)
+            .push_back(x.4)
+            .push_back(x.5)
+            .push_back(x.6)
+    }
+}
+
+// tuple support - 8
+
+impl<'i, X1, X2, X3, X4, X5, X6, X7, X8>
+    Pair<
+        'i,
+        X1,
+        Pair<
+            'i,
+            X2,
+            Pair<'i, X3, Pair<'i, X4, Pair<'i, X5, Pair<'i, X6, Pair<'i, X7, Single<'i, X8>>>>>>,
+        >,
+    >
+where
+    X1: Req<'i>,
+    X2: Req<'i>,
+    X3: Req<'i>,
+    X4: Req<'i>,
+    X5: Req<'i>,
+    X6: Req<'i>,
+    X7: Req<'i>,
+    X8: Req<'i>,
+{
+    pub fn into_tuple(self) -> (X1, X2, X3, X4, X5, X6, X7, X8) {
+        (
+            self.0,
+            self.1.0,
+            self.1.1.0,
+            self.1.1.1.0,
+            self.1.1.1.1.0,
+            self.1.1.1.1.1.0,
+            self.1.1.1.1.1.1.0,
+            self.1.1.1.1.1.1.1.0,
+        )
+    }
+}
+
+impl<'i, X1, X2, X3, X4, X5, X6, X7, X8> From<(X1, X2, X3, X4, X5, X6, X7, X8)>
+    for Pair<
+        'i,
+        X1,
+        Pair<
+            'i,
+            X2,
+            Pair<'i, X3, Pair<'i, X4, Pair<'i, X5, Pair<'i, X6, Pair<'i, X7, Single<'i, X8>>>>>>,
+        >,
+    >
+where
+    X1: Req<'i>,
+    X2: Req<'i>,
+    X3: Req<'i>,
+    X4: Req<'i>,
+    X5: Req<'i>,
+    X6: Req<'i>,
+    X7: Req<'i>,
+    X8: Req<'i>,
+{
+    fn from(x: (X1, X2, X3, X4, X5, X6, X7, X8)) -> Self {
+        Single::from(x.0)
+            .push_back(x.1)
+            .push_back(x.2)
+            .push_back(x.3)
+            .push_back(x.4)
+            .push_back(x.5)
+            .push_back(x.6)
+            .push_back(x.7)
     }
 }
 
@@ -365,4 +667,11 @@ fn builder() {
     assert!(b.is_empty());
     let f = x.into_front();
     assert_eq!(f, true);
+}
+
+#[test]
+fn tuple_support() {
+    let t = ('x', 32, String::from("xyz"), true);
+    let x: Pair<char, Pair<i32, Pair<String, Single<bool>>>> = t.clone().into();
+    assert_eq!(x.clone().into_tuple(), t);
 }
