@@ -1,3 +1,5 @@
+#![allow(dead_code)]
+
 trait Queue {
     // traits
     type PushBack<X>: NonEmptyQueue;
@@ -27,9 +29,10 @@ trait NonEmptyQueue: Queue {
 
 // impl: empty
 
+#[derive(Clone, Copy, Debug)]
 enum Never {}
 
-#[derive(Default)]
+#[derive(Clone, Copy, Debug, Default)]
 struct EmptyQueue;
 
 impl Queue for EmptyQueue {
@@ -50,6 +53,7 @@ impl Queue for EmptyQueue {
 
 // impl: single
 
+#[derive(Clone, Copy, Debug)]
 struct Single<F>(F);
 
 impl<F> Queue for Single<F> {
@@ -88,6 +92,7 @@ impl<F> NonEmptyQueue for Single<F> {
 
 // impl: pair
 
+#[derive(Clone, Copy, Debug)]
 struct Pair<F, B: Queue>(F, B);
 
 impl<F, B: Queue> Queue for Pair<F, B> {
@@ -173,6 +178,179 @@ where
         Rem: Queue<Back = Rem>,
     {
         self.0
+    }
+}
+
+// tuple support - 1
+
+impl<X1> Single<X1> {
+    pub fn into_tuple(self) -> X1 {
+        self.0
+    }
+}
+
+impl<X1> From<X1> for Single<X1> {
+    fn from(x: X1) -> Self {
+        Single(x)
+    }
+}
+
+// tuple support - 2
+
+impl<X1, X2> Pair<X1, Single<X2>> {
+    pub fn into_tuple(self) -> (X1, X2) {
+        (self.0, self.1.0)
+    }
+}
+
+impl<X1, X2> From<(X1, X2)> for Pair<X1, Single<X2>> {
+    fn from(x: (X1, X2)) -> Self {
+        Single::from(x.0).push_back(x.1)
+    }
+}
+
+// tuple support - 3
+
+impl<X1, X2, X3> Pair<X1, Pair<X2, Single<X3>>> {
+    pub fn into_tuple(self) -> (X1, X2, X3) {
+        (self.0, self.1.0, self.1.1.0)
+    }
+}
+
+impl<X1, X2, X3> From<(X1, X2, X3)> for Pair<X1, Pair<X2, Single<X3>>> {
+    fn from(x: (X1, X2, X3)) -> Self {
+        Single::from(x.0).push_back(x.1).push_back(x.2)
+    }
+}
+
+// tuple support - 4
+
+impl<X1, X2, X3, X4> Pair<X1, Pair<X2, Pair<X3, Single<X4>>>> {
+    pub fn into_tuple(self) -> (X1, X2, X3, X4) {
+        (self.0, self.1.0, self.1.1.0, self.1.1.1.0)
+    }
+}
+
+impl<X1, X2, X3, X4> From<(X1, X2, X3, X4)> for Pair<X1, Pair<X2, Pair<X3, Single<X4>>>> {
+    fn from(x: (X1, X2, X3, X4)) -> Self {
+        Single::from(x.0)
+            .push_back(x.1)
+            .push_back(x.2)
+            .push_back(x.3)
+    }
+}
+
+// tuple support - 5
+
+impl<X1, X2, X3, X4, X5> Pair<X1, Pair<X2, Pair<X3, Pair<X4, Single<X5>>>>> {
+    pub fn into_tuple(self) -> (X1, X2, X3, X4, X5) {
+        (self.0, self.1.0, self.1.1.0, self.1.1.1.0, self.1.1.1.1.0)
+    }
+}
+
+impl<X1, X2, X3, X4, X5> From<(X1, X2, X3, X4, X5)>
+    for Pair<X1, Pair<X2, Pair<X3, Pair<X4, Single<X5>>>>>
+{
+    fn from(x: (X1, X2, X3, X4, X5)) -> Self {
+        Single::from(x.0)
+            .push_back(x.1)
+            .push_back(x.2)
+            .push_back(x.3)
+            .push_back(x.4)
+    }
+}
+
+// tuple support - 6
+
+impl<X1, X2, X3, X4, X5, X6> Pair<X1, Pair<X2, Pair<X3, Pair<X4, Pair<X5, Single<X6>>>>>> {
+    pub fn into_tuple(self) -> (X1, X2, X3, X4, X5, X6) {
+        (
+            self.0,
+            self.1.0,
+            self.1.1.0,
+            self.1.1.1.0,
+            self.1.1.1.1.0,
+            self.1.1.1.1.1.0,
+        )
+    }
+}
+
+impl<X1, X2, X3, X4, X5, X6> From<(X1, X2, X3, X4, X5, X6)>
+    for Pair<X1, Pair<X2, Pair<X3, Pair<X4, Pair<X5, Single<X6>>>>>>
+{
+    fn from(x: (X1, X2, X3, X4, X5, X6)) -> Self {
+        Single::from(x.0)
+            .push_back(x.1)
+            .push_back(x.2)
+            .push_back(x.3)
+            .push_back(x.4)
+            .push_back(x.5)
+    }
+}
+
+// tuple support - 7
+
+impl<X1, X2, X3, X4, X5, X6, X7>
+    Pair<X1, Pair<X2, Pair<X3, Pair<X4, Pair<X5, Pair<X6, Single<X7>>>>>>>
+{
+    pub fn into_tuple(self) -> (X1, X2, X3, X4, X5, X6, X7) {
+        (
+            self.0,
+            self.1.0,
+            self.1.1.0,
+            self.1.1.1.0,
+            self.1.1.1.1.0,
+            self.1.1.1.1.1.0,
+            self.1.1.1.1.1.1.0,
+        )
+    }
+}
+
+impl<X1, X2, X3, X4, X5, X6, X7> From<(X1, X2, X3, X4, X5, X6, X7)>
+    for Pair<X1, Pair<X2, Pair<X3, Pair<X4, Pair<X5, Pair<X6, Single<X7>>>>>>>
+{
+    fn from(x: (X1, X2, X3, X4, X5, X6, X7)) -> Self {
+        Single::from(x.0)
+            .push_back(x.1)
+            .push_back(x.2)
+            .push_back(x.3)
+            .push_back(x.4)
+            .push_back(x.5)
+            .push_back(x.6)
+    }
+}
+
+// tuple support - 8
+
+impl<X1, X2, X3, X4, X5, X6, X7, X8>
+    Pair<X1, Pair<X2, Pair<X3, Pair<X4, Pair<X5, Pair<X6, Pair<X7, Single<X8>>>>>>>>
+{
+    pub fn into_tuple(self) -> (X1, X2, X3, X4, X5, X6, X7, X8) {
+        (
+            self.0,
+            self.1.0,
+            self.1.1.0,
+            self.1.1.1.0,
+            self.1.1.1.1.0,
+            self.1.1.1.1.1.0,
+            self.1.1.1.1.1.1.0,
+            self.1.1.1.1.1.1.1.0,
+        )
+    }
+}
+
+impl<X1, X2, X3, X4, X5, X6, X7, X8> From<(X1, X2, X3, X4, X5, X6, X7, X8)>
+    for Pair<X1, Pair<X2, Pair<X3, Pair<X4, Pair<X5, Pair<X6, Pair<X7, Single<X8>>>>>>>>
+{
+    fn from(x: (X1, X2, X3, X4, X5, X6, X7, X8)) -> Self {
+        Single::from(x.0)
+            .push_back(x.1)
+            .push_back(x.2)
+            .push_back(x.3)
+            .push_back(x.4)
+            .push_back(x.5)
+            .push_back(x.6)
+            .push_back(x.7)
     }
 }
 
@@ -345,4 +523,11 @@ fn builder() {
     assert!(b.is_empty());
     let f = x.into_front();
     assert_eq!(f, true);
+}
+
+#[test]
+fn tuple_support() {
+    let t = ('x', 32, String::from("xyz"), true);
+    let x: Pair<char, Pair<i32, Pair<String, Single<bool>>>> = t.clone().into();
+    assert_eq!(x.clone().into_tuple(), t);
 }

@@ -1,3 +1,5 @@
+#![allow(dead_code)]
+
 use crate::define_queue;
 
 pub enum Never {}
@@ -182,4 +184,11 @@ fn builder() {
     assert!(b.is_empty());
     let f = x.into_front();
     assert_eq!(f, true);
+}
+
+#[test]
+fn tuple_support() {
+    let t = ('x', 32, String::from("xyz"), true);
+    let x: Pair<char, Pair<i32, Pair<String, Single<bool>>>> = t.clone().into();
+    assert_eq!(x.clone().into_tuple(), t);
 }
