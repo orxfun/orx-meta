@@ -32,9 +32,11 @@ macro_rules! define_queue {
         pub trait $trait_non_empty_queue: $trait_queue {
             fn into_front(self) -> Self::Front;
 
+            fn pop_front(self) -> (Self::Front, Self::Back);
+
             fn front(&self) -> &Self::Front;
 
-            fn pop_front(self) -> (Self::Front, Self::Back);
+            fn front_back(&self) -> (&Self::Front, &Self::Back);
         }
 
         // impl: empty
@@ -82,12 +84,16 @@ macro_rules! define_queue {
                 self.0
             }
 
+            fn pop_front(self) -> (Self::Front, Self::Back) {
+                (self.0, $empty)
+            }
+
             fn front(&self) -> &Self::Front {
                 &self.0
             }
 
-            fn pop_front(self) -> (Self::Front, Self::Back) {
-                (self.0, $empty)
+            fn front_back(&self) -> (&Self::Front, &Self::Back) {
+                (&self.0, &EmptyQueue)
             }
         }
 
@@ -116,12 +122,16 @@ macro_rules! define_queue {
                 self.0
             }
 
+            fn pop_front(self) -> (Self::Front, Self::Back) {
+                (self.0, self.1)
+            }
+
             fn front(&self) -> &Self::Front {
                 &self.0
             }
 
-            fn pop_front(self) -> (Self::Front, Self::Back) {
-                (self.0, self.1)
+            fn front_back(&self) -> (&Self::Front, &Self::Back) {
+                (&self.0, &self.1)
             }
         }
 
@@ -214,9 +224,11 @@ macro_rules! define_queue {
         pub trait $trait_non_empty_queue: $trait_queue {
             fn into_front(self) -> Self::Front;
 
+            fn pop_front(self) -> (Self::Front, Self::Back);
+
             fn front(&self) -> &Self::Front;
 
-            fn pop_front(self) -> (Self::Front, Self::Back);
+            fn front_back(&self) -> (&Self::Front, &Self::Back);
         }
 
         // impl: empty
@@ -264,12 +276,16 @@ macro_rules! define_queue {
                 self.0
             }
 
+            fn pop_front(self) -> (Self::Front, Self::Back) {
+                (self.0, $empty)
+            }
+
             fn front(&self) -> &Self::Front {
                 &self.0
             }
 
-            fn pop_front(self) -> (Self::Front, Self::Back) {
-                (self.0, $empty)
+            fn front_back(&self) -> (&Self::Front, &Self::Back) {
+                (&self.0, &EmptyQueue)
             }
         }
 
@@ -298,12 +314,16 @@ macro_rules! define_queue {
                 self.0
             }
 
+            fn pop_front(self) -> (Self::Front, Self::Back) {
+                (self.0, self.1)
+            }
+
             fn front(&self) -> &Self::Front {
                 &self.0
             }
 
-            fn pop_front(self) -> (Self::Front, Self::Back) {
-                (self.0, self.1)
+            fn front_back(&self) -> (&Self::Front, &Self::Back) {
+                (&self.0, &self.1)
             }
         }
 
@@ -397,9 +417,11 @@ macro_rules! define_queue {
         pub trait $trait_non_empty_queue<$lt>: $trait_queue<$lt> {
             fn into_front(self) -> Self::Front;
 
+            fn pop_front(self) -> (Self::Front, Self::Back);
+
             fn front(&self) -> &Self::Front;
 
-            fn pop_front(self) -> (Self::Front, Self::Back);
+            fn front_back(&self) -> (&Self::Front, &Self::Back);
         }
 
         // impl: empty
@@ -451,12 +473,16 @@ macro_rules! define_queue {
                 self.0
             }
 
+            fn pop_front(self) -> (Self::Front, Self::Back) {
+                (self.0, $empty)
+            }
+
             fn front(&self) -> &Self::Front {
                 &self.0
             }
 
-            fn pop_front(self) -> (Self::Front, Self::Back) {
-                (self.0, $empty)
+            fn front_back(&self) -> (&Self::Front, &Self::Back) {
+                (&self.0, &EmptyQueue)
             }
         }
 
@@ -491,12 +517,16 @@ macro_rules! define_queue {
                 self.0
             }
 
+            fn pop_front(self) -> (Self::Front, Self::Back) {
+                (self.0, self.1)
+            }
+
             fn front(&self) -> &Self::Front {
                 &self.0
             }
 
-            fn pop_front(self) -> (Self::Front, Self::Back) {
-                (self.0, self.1)
+            fn front_back(&self) -> (&Self::Front, &Self::Back) {
+                (&self.0, &self.1)
             }
         }
 

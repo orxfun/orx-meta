@@ -177,6 +177,9 @@ fn builder() {
     assert_eq!(f, String::from("xyz"));
 
     assert_eq!(x.front(), &true);
+    let (f, b) = x.front_back();
+    assert_eq!(f, &true);
+    assert!(b.is_empty());
     let f = x.into_front();
     assert_eq!(f, true);
 }

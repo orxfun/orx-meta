@@ -104,6 +104,11 @@ fn compose_four() {
     let (f, x) = x.pop_front();
     assert_eq!(f, 32);
 
+    let (f, b) = x.front_back();
+    assert_eq!(f, &String::from("xyz"));
+    assert_eq!(b.len(), 1);
+    assert_eq!(b.front(), &true);
+
     assert_eq!(x.front(), &String::from("xyz"));
     let (f, x) = x.pop_front();
     assert_eq!(f, String::from("xyz"));
