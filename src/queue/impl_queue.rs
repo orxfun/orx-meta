@@ -93,7 +93,7 @@ macro_rules! define_queue {
             }
 
             fn front_back(&self) -> (&Self::Front, &Self::Back) {
-                (&self.0, &EmptyQueue)
+                (&self.0, &$empty)
             }
         }
 
@@ -285,7 +285,7 @@ macro_rules! define_queue {
             }
 
             fn front_back(&self) -> (&Self::Front, &Self::Back) {
-                (&self.0, &EmptyQueue)
+                (&self.0, &$empty)
             }
         }
 
@@ -482,7 +482,7 @@ macro_rules! define_queue {
             }
 
             fn front_back(&self) -> (&Self::Front, &Self::Back) {
-                (&self.0, &EmptyQueue)
+                (&self.0, &$empty)
             }
         }
 
