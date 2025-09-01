@@ -1,6 +1,5 @@
-// traits
-
 trait Queue {
+    // traits
     type PushBack<X>: NonEmptyQueue;
 
     type Front;
@@ -19,9 +18,11 @@ trait Queue {
 trait NonEmptyQueue: Queue {
     fn into_front(self) -> Self::Front;
 
+    fn pop_front(self) -> (Self::Front, Self::Back);
+
     fn front(&self) -> &Self::Front;
 
-    fn pop_front(self) -> (Self::Front, Self::Back);
+    fn front_back(&self) -> (&Self::Front, &Self::Back);
 }
 
 // impl: empty
@@ -72,12 +73,16 @@ impl<F> NonEmptyQueue for Single<F> {
         self.0
     }
 
+    fn pop_front(self) -> (Self::Front, Self::Back) {
+        (self.0, EmptyQueue)
+    }
+
     fn front(&self) -> &Self::Front {
         &self.0
     }
 
-    fn pop_front(self) -> (Self::Front, Self::Back) {
-        (self.0, EmptyQueue)
+    fn front_back(&self) -> (&Self::Front, &Self::Back) {
+        (&self.0, &EmptyQueue)
     }
 }
 
@@ -106,12 +111,16 @@ impl<F, B: Queue> NonEmptyQueue for Pair<F, B> {
         self.0
     }
 
+    fn pop_front(self) -> (Self::Front, Self::Back) {
+        (self.0, self.1)
+    }
+
     fn front(&self) -> &Self::Front {
         &self.0
     }
 
-    fn pop_front(self) -> (Self::Front, Self::Back) {
-        (self.0, self.1)
+    fn front_back(&self) -> (&Self::Front, &Self::Back) {
+        (&self.0, &self.1)
     }
 }
 
@@ -331,6 +340,9 @@ fn builder() {
     assert_eq!(f, String::from("xyz"));
 
     assert_eq!(x.front(), &true);
+    let (f, b) = x.front_back();
+    assert_eq!(f, &true);
+    assert!(b.is_empty());
     let f = x.into_front();
     assert_eq!(f, true);
 }

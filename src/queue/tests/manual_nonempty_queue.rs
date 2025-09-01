@@ -17,6 +17,8 @@ trait Queue {
 }
 
 trait MultiQueue: Queue {
+    fn front_back(&self) -> (&Self::Front, &Self::Back);
+
     fn pop_front(self) -> (Self::Front, Self::Back);
 }
 
@@ -77,6 +79,10 @@ impl<F, B: Queue> Queue for Pair<F, B> {
 }
 
 impl<F, B: Queue> MultiQueue for Pair<F, B> {
+    fn front_back(&self) -> (&Self::Front, &Self::Back) {
+        (&self.0, &self.1)
+    }
+
     fn pop_front(self) -> (Self::Front, Self::Back) {
         (self.0, self.1)
     }
@@ -182,6 +188,11 @@ fn compose_four() {
     assert_eq!(x.front(), &32);
     let (f, x) = x.pop_front();
     assert_eq!(f, 32);
+
+    let (f, b) = x.front_back();
+    assert_eq!(f, &String::from("xyz"));
+    assert_eq!(b.len(), 1);
+    assert_eq!(b.front(), &true);
 
     assert_eq!(x.front(), &String::from("xyz"));
     let (f, x) = x.pop_front();
