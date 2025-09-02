@@ -404,43 +404,6 @@ macro_rules! define_queue {
                 self.cur
             }
         }
-
-
-
-// impl<Rem> Builder<Rem, EmptyQueue>
-// where
-//     Rem: Queue,
-// {
-//     pub fn new() -> Self {
-//         Self(EmptyQueue, core::marker::PhantomData)
-//     }
-// }
-
-
-
-        // trait $tr<$($g_lt ,)* $($g ,)*>
-        // where
-        //     $(
-        //         $g:
-        //         $(
-        //             $g_bnd
-        //             $(
-        //                 <
-        //                     $( $g_bnd_g ),*
-        //                 >
-        //             )?
-        //         + ) *
-        //     , )*
-        //     Self: $(
-        //         $el_bnd
-        //         $(
-        //             < $( $el_bnd_g ),* >
-        //         )?
-        //     + ) *,
-        // {
-
-        //     // abc
-        // }
     };
 }
 
