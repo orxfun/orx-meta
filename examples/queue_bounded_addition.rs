@@ -47,6 +47,14 @@ where
 }
 
 fn main() {
+    #[derive(Clone, Copy, PartialEq, Debug)]
+    struct MyFloat(f32);
+    impl Into<i64> for MyFloat {
+        fn into(self) -> i64 {
+            self.0 as i64
+        }
+    }
+
     // grow
 
     let q = Empty::new();
@@ -58,7 +66,7 @@ fn main() {
     let q = q.push_back(7u32);
     assert_eq!(19i64, q.into());
 
-    let q = q.push_back(20u8);
+    let q = q.push_back(MyFloat(20.0));
     assert_eq!(39i64, q.into());
 
     // shrink
@@ -72,6 +80,6 @@ fn main() {
     assert_eq!(20i64, q.into());
 
     let (f, q) = q.pop();
-    assert_eq!(f, 20u8);
+    assert_eq!(f, MyFloat(20.0));
     assert_eq!(0i64, q.into());
 }
