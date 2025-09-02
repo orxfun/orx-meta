@@ -13,6 +13,6 @@
 #![cfg_attr(not(test), no_std)]
 
 // /// Module including `MetaQueue` and its implementations.
-// pub mod queue;
+pub mod queue;
 
-mod try_sth;
+mod try_sth_lt;
