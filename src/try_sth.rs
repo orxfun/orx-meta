@@ -13,20 +13,20 @@ macro_rules! define_queue3 {
     (
         elements => [$(
                         $x_rhs:tt<[$($x_rhs_type:tt = $x_rhs_type_val:tt), *]>
-                    + )*]
+                    )| *]
         ;
 
-        trait $q:ident<$($q_tp:ident), *>
+        traits => $q:ident, $ne_q:ident <$($q_tp:ident), *>
         where
             $(
                 $q_tp_lhs:ident: [$(
                     $q_tp_rhs:tt<[$($q_tp_rhs_type:tt = $q_tp_rhs_type_val:tt), *]>
-                + )*]
+                )| *]
             ), *
         ;
 
-        trait $ne_q:ident;
         never => $never:tt;
+
         implementors => $empty:ident, $single:ident, $pair:ident;
 
     ) => {
@@ -191,8 +191,7 @@ mod a {
 
     define_queue3!(
         elements => [];
-        trait Que00<> where;
-        trait NonEmptyQue00;
+        traits => Que00, NonEmptyQue00 <> where;
         never => Never;
         implementors => EmptyQueue00, Single00, Pair00;
     );
@@ -231,9 +230,8 @@ mod b {
     impl<F: Copy, B: Que11> Copy for Pair11<F, B> {}
 
     define_queue3!(
-        elements => [Copy<[]> +];
-        trait Que11<> where;
-        trait NonEmptyQue11;
+        elements => [Copy<[]>];
+        traits => Que11, NonEmptyQue11 <> where;
         never => Never;
         implementors => EmptyQueue11, Single11, Pair11;
     );
@@ -241,25 +239,21 @@ mod b {
 
 mod c {
     use super::*;
-
     mod sealed {
         pub struct NeverWrapper<T>(T);
     }
-
     pub enum Never<P>
     where
         P: Pr,
     {
         Never(sealed::NeverWrapper<P>),
     }
-
     impl<P> Req for Never<P>
     where
         P: Pr,
     {
         type Pr = P;
     }
-
     impl<P: Pr<Y = char>> Req for EmptyQueue<P> {
         type Pr = P;
     }
@@ -278,9 +272,8 @@ mod c {
     }
 
     define_queue3!(
-        elements => [Req<[Pr = P]> +];
-        trait Que<P> where P: [Pr<[Y = char]> +];
-        trait NonEmptyQue;
+        elements => [Req<[Pr = P]>];
+        traits => Que, NonEmptyQue <P> where P: [Pr<[Y = char]>];
         never => Never;
         implementors => EmptyQueue, Single, Pair;
     );
