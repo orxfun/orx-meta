@@ -186,59 +186,9 @@ macro_rules! define_queue3 {
     };
 }
 
-mod a {
-    pub enum Never {}
-
-    define_queue3!(
-        elements => [];
-        traits => Que00, NonEmptyQue00 <> where;
-        never => Never;
-        implementors => EmptyQueue00, Single00, Pair00;
-    );
-}
-
-mod b {
-    #[derive(Clone, Copy)]
-    pub enum Never {}
-
-    impl Clone for EmptyQueue11 {
-        fn clone(&self) -> Self {
-            Self {
-                phantom: self.phantom.clone(),
-            }
-        }
-    }
-    impl Copy for EmptyQueue11 {}
-    impl<F: Copy> Clone for Single11<F> {
-        fn clone(&self) -> Self {
-            Self {
-                f: self.f.clone(),
-                phantom: self.phantom.clone(),
-            }
-        }
-    }
-    impl<F: Copy> Copy for Single11<F> {}
-    impl<F: Copy, B: Que11> Clone for Pair11<F, B> {
-        fn clone(&self) -> Self {
-            Self {
-                f: self.f.clone(),
-                b: self.b.clone(),
-                phantom: self.phantom.clone(),
-            }
-        }
-    }
-    impl<F: Copy, B: Que11> Copy for Pair11<F, B> {}
-
-    define_queue3!(
-        elements => [Copy<[]>];
-        traits => Que11, NonEmptyQue11 <> where;
-        never => Never;
-        implementors => EmptyQueue11, Single11, Pair11;
-    );
-}
-
-mod c {
+mod d {
     use super::*;
+
     mod sealed {
         pub struct NeverWrapper<T>(T);
     }
@@ -279,259 +229,97 @@ mod c {
     );
 }
 
-// define_queue2!([], [], [], Que1, [], Req);
+// mod a {
+//     pub enum Never {}
 
-// define_queue2!(
-//     Que1<[]>,
-//     PushBack<X>,
-
-//     // oo
-//     Req
-// );
-
-// define_queue2!(
-//     Que2<[P: [Pr<[]>]]>,
-//     PushBack<X>,
-
-//     // queue
-//     // [P, Z], // cannot be X, F or B
-//     // [P: Pr<[Z = Z]>],
-//     // Que2,
-//     // // push-back
-//     // [Req<[Pr = P]>],
-
-//     // oooo
-//     Req);
-
-// fn x<P: Pr>(x: impl Que<P>) {}
-
-// pub trait Pr {}
-// impl Pr for char {}
-// impl Pr for u32 {}
-// impl Pr for bool {}
-
-// mod sealed {
-//     pub struct NeverWrapper<T>(T);
+//     define_queue3!(
+//         elements => [];
+//         traits => Que00, NonEmptyQue00 <> where;
+//         never => Never;
+//         implementors => EmptyQueue00, Single00, Pair00;
+//     );
 // }
 
-// pub trait Req {
-//     type Pr: Pr;
-// }
+// mod b {
+//     #[derive(Clone, Copy)]
+//     pub enum Never {}
 
-// pub enum Never<P>
-// where
-//     P: Pr,
-// {
-//     Never(sealed::NeverWrapper<P>),
-// }
-
-// impl<P> Req for Never<P>
-// where
-//     P: Pr,
-// {
-//     type Pr = P;
-// }
-
-// // impl
-
-// // traits
-
-// trait Queue<P>
-// where
-//     P: Pr,
-// {
-//     type PushBack<X>: NonEmptyQueue<P>
-//     where
-//         X: Req<Pr = P>;
-
-//     type Front: Req<Pr = P>;
-
-//     type Back: Queue<P>;
-
-//     fn push_back<X>(self, x: X) -> Self::PushBack<X>
-//     where
-//         X: Req<Pr = P>;
-
-//     fn len(&self) -> usize;
-
-//     fn is_empty(&self) -> bool {
-//         self.len() == 0
+//     impl Clone for EmptyQueue11 {
+//         fn clone(&self) -> Self {
+//             Self {
+//                 phantom: self.phantom.clone(),
+//             }
+//         }
 //     }
+//     impl Copy for EmptyQueue11 {}
+//     impl<F: Copy> Clone for Single11<F> {
+//         fn clone(&self) -> Self {
+//             Self {
+//                 f: self.f.clone(),
+//                 phantom: self.phantom.clone(),
+//             }
+//         }
+//     }
+//     impl<F: Copy> Copy for Single11<F> {}
+//     impl<F: Copy, B: Que11> Clone for Pair11<F, B> {
+//         fn clone(&self) -> Self {
+//             Self {
+//                 f: self.f.clone(),
+//                 b: self.b.clone(),
+//                 phantom: self.phantom.clone(),
+//             }
+//         }
+//     }
+//     impl<F: Copy, B: Que11> Copy for Pair11<F, B> {}
+
+//     define_queue3!(
+//         lifetimes => [];
+//         elements => [Copy<[]>];
+//         traits => Que11, NonEmptyQue11 <> where;
+//         never => Never;
+//         implementors => EmptyQueue11, Single11, Pair11;
+//     );
 // }
 
-// trait NonEmptyQueue<P>: Queue<P>
-// where
-//     P: Pr,
-// {
-//     fn into_front(self) -> Self::Front;
-
-//     fn pop_front(self) -> (Self::Front, Self::Back);
-
-//     fn front(&self) -> &Self::Front;
-
-//     fn front_back(&self) -> (&Self::Front, &Self::Back);
-// }
-
-// // impl: empty
-
-// #[derive(Clone, Copy, Debug, Default)]
-// struct EmptyQueue;
-
-// impl<P> Queue<P> for EmptyQueue
-// where
-//     P: Pr,
-// {
-//     type PushBack<X>
-//         = Single<X>
+// mod c {
+//     use super::*;
+//     mod sealed {
+//         pub struct NeverWrapper<T>(T);
+//     }
+//     pub enum Never<P>
 //     where
-//         X: Req<Pr = P>;
-
-//     type Front = Never<P>;
-
-//     type Back = Self;
-
-//     fn push_back<X>(self, x: X) -> Self::PushBack<X>
-//     where
-//         X: Req<Pr = P>,
+//         P: Pr,
 //     {
-//         Single(x)
+//         Never(sealed::NeverWrapper<P>),
 //     }
-
-//     fn len(&self) -> usize {
-//         0
-//     }
-// }
-
-// // impl: single
-
-// #[derive(Clone, Copy, Debug)]
-// struct Single<F>(F)
-// where
-//     F: Req;
-
-// impl<P, F> Queue<P> for Single<F>
-// where
-//     P: Pr,
-//     F: Req<Pr = P>,
-// {
-//     type PushBack<X>
-//         = Pair<F, Single<X>>
+//     impl<P> Req for Never<P>
 //     where
-//         X: Req<Pr = P>;
-
-//     type Front = F;
-
-//     type Back = EmptyQueue;
-
-//     fn push_back<X>(self, x: X) -> Self::PushBack<X>
-//     where
-//         X: Req<Pr = P>,
+//         P: Pr,
 //     {
-//         Pair(self.0, Single(x))
+//         type Pr = P;
 //     }
-
-//     fn len(&self) -> usize {
-//         1
+//     impl<P: Pr<Y = char>> Req for EmptyQueue<P> {
+//         type Pr = P;
 //     }
-// }
-
-// impl<P, F> NonEmptyQueue<P> for Single<F>
-// where
-//     P: Pr,
-//     F: Req<Pr = P>,
-// {
-//     fn into_front(self) -> Self::Front {
-//         self.0
-//     }
-
-//     fn pop_front(self) -> (Self::Front, Self::Back) {
-//         (self.0, EmptyQueue)
-//     }
-
-//     fn front(&self) -> &Self::Front {
-//         &self.0
-//     }
-
-//     fn front_back(&self) -> (&Self::Front, &Self::Back) {
-//         (&self.0, &EmptyQueue)
-//     }
-// }
-
-// // impl: pair
-
-// #[derive(Clone, Copy, Debug)]
-// struct Pair<F, B>(F, B)
-// where
-//     F: Req,
-//     B: Queue<F::Pr>;
-
-// impl<F, B> Queue<F::Pr> for Pair<F, B>
-// where
-//     F: Req,
-//     B: Queue<F::Pr>,
-// {
-//     type PushBack<X>
-//         = Pair<F, B::PushBack<X>>
+//     impl<F, P: Pr<Y = char>> Req for Single<F, P>
 //     where
-//         X: Req<Pr = F::Pr>;
-
-//     type Front = F;
-
-//     type Back = B;
-
-//     fn push_back<X>(self, x: X) -> Self::PushBack<X>
-//     where
-//         X: Req<Pr = F::Pr>,
+//         F: Req<Pr = P>,
 //     {
-//         Pair(self.0, self.1.push_back(x))
+//         type Pr = P;
+//     }
+//     impl<F, B, P: Pr<Y = char>> Req for Pair<F, B, P>
+//     where
+//         F: Req<Pr = P>,
+//         B: Que<P>,
+//     {
+//         type Pr = P;
 //     }
 
-//     fn len(&self) -> usize {
-//         1 + self.1.len()
-//     }
-// }
-
-// impl<F, B> NonEmptyQueue<F::Pr> for Pair<F, B>
-// where
-//     F: Req,
-//     B: Queue<F::Pr>,
-// {
-//     fn into_front(self) -> Self::Front {
-//         self.0
-//     }
-
-//     fn pop_front(self) -> (Self::Front, Self::Back) {
-//         (self.0, self.1)
-//     }
-
-//     fn front(&self) -> &Self::Front {
-//         &self.0
-//     }
-
-//     fn front_back(&self) -> (&Self::Front, &Self::Back) {
-//         (&self.0, &self.1)
-//     }
-// }
-
-// // test
-
-// struct A(u32);
-// struct B(u32);
-// struct C(u32);
-// impl Req for A {
-//     type Pr = char;
-// }
-// impl Req for B {
-//     type Pr = char;
-// }
-// impl Req for C {
-//     type Pr = char;
-// }
-
-// #[test]
-// fn abc() {
-//     let b = EmptyQueue;
-//     let b = b.push_back(A(12));
-//     let b = b.push_back(B(12));
-//     let _b = b.push_back(C(12));
+//     define_queue3!(
+//         lifetimes => [];
+//         elements => [Req<[Pr = P]>];
+//         traits => Que, NonEmptyQue <P> where P: [Pr<[Y = char]>];
+//         never => Never;
+//         implementors => EmptyQueue, Single, Pair;
+//     );
 // }
