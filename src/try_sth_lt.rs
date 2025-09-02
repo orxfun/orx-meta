@@ -152,6 +152,20 @@ macro_rules! define_queue {
             f: F,
         }
 
+        impl<$($g_lt ,)* F, $($g ,)*> $single<$($g_lt ,)* F, $($g ,)*>
+        where
+            F: $( $el_bnd $( < $( $el_bnd_g ),* > )? + ) *,
+            $( $g: $( $g_bnd $(<$( $g_bnd_g ),*> )? + ) * , )*
+        {
+            pub fn new(f: F) -> Self {
+                Self {
+                    phantom: Default::default(),
+                    empty: $empty::new(),
+                    f,
+                }
+            }
+        }
+
         impl<$($g_lt ,)* F, $($g ,)*> $q<$($g_lt ,)* $($g ,)*> for $single<$($g_lt ,)* F, $($g ,)*>
         where
             F: $( $el_bnd $( < $( $el_bnd_g ),* > )? + ) *,
@@ -169,15 +183,7 @@ macro_rules! define_queue {
             where
                 X: $( $el_bnd $( < $( $el_bnd_g ),* > )? + ) *
             {
-                $pair {
-                    phantom: Default::default(),
-                    f: self.f,
-                    b: $single {
-                        phantom: Default::default(),
-                        empty: $empty::new(),
-                        f: x,
-                    },
-                }
+                $pair::new(self.f, $single::new(x))
             }
 
             fn len(&self) -> usize {
@@ -236,6 +242,21 @@ macro_rules! define_queue {
             b: B,
         }
 
+        impl<$($g_lt ,)* F, B, $($g ,)*> $pair<$($g_lt ,)* F, B, $($g ,)*>
+        where
+            F: $( $el_bnd $( < $( $el_bnd_g ),* > )? + ) *,
+            B: $q<$($g_lt ,)* $($g ,)*>,
+            $( $g: $( $g_bnd $(<$( $g_bnd_g ),*> )? + ) * , )*
+        {
+            pub fn new(f: F, b: B) -> Self {
+                Self {
+                    phantom: Default::default(),
+                    f,
+                    b,
+                }
+            }
+        }
+
         impl<$($g_lt ,)* F, B, $($g ,)*> $q<$($g_lt ,)* $($g ,)*> for $pair<$($g_lt ,)* F, B, $($g ,)*>
         where
             F: $( $el_bnd $( < $( $el_bnd_g ),* > )? + ) *,
@@ -254,11 +275,7 @@ macro_rules! define_queue {
             where
                 X: $( $el_bnd $( < $( $el_bnd_g ),* > )? + ) *
             {
-                $pair {
-                    phantom: Default::default(),
-                    f: self.f,
-                    b: self.b.push_back(x),
-                }
+                $pair::new(self.f, self.b.push_back(x))
             }
 
             fn len(&self) -> usize {
@@ -327,11 +344,7 @@ macro_rules! define_queue {
                 X: $( $el_bnd $( < $( $el_bnd_g ),* > )? + ) *,
                 $( $g: $( $g_bnd $(<$( $g_bnd_g ),*> )? + ) * , )*
             {
-                $single {
-                    phantom: Default::default(),
-                    empty: $empty::new(),
-                    f: x,
-                }
+                $single::new(x)
             }
 
             pub fn compose<C, X>(q: C, x: X) -> C::PushBack<X>
