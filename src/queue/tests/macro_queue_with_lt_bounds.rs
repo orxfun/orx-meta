@@ -1,3 +1,5 @@
+#![allow(dead_code)]
+
 use crate::define_queue;
 
 // bounds
@@ -10,21 +12,27 @@ pub trait Req<'i> {} // marker requirement that combines Sth<'i> and Clone
 
 impl<'i, X> Req<'i> for X where X: Sth<'i> + Clone {}
 
-pub enum Never {}
-impl<'i> Req<'i> for Never {}
-
 define_queue!(
-    Queue,
-    NonEmptyQueue,
-    EmptyQueue,
-    Single,
-    Pair,
-    QueueComposition,
-    Never,
-    Builder,
-    Req,
-    'a
+    lifetimes => ['i];
+    generics => [];
+    elements => [Req<'i>];
+    names => {
+        traits: {
+            queue: Queue,
+            non_empty_queue: NonEmptyQueue,
+        },
+        structs: {
+            empty: EmptyQueue,
+            single: Single,
+            pair: Pair,
+            composition: QueueComposition,
+            builder: Builder,
+        },
+    };
 );
+impl<'i> Req<'i> for EmptyQueue<'i> {}
+impl<'i, F: Req<'i>> Req<'i> for Single<'i, F> {}
+impl<'i, F: Req<'i>, B: Queue<'i>> Req<'i> for Pair<'i, F, B> {}
 
 // tests
 
@@ -35,11 +43,11 @@ impl<'i> Sth<'i> for bool {}
 
 #[test]
 fn one() {
-    let x = EmptyQueue;
+    let x = EmptyQueue::new();
     let x = x.push_back('x');
 
     assert_eq!(x.front(), &'x');
-    let (f, x) = x.pop_front();
+    let (f, x) = x.into_front_back();
     assert_eq!(f, 'x');
 
     assert!(x.is_empty());
@@ -47,16 +55,16 @@ fn one() {
 
 #[test]
 fn two() {
-    let x = EmptyQueue;
+    let x = EmptyQueue::new();
     let x = x.push_back('x');
     let x = x.push_back(32);
 
     assert_eq!(x.front(), &'x');
-    let (f, x) = x.pop_front();
+    let (f, x) = x.into_front_back();
     assert_eq!(f, 'x');
 
     assert_eq!(x.front(), &32);
-    let (f, x) = x.pop_front();
+    let (f, x) = x.into_front_back();
     assert_eq!(f, 32);
 
     assert!(x.is_empty());
@@ -64,21 +72,21 @@ fn two() {
 
 #[test]
 fn three() {
-    let x = EmptyQueue;
+    let x = EmptyQueue::new();
     let x = x.push_back('x');
     let x = x.push_back(32);
     let x = x.push_back(String::from("xyz"));
 
     assert_eq!(x.front(), &'x');
-    let (f, x) = x.pop_front();
+    let (f, x) = x.into_front_back();
     assert_eq!(f, 'x');
 
     assert_eq!(x.front(), &32);
-    let (f, x) = x.pop_front();
+    let (f, x) = x.into_front_back();
     assert_eq!(f, 32);
 
     assert_eq!(x.front(), &String::from("xyz"));
-    let (f, x) = x.pop_front();
+    let (f, x) = x.into_front_back();
     assert_eq!(f, String::from("xyz"));
 
     assert!(x.is_empty());
@@ -86,26 +94,26 @@ fn three() {
 
 #[test]
 fn four() {
-    let x = EmptyQueue;
+    let x = EmptyQueue::new();
     let x = x.push_back('x');
     let x = x.push_back(32);
     let x = x.push_back(String::from("xyz"));
     let x = x.push_back(true);
 
     assert_eq!(x.front(), &'x');
-    let (f, x) = x.pop_front();
+    let (f, x) = x.into_front_back();
     assert_eq!(f, 'x');
 
     assert_eq!(x.front(), &32);
-    let (f, x) = x.pop_front();
+    let (f, x) = x.into_front_back();
     assert_eq!(f, 32);
 
     assert_eq!(x.front(), &String::from("xyz"));
-    let (f, x) = x.pop_front();
+    let (f, x) = x.into_front_back();
     assert_eq!(f, String::from("xyz"));
 
     assert_eq!(x.front(), &true);
-    let (f, x) = x.pop_front();
+    let (f, x) = x.into_front_back();
     assert_eq!(f, true);
 
     assert!(x.is_empty());
@@ -113,7 +121,7 @@ fn four() {
 
 #[test]
 fn compose_four() {
-    type C = QueueComposition;
+    type C<'a> = QueueComposition<'a>;
 
     let x = C::empty();
     let x = C::compose(x, 'x');
@@ -122,19 +130,19 @@ fn compose_four() {
     let x = C::compose(x, true);
 
     assert_eq!(x.front(), &'x');
-    let (f, x) = x.pop_front();
+    let (f, x) = x.into_front_back();
     assert_eq!(f, 'x');
 
     assert_eq!(x.front(), &32);
-    let (f, x) = x.pop_front();
+    let (f, x) = x.into_front_back();
     assert_eq!(f, 32);
 
     assert_eq!(x.front(), &String::from("xyz"));
-    let (f, x) = x.pop_front();
+    let (f, x) = x.into_front_back();
     assert_eq!(f, String::from("xyz"));
 
     assert_eq!(x.front(), &true);
-    let (f, x) = x.pop_front();
+    let (f, x) = x.into_front_back();
     assert_eq!(f, true);
 
     assert!(x.is_empty());
@@ -145,19 +153,19 @@ fn compose_four() {
     let x = C::compose(x, true);
 
     assert_eq!(x.front(), &'x');
-    let (f, x) = x.pop_front();
+    let (f, x) = x.into_front_back();
     assert_eq!(f, 'x');
 
     assert_eq!(x.front(), &32);
-    let (f, x) = x.pop_front();
+    let (f, x) = x.into_front_back();
     assert_eq!(f, 32);
 
     assert_eq!(x.front(), &String::from("xyz"));
-    let (f, x) = x.pop_front();
+    let (f, x) = x.into_front_back();
     assert_eq!(f, String::from("xyz"));
 
     assert_eq!(x.front(), &true);
-    let (f, x) = x.pop_front();
+    let (f, x) = x.into_front_back();
     assert_eq!(f, true);
 
     assert!(x.is_empty());
@@ -183,15 +191,15 @@ fn builder() {
     let x = builder.finish();
 
     assert_eq!(x.front(), &'x');
-    let (f, x) = x.pop_front();
+    let (f, x) = x.into_front_back();
     assert_eq!(f, 'x');
 
     assert_eq!(x.front(), &32);
-    let (f, x) = x.pop_front();
+    let (f, x) = x.into_front_back();
     assert_eq!(f, 32);
 
     assert_eq!(x.front(), &String::from("xyz"));
-    let (f, x) = x.pop_front();
+    let (f, x) = x.into_front_back();
     assert_eq!(f, String::from("xyz"));
 
     assert_eq!(x.front(), &true);

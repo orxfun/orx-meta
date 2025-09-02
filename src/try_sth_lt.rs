@@ -62,6 +62,12 @@ macro_rules! define_queue {
             fn push_back<X>(self, x: X) -> Self::PushBack<X>
             where
                 X: $( $el_bnd $( < $( $el_bnd_g ),* > )? + ) *;
+
+            fn len(&self) -> usize;
+
+            fn is_empty(&self) -> bool {
+                self.len() == 0
+            }
         }
 
         // trait non-empty queue
@@ -97,6 +103,15 @@ macro_rules! define_queue {
             phantom: core::marker::PhantomData<$(&$g_lt)* ($($g ,)*)>,
         }
 
+        impl<$($g_lt ,)* $($g ,)*> $empty<$($g_lt ,)* $($g ,)*>
+        where
+            $( $g: $( $g_bnd $(<$( $g_bnd_g ),*> )? + ) * , )*
+        {
+            pub fn new() -> Self {
+                Self { phantom: Default::default() }
+            }
+        }
+
         impl<$($g_lt ,)* $($g ,)*> $q<$($g_lt ,)* $($g ,)*> for $empty<$($g_lt ,)* $($g ,)*>
         where
             $( $g: $( $g_bnd $(<$( $g_bnd_g ),*> )? + ) * , )*
@@ -115,9 +130,13 @@ macro_rules! define_queue {
             {
                 $single {
                     phantom: Default::default(),
-                    empty: $empty { phantom: Default::default() },
+                    empty: $empty::new(),
                     f: x
                 }
+            }
+
+            fn len(&self) -> usize {
+                0
             }
         }
 
@@ -155,10 +174,14 @@ macro_rules! define_queue {
                     f: self.f,
                     b: $single {
                         phantom: Default::default(),
-                        empty: $empty { phantom: Default::default() },
+                        empty: $empty::new(),
                         f: x,
                     },
                 }
+            }
+
+            fn len(&self) -> usize {
+                1
             }
         }
 
@@ -237,6 +260,10 @@ macro_rules! define_queue {
                     b: self.b.push_back(x),
                 }
             }
+
+            fn len(&self) -> usize {
+                1 + self.b.len()
+            }
         }
 
         impl<$($g_lt ,)* F, B, $($g ,)*> $q_ne<$($g_lt ,)* $($g ,)*> for $pair<$($g_lt ,)* F, B, $($g ,)*>
@@ -292,7 +319,7 @@ macro_rules! define_queue {
             $( $g: $( $g_bnd $(<$( $g_bnd_g ),*> )? + ) * , )*
         {
             pub fn empty() -> $empty<$($g_lt ,)* $($g ,)*> {
-                $empty { phantom: Default::default() }
+                $empty::new()
             }
 
             pub fn single<X>(x: X) -> $single<$($g_lt ,)* X, $($g ,)*>
@@ -302,7 +329,7 @@ macro_rules! define_queue {
             {
                 $single {
                     phantom: Default::default(),
-                    empty: $empty { phantom: Default::default() },
+                    empty: $empty::new(),
                     f: x,
                 }
             }
@@ -336,7 +363,7 @@ macro_rules! define_queue {
         {
                 pub fn new() -> Self {
                     Self {
-                        cur: $empty { phantom: Default::default() },
+                        cur: $empty::new(),
                         rem: Default::default(),
                         phantom: Default::default(),
                     }
