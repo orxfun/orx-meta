@@ -3,8 +3,6 @@
 use orx_meta::define_queue;
 
 define_queue!(
-    lifetimes => [];
-    generics => [];
     elements => [Draw];
     names => {
         traits: {

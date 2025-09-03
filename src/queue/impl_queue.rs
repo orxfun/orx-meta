@@ -3,6 +3,43 @@
 #[macro_export]
 macro_rules! define_queue {
     (
+        names => {traits: {queue: $q:ident,non_empty_queue: $q_ne:ident,},structs: {empty: $empty:ident,single: $single:ident,pair: $pair:ident,composition: $composition:ident,builder: $builder:ident,},};
+    ) => {
+        define_queue!(
+            lifetimes => [];
+            generics => [];
+            elements => [];
+            names => { traits: { queue: $q, non_empty_queue: $q_ne, }, structs: { empty: $empty, single: $single, pair: $pair, composition: $composition, builder: $builder, }, };
+        );
+    };
+
+    (
+        elements => [$($el_bnd:ident$(< $( $el_bnd_g:tt ),* >)?)& *];
+        names => {traits: {queue: $q:ident,non_empty_queue: $q_ne:ident,},structs: {empty: $empty:ident,single: $single:ident,pair: $pair:ident,composition: $composition:ident,builder: $builder:ident,},};
+    ) => {
+        define_queue!(
+            lifetimes => [];
+            generics => [];
+            elements => [$( $el_bnd $( < $( $el_bnd_g ),* > )?)& * ];
+            names => { traits: { queue: $q, non_empty_queue: $q_ne, }, structs: { empty: $empty, single: $single, pair: $pair, composition: $composition, builder: $builder, }, };
+        );
+    };
+
+    (
+        generics => [$($g:tt:$($g_bnd:ident$(< $( $g_bnd_g:tt ),* >)?)| *)& *];
+        elements => [$($el_bnd:ident$(< $( $el_bnd_g:tt ),* >)?)& *];
+        names => {traits: {queue: $q:ident,non_empty_queue: $q_ne:ident,},structs: {empty: $empty:ident,single: $single:ident,pair: $pair:ident,composition: $composition:ident,builder: $builder:ident,},};
+    ) => {
+        define_queue!(
+            lifetimes => [];
+            generics => [$( $g: $( $g_bnd $( < $( $g_bnd_g ),* > )? )| * )& * ];
+            elements => [$( $el_bnd $( < $( $el_bnd_g ),* > )?)& * ];
+            names => { traits: { queue: $q, non_empty_queue: $q_ne, }, structs: { empty: $empty, single: $single, pair: $pair, composition: $composition, builder: $builder, }, };
+        );
+    };
+
+    // complete implementation
+    (
         lifetimes => [
             $(
                 $g_lt:tt

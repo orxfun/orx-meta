@@ -1,9 +1,6 @@
 use orx_meta::define_queue;
 
 define_queue!(
-    lifetimes => [];
-    generics => [];
-    elements => [];
     names => {
         traits: {
             queue: Queue,
@@ -55,6 +52,11 @@ fn basic_builder_pattern() {
         .push_back("y".to_string())
         .finish();
 
+    let result = concat(input);
+    assert_eq!(result, String::from("x-12-true-y"));
+
+    // alternatively from tuple
+    let input = ('x', 12, true, "y".to_string()).into();
     let result = concat(input);
     assert_eq!(result, String::from("x-12-true-y"));
 }
