@@ -18,7 +18,20 @@ macro_rules! define_queue_tuple_transformation {
         define_queue_tuple_transformation!(
             lifetimes => [];
             generics => [];
-            elements => [$($el_bnd:ident$(< $( $el_bnd_g:tt ),* >)?)& *];
+            elements => [$($el_bnd$(< $( $el_bnd_g ),* >)?)& *];
+            queues => { trait: $q, empty: $empty, single: $single, pair: $pair };
+        );
+    };
+
+    (
+        lifetimes => [$($g_lt:tt)& *];
+        elements => [$($el_bnd:ident$(< $( $el_bnd_g:tt ),* >)?)& *];
+        queues => { trait: $q:ident, empty: $empty:ident, single: $single:ident, pair: $pair:ident };
+    ) => {
+        define_queue_tuple_transformation!(
+            lifetimes => [$($g_lt)& *];
+            generics => [];
+            elements => [$($el_bnd$(< $( $el_bnd_g ),* >)?)& *];
             queues => { trait: $q, empty: $empty, single: $single, pair: $pair };
         );
     };
@@ -30,8 +43,8 @@ macro_rules! define_queue_tuple_transformation {
     ) => {
         define_queue_tuple_transformation!(
             lifetimes => [];
-            generics => [$($g:tt:$($g_bnd:ident$(< $( $g_bnd_g:tt ),* >)?)| *)& *];
-            elements => [$($el_bnd:ident$(< $( $el_bnd_g:tt ),* >)?)& *];
+            generics => [$($g:$($g_bnd$(< $( $g_bnd_g ),* >)?)| *)& *];
+            elements => [$($el_bnd$(< $( $el_bnd_g ),* >)?)& *];
             queues => { trait: $q, empty: $empty, single: $single, pair: $pair };
         );
     };

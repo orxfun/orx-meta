@@ -26,6 +26,19 @@ macro_rules! define_queue {
     };
 
     (
+        lifetimes => [$($g_lt:tt)& *];
+        elements => [$($el_bnd:ident$(< $( $el_bnd_g:tt ),* >)?)& *];
+        names => {traits: {queue: $q:ident,non_empty_queue: $q_ne:ident},structs: {empty: $empty:ident,single: $single:ident,pair: $pair:ident}};
+    ) => {
+        define_queue!(
+            lifetimes => [$($g_lt)& *];
+            generics => [];
+            elements => [$( $el_bnd $( < $( $el_bnd_g ),* > )?)& * ];
+            names => { traits: { queue: $q, non_empty_queue: $q_ne}, structs: { empty: $empty, single: $single, pair: $pair}};
+        );
+    };
+
+    (
         generics => [$($g:tt:$($g_bnd:ident$(< $( $g_bnd_g:tt ),* >)?)| *)& *];
         elements => [$($el_bnd:ident$(< $( $el_bnd_g:tt ),* >)?)& *];
         names => {traits: {queue: $q:ident,non_empty_queue: $q_ne:ident},structs: {empty: $empty:ident,single: $single:ident,pair: $pair:ident}};
@@ -133,7 +146,7 @@ macro_rules! define_queue {
 
         // struct empty
 
-        #[derive(Clone, Copy, Debug)]
+        #[derive(Clone, Copy, Debug, PartialEq, Eq)]
         pub struct $empty<$($g_lt ,)* $($g ,)*>
         where
             $( $g: $( $g_bnd $(<$( $g_bnd_g ),*> )? + ) * , )*
@@ -176,7 +189,7 @@ macro_rules! define_queue {
 
         // struct single
 
-        #[derive(Clone, Copy, Debug)]
+        #[derive(Clone, Copy, Debug, PartialEq, Eq)]
         pub struct $single<$($g_lt ,)* F, $($g ,)*>
         where
             F: $( $el_bnd $( < $( $el_bnd_g ),* > )? + ) *,
@@ -270,7 +283,7 @@ macro_rules! define_queue {
 
         // struct pair
 
-        #[derive(Clone, Copy, Debug)]
+        #[derive(Clone, Copy, Debug, PartialEq, Eq)]
         pub struct $pair<$($g_lt ,)* F, B, $($g ,)*>
         where
             F: $( $el_bnd $( < $( $el_bnd_g ),* > )? + ) *,

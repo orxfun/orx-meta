@@ -28,6 +28,21 @@ macro_rules! define_queue_composition {
     };
 
     (
+        lifetimes => [$($g_lt:tt)& *];
+        elements => [$($el_bnd:ident$(< $( $el_bnd_g:tt ),* >)?)& *];
+        queues => { trait: $q:ident, empty: $empty:ident, single: $single:ident, pair: $pair:ident };
+        composition => $composition:ident;
+    ) => {
+        define_queue_composition!(
+            lifetimes => [$($g_lt)& *];
+            generics => [];
+            elements => [$($el_bnd$(< $( $el_bnd_g ),* >)?)& *];
+            queues => { trait: $q, empty: $empty, single: $single, pair: $pair };
+            composition => $composition;
+        );
+    };
+
+    (
         generics => [$($g:tt:$($g_bnd:ident$(< $( $g_bnd_g:tt ),* >)?)| *)& *];
         elements => [$($el_bnd:ident$(< $( $el_bnd_g:tt ),* >)?)& *];
         queues => { trait: $q:ident, empty: $empty:ident, single: $single:ident, pair: $pair:ident };
@@ -35,7 +50,7 @@ macro_rules! define_queue_composition {
     ) => {
         define_queue_composition!(
             lifetimes => [];
-            generics => [$($g:tt:$($g_bnd:ident$(< $( $g_bnd_g:tt ),* >)?)| *)& *];
+            generics => [$($g:$($g_bnd$(< $( $g_bnd_g ),* >)?)| *)& *];
             elements => [$($el_bnd$(< $( $el_bnd_g ),* >)?)& *];
             queues => { trait: $q, empty: $empty, single: $single, pair: $pair };
             composition => $composition;

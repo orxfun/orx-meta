@@ -1,6 +1,8 @@
 #![allow(dead_code)]
 
-use crate::define_queue;
+use crate::{
+    define_queue, define_queue_builder, define_queue_composition, define_queue_tuple_transformation,
+};
 
 // bounds
 
@@ -14,18 +16,10 @@ impl<'i, X> Req<'i> for X where X: Sth<'i> + Clone {}
 
 define_queue!(
     lifetimes => ['i];
-    generics => [];
     elements => [Req<'i>];
     names => {
-        traits: {
-            queue: Queue,
-            non_empty_queue: NonEmptyQueue
-        },
-        structs: {
-            empty: EmptyQueue,
-            single: Single,
-            pair: Pair
-        }
+        traits: { queue: Queue, non_empty_queue: NonEmptyQueue },
+        structs: { empty: EmptyQueue, single: Single, pair: Pair }
     };
 );
 impl<'i> Req<'i> for EmptyQueue<'i> {}
@@ -116,94 +110,124 @@ fn four() {
 
     assert!(x.is_empty());
 }
+define_queue_composition!(
+    lifetimes => ['i];
+    elements => [Req<'i>];
+    queues => { trait: Queue, empty: EmptyQueue, single: Single, pair: Pair };
+    composition => QueueComposition;
+);
+#[test]
+fn composition() {
+    type C<'a> = QueueComposition<'a>;
 
-// #[test]
-// fn compose_four() {
-//     type C<'a> = QueueComposition<'a>;
+    let x = C::empty();
+    let x = C::compose(x, 'x');
+    let x = C::compose(x, 32);
+    let x = C::compose(x, String::from("xyz"));
+    let x = C::compose(x, true);
 
-//     let x = C::empty();
-//     let x = C::compose(x, 'x');
-//     let x = C::compose(x, 32);
-//     let x = C::compose(x, String::from("xyz"));
-//     let x = C::compose(x, true);
+    assert_eq!(x.front(), &'x');
+    let (f, x) = x.pop();
+    assert_eq!(f, 'x');
 
-//     assert_eq!(x.front(), &'x');
-//     let (f, x) = x.pop();
-//     assert_eq!(f, 'x');
+    assert_eq!(x.front(), &32);
+    let (f, x) = x.pop();
+    assert_eq!(f, 32);
 
-//     assert_eq!(x.front(), &32);
-//     let (f, x) = x.pop();
-//     assert_eq!(f, 32);
+    assert_eq!(x.front(), &String::from("xyz"));
+    let (f, x) = x.pop();
+    assert_eq!(f, String::from("xyz"));
 
-//     assert_eq!(x.front(), &String::from("xyz"));
-//     let (f, x) = x.pop();
-//     assert_eq!(f, String::from("xyz"));
+    assert_eq!(x.front(), &true);
+    let (f, x) = x.pop();
+    assert_eq!(f, true);
 
-//     assert_eq!(x.front(), &true);
-//     let (f, x) = x.pop();
-//     assert_eq!(f, true);
+    assert!(x.is_empty());
 
-//     assert!(x.is_empty());
+    let x = C::single('x');
+    let x = C::compose(x, 32);
+    let x = C::compose(x, String::from("xyz"));
+    let x = C::compose(x, true);
 
-//     let x = C::single('x');
-//     let x = C::compose(x, 32);
-//     let x = C::compose(x, String::from("xyz"));
-//     let x = C::compose(x, true);
+    assert_eq!(x.front(), &'x');
+    let (f, x) = x.pop();
+    assert_eq!(f, 'x');
 
-//     assert_eq!(x.front(), &'x');
-//     let (f, x) = x.pop();
-//     assert_eq!(f, 'x');
+    assert_eq!(x.front(), &32);
+    let (f, x) = x.pop();
+    assert_eq!(f, 32);
 
-//     assert_eq!(x.front(), &32);
-//     let (f, x) = x.pop();
-//     assert_eq!(f, 32);
+    assert_eq!(x.front(), &String::from("xyz"));
+    let (f, x) = x.pop();
+    assert_eq!(f, String::from("xyz"));
 
-//     assert_eq!(x.front(), &String::from("xyz"));
-//     let (f, x) = x.pop();
-//     assert_eq!(f, String::from("xyz"));
+    assert_eq!(x.front(), &true);
+    let (f, x) = x.pop();
+    assert_eq!(f, true);
 
-//     assert_eq!(x.front(), &true);
-//     let (f, x) = x.pop();
-//     assert_eq!(f, true);
+    assert!(x.is_empty());
+}
 
-//     assert!(x.is_empty());
-// }
+define_queue_builder!(
+    lifetimes => ['i];
+    queues => { trait: Queue, empty: EmptyQueue, single: Single, pair: Pair };
+    builder => Builder;
+);
+#[test]
+fn builder() {
+    type Target<'i> = Pair<'i, char, Pair<'i, i32, Pair<'i, String, Single<'i, bool>>>>;
 
-// #[test]
-// fn builder() {
-//     type Target<'i> = Pair<'i, char, Pair<'i, i32, Pair<'i, String, Single<'i, bool>>>>;
+    let builder = Builder::<Target, _>::new();
 
-//     let builder = Builder::<Target, _>::new();
+    let builder: Builder<Pair<i32, Pair<String, Single<bool>>>, Single<char>> =
+        builder.push_back('x');
 
-//     let builder: Builder<Pair<i32, Pair<String, Single<bool>>>, Single<char>> =
-//         builder.push_back('x');
+    let builder: Builder<Pair<String, Single<bool>>, Pair<char, Single<i32>>> =
+        builder.push_back(32);
 
-//     let builder: Builder<Pair<String, Single<bool>>, Pair<char, Single<i32>>> =
-//         builder.push_back(32);
+    let builder: Builder<Single<bool>, Pair<char, Pair<i32, Single<String>>>> =
+        builder.push_back("xyz".to_string());
 
-//     let builder: Builder<Single<bool>, Pair<char, Pair<i32, Single<String>>>> =
-//         builder.push_back("xyz".to_string());
+    let builder: Builder<EmptyQueue, Target> = builder.push_back(true);
 
-//     let builder: Builder<EmptyQueue, Target> = builder.push_back(true);
+    let x = builder.finish();
 
-//     let x = builder.finish();
+    assert_eq!(x.front(), &'x');
+    let (f, x) = x.pop();
+    assert_eq!(f, 'x');
 
-//     assert_eq!(x.front(), &'x');
-//     let (f, x) = x.pop();
-//     assert_eq!(f, 'x');
+    assert_eq!(x.front(), &32);
+    let (f, x) = x.pop();
+    assert_eq!(f, 32);
 
-//     assert_eq!(x.front(), &32);
-//     let (f, x) = x.pop();
-//     assert_eq!(f, 32);
+    assert_eq!(x.front(), &String::from("xyz"));
+    let (f, x) = x.pop();
+    assert_eq!(f, String::from("xyz"));
 
-//     assert_eq!(x.front(), &String::from("xyz"));
-//     let (f, x) = x.pop();
-//     assert_eq!(f, String::from("xyz"));
+    assert_eq!(x.front(), &true);
+    let (f, b) = x.front_back();
+    assert_eq!(f, &true);
+    assert!(b.is_empty());
+    let f = x.into_front();
+    assert_eq!(f, true);
+}
 
-//     assert_eq!(x.front(), &true);
-//     let (f, b) = x.front_back();
-//     assert_eq!(f, &true);
-//     assert!(b.is_empty());
-//     let f = x.into_front();
-//     assert_eq!(f, true);
-// }
+define_queue_tuple_transformation!(
+    lifetimes => ['i];
+    elements => [Req<'i>];
+    queues => { trait: Queue, empty: EmptyQueue, single: Single, pair: Pair };
+);
+#[test]
+fn tuple() {
+    // into tuple
+    let x = EmptyQueue::new()
+        .push_back('x')
+        .push_back(32)
+        .push_back(String::from("xyz"))
+        .push_back(true);
+    let tuple = x.clone().into_tuple();
+    assert_eq!(tuple, ('x', 32, String::from("xyz"), true));
+
+    // from tuple
+    assert_eq!(x, tuple.into());
+}
