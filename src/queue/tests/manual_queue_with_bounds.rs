@@ -545,7 +545,7 @@ fn four() {
 }
 
 #[test]
-fn compose_four() {
+fn composition() {
     type C = QueueComposition;
 
     let x = C::empty();

@@ -1,18 +1,9 @@
-use orx_meta::define_queue;
+use orx_meta::{define_queue, define_queue_tuple_transformation};
 
 define_queue!(
     names => {
-        traits: {
-            queue: Queue,
-            non_empty_queue: NonEmptyQueue,
-        },
-        structs: {
-            empty: Empty,
-            single: Single,
-            pair: Pair,
-            composition: QueueComposition,
-            builder: Builder,
-        },
+        traits: { queue: Queue, non_empty_queue: NonEmptyQueue },
+        structs: { empty: Empty, single: Single, pair: Pair }
     };
 );
 
@@ -37,28 +28,23 @@ fn as_queue_of_different_type_elements() {
     assert!(q.is_empty());
 }
 
+define_queue_tuple_transformation!(
+    queues => { trait: Queue, empty: Empty, single: Single, pair: Pair };
+);
+
 fn basic_builder_pattern() {
-    type Input = Pair<char, Pair<i32, Pair<bool, Single<String>>>>;
+    let mut q = Empty::new().push_back('x').push_back(12).push_back(true);
 
-    fn concat(input: Input) -> String {
-        let (a, b, c, d) = input.into_tuple();
-        format!("{}-{}-{}-{}", a, b, c, d)
-    }
+    // into tuple
+    let tuple = q.clone().into_tuple();
+    assert_eq!(tuple, ('x', 12, true));
 
-    let input = Builder::<Input, _>::new()
-        .push_back('x')
-        .push_back(12)
-        .push_back(true)
-        .push_back("y".to_string())
-        .finish();
-
-    let result = concat(input);
-    assert_eq!(result, String::from("x-12-true-y"));
-
-    // alternatively from tuple
-    let input = ('x', 12, true, "y".to_string()).into();
-    let result = concat(input);
-    assert_eq!(result, String::from("x-12-true-y"));
+    // from tuple
+    q = ('y', 42, false).into();
+    assert_eq!(
+        q,
+        Empty::new().push_back('y').push_back(42).push_back(false)
+    );
 }
 
 fn main() {

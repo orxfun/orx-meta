@@ -1,47 +1,38 @@
 use orx_meta::define_queue;
 
 define_queue!(
-    lifetimes => [];
-    generics => [];
-    elements => [Clone & Copy & Into<i64>];
-    names => {
-        traits: {
-            queue: Queue,
-            non_empty_queue: NonEmptyQueue,
-        },
-        structs: {
-            empty: Empty,
-            single: Single,
-            pair: Pair,
-            composition: QueueComposition,
-            builder: Builder,
-        },
+    elements => [Into<i64>];
+    names => { traits: { queue: AdditiveQueue, non_empty_queue: NonEmptyAdditiveQueue },
+        structs: { empty: NoNum, single: OneNum, pair: MultiNumbers }
     };
 );
 
 // implement bounds on queue implementations
 
-impl Into<i64> for Empty {
+impl Into<i64> for NoNum {
     fn into(self) -> i64 {
-        0
+        0 // addition identity
     }
 }
 
-impl<F> Into<i64> for Single<F>
+impl<F> Into<i64> for OneNum<F>
 where
-    F: Clone + Copy + Into<i64>,
+    F: Into<i64>,
 {
     fn into(self) -> i64 {
+        // implementation of single is usually pretty standard
         self.f.into()
     }
 }
 
-impl<F, B> Into<i64> for Pair<F, B>
+impl<F, B> Into<i64> for MultiNumbers<F, B>
 where
-    F: Clone + Copy + Into<i64>,
-    B: Queue,
+    F: Into<i64>,
+    B: AdditiveQueue,
 {
     fn into(self) -> i64 {
+        // define composition
+        // notice that self.b.into() is recursive since B itself is a queue
         self.f.into() + self.b.into()
     }
 }
@@ -55,25 +46,30 @@ fn main() {
         }
     }
 
+    // now we can have an additive queue containing different types of numbers
+    // as long as they can all be converted into i64
+
+    // we can then convert the additive queue into i64, result is the sum of its elements
+
     // grow
 
-    let q = Empty::new();
+    let q = NoNum::new();
     assert_eq!(0i64, q.into());
 
     let q = q.push_back(12i32);
     assert_eq!(12i64, q.into());
 
     let q = q.push_back(7u32);
-    assert_eq!(19i64, q.into());
+    assert_eq!(12i64 + 7, q.into());
 
     let q = q.push_back(MyFloat(20.0));
-    assert_eq!(39i64, q.into());
+    assert_eq!(12i64 + 7 + 20, q.into());
 
     // shrink
 
     let (f, q) = q.pop();
     assert_eq!(f, 12i32);
-    assert_eq!(27i64, q.into());
+    assert_eq!(7i64 + 20, q.into());
 
     let (f, q) = q.pop();
     assert_eq!(f, 7u32);
@@ -82,4 +78,13 @@ fn main() {
     let (f, q) = q.pop();
     assert_eq!(f, MyFloat(20.0));
     assert_eq!(0i64, q.into());
+
+    // chain
+
+    let sum: i64 = NoNum::new()
+        .push_back(12i32)
+        .push_back(7u32)
+        .push_back(MyFloat(20.0))
+        .into();
+    assert_eq!(sum, 12 + 7 + 20);
 }

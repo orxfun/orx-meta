@@ -2,21 +2,10 @@ use orx_meta::define_queue;
 use std::fmt::Display;
 
 define_queue!(
-    lifetimes => [];
-    generics => [];
     elements => [Display];
     names => {
-        traits: {
-            queue: Queue,
-            non_empty_queue: NonEmptyQueue,
-        },
-        structs: {
-            empty: Empty,
-            single: Single,
-            pair: Pair,
-            composition: QueueComposition,
-            builder: Builder,
-        },
+        traits: { queue: DisplayQueue, non_empty_queue: NonEmptyDisplayQueue },
+        structs: { empty: Empty, single: Single, pair: Pair }
     };
 );
 
@@ -24,18 +13,21 @@ define_queue!(
 
 impl Display for Empty {
     fn fmt(&self, _: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        Ok(())
+        Ok(()) // display identity
     }
 }
 
 impl<F: Display> Display for Single<F> {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        // implementation of single is usually pretty standard
         write!(f, "{}", self.f)
     }
 }
 
-impl<F: Display, B: Queue> Display for Pair<F, B> {
+impl<F: Display, B: DisplayQueue> Display for Pair<F, B> {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        // define composition
+        // notice that self.b formatting is recursive since B itself is a queue
         write!(f, "{}-{}", self.f, self.b)
     }
 }
@@ -68,4 +60,13 @@ fn main() {
     let (f, q) = q.pop();
     assert_eq!(f, true);
     assert_eq!(q.to_string(), "");
+
+    // chain
+
+    let str = Empty::new()
+        .push_back('x')
+        .push_back(12)
+        .push_back(true)
+        .to_string();
+    assert_eq!(str, "x-12-true");
 }

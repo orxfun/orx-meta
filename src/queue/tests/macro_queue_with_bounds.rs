@@ -1,27 +1,18 @@
 #![allow(dead_code)]
 
-use crate::define_queue;
+use crate::{
+    define_queue, define_queue_builder, define_queue_composition, define_queue_tuple_transformation,
+};
 
 // bounds
 
 pub trait Req {}
 
 define_queue!(
-    lifetimes => [];
-    generics => [];
     elements => [Req];
     names => {
-        traits: {
-            queue: Queue,
-            non_empty_queue: NonEmptyQueue,
-        },
-        structs: {
-            empty: EmptyQueue,
-            single: Single,
-            pair: Pair,
-            composition: QueueComposition,
-            builder: Builder,
-        },
+        traits: { queue: Queue, non_empty_queue: NonEmptyQueue },
+        structs: { empty: EmptyQueue, single: Single, pair: Pair }
     };
 );
 impl Req for EmptyQueue {}
@@ -113,8 +104,13 @@ fn four() {
     assert!(x.is_empty());
 }
 
+define_queue_composition!(
+    elements => [Req];
+    queues => { trait: Queue, empty: EmptyQueue, single: Single, pair: Pair };
+    composition => QueueComposition;
+);
 #[test]
-fn compose_four() {
+fn composition() {
     type C = QueueComposition;
 
     let x = C::empty();
@@ -165,6 +161,10 @@ fn compose_four() {
     assert!(x.is_empty());
 }
 
+define_queue_builder!(
+    queues => { trait: Queue, empty: EmptyQueue, single: Single, pair: Pair };
+    builder => Builder;
+);
 #[test]
 fn builder() {
     type Target = Pair<char, Pair<i32, Pair<String, Single<bool>>>>;
@@ -202,4 +202,23 @@ fn builder() {
     assert!(b.is_empty());
     let f = x.into_front();
     assert_eq!(f, true);
+}
+
+define_queue_tuple_transformation!(
+    elements => [Req];
+    queues => { trait: Queue, empty: EmptyQueue, single: Single, pair: Pair };
+);
+#[test]
+fn tuple() {
+    // into tuple
+    let x = EmptyQueue::new()
+        .push_back('x')
+        .push_back(32)
+        .push_back(String::from("xyz"))
+        .push_back(true);
+    let tuple = x.clone().into_tuple();
+    assert_eq!(tuple, ('x', 32, String::from("xyz"), true));
+
+    // from tuple
+    assert_eq!(x, tuple.into());
 }

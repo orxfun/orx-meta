@@ -435,7 +435,7 @@ fn four() {
 }
 
 #[test]
-fn compose_four() {
+fn composition() {
     type C = QueueComposition;
 
     let x = C::empty();
@@ -504,7 +504,20 @@ fn builder() {
     let builder: Builder<EmptyQueue, Target> = builder.push_back(true);
 
     let x = builder.finish();
+    assert_eq!(x.len(), 4);
 
+    // alternatively
+
+    type QueueOf<A, B, C, D> = Pair<A, Pair<B, Pair<C, Single<D>>>>;
+
+    type Target2 = QueueOf<char, i32, String, bool>;
+
+    let x = Builder::<Target2, _>::new()
+        .push_back('x')
+        .push_back(32)
+        .push_back("xyz".to_string())
+        .push_back(true)
+        .finish();
     assert_eq!(x.front(), &'x');
     let (f, x) = x.pop_front();
     assert_eq!(f, 'x');
