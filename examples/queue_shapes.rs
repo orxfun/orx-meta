@@ -48,8 +48,18 @@ impl<Q: DrawQueue> Screen<Q> {
         Screen(self.0.push_back(shape))
     }
 
+    fn pop(self) -> (Screen<Q::Back>, Q::Front)
+    where
+        Q: NonEmptyDrawQueue,
+    {
+        let (f, b) = self.0.pop();
+        (Screen(b), f)
+    }
+
     fn run(&self) {
+        println!("=> Drawing {} shapes on the screen", self.0.len());
         self.0.draw();
+        println!();
     }
 }
 
@@ -82,16 +92,13 @@ fn main() {
         }
     }
 
-    println!("\n\n# 1: screen.run()");
+    // init screen with chaned push calls
+
     let screen = Screen::new()
         .push(SelectBox {
             width: 75,
             height: 10,
-            options: vec![
-                String::from("Yes"),
-                String::from("Maybe"),
-                String::from("No"),
-            ],
+            options: vec![String::from("Yes")],
         })
         .push(Button {
             width: 50,
@@ -100,11 +107,24 @@ fn main() {
         });
     screen.run();
 
-    println!("\n\n# 2: screen.run()");
-    let screen = screen.push(Button {
-        width: 42,
-        height: 42,
-        label: String::from("42"),
-    });
+    // add two more shapes and pop the first shape in the front
+    let screen = screen
+        .push(Button {
+            width: 42,
+            height: 42,
+            label: String::from("42"),
+        })
+        .push(SelectBox {
+            width: 25,
+            height: 30,
+            options: vec![
+                String::from("Yes"),
+                String::from("Maybe"),
+                String::from("No"),
+            ],
+        });
+    let (screen, front) = screen.pop();
+    assert_eq!(front.options, vec![String::from("Yes"),]);
+
     screen.run();
 }
