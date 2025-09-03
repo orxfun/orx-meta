@@ -1,4 +1,4 @@
-use orx_meta::define_queue;
+use orx_meta::{define_queue, define_queue_tuple_transformation};
 
 define_queue!(
     names => {
@@ -10,10 +10,12 @@ define_queue!(
             empty: Empty,
             single: Single,
             pair: Pair,
-            composition: QueueComposition,
-            builder: Builder,
         },
     };
+);
+
+define_queue_tuple_transformation!(
+    queues => { trait: Queue, empty: Empty, single: Single, pair: Pair };
 );
 
 fn as_queue_of_different_type_elements() {
@@ -38,27 +40,27 @@ fn as_queue_of_different_type_elements() {
 }
 
 fn basic_builder_pattern() {
-    type Input = Pair<char, Pair<i32, Pair<bool, Single<String>>>>;
+    // type Input = Pair<char, Pair<i32, Pair<bool, Single<String>>>>;
 
-    fn concat(input: Input) -> String {
-        let (a, b, c, d) = input.into_tuple();
-        format!("{}-{}-{}-{}", a, b, c, d)
-    }
+    // fn concat(input: Input) -> String {
+    //     let (a, b, c, d) = input.into_tuple();
+    //     format!("{}-{}-{}-{}", a, b, c, d)
+    // }
 
-    let input = Builder::<Input, _>::new()
-        .push_back('x')
-        .push_back(12)
-        .push_back(true)
-        .push_back("y".to_string())
-        .finish();
+    // let input = Builder::<Input, _>::new()
+    //     .push_back('x')
+    //     .push_back(12)
+    //     .push_back(true)
+    //     .push_back("y".to_string())
+    //     .finish();
 
-    let result = concat(input);
-    assert_eq!(result, String::from("x-12-true-y"));
+    // let result = concat(input);
+    // assert_eq!(result, String::from("x-12-true-y"));
 
-    // alternatively from tuple
-    let input = ('x', 12, true, "y".to_string()).into();
-    let result = concat(input);
-    assert_eq!(result, String::from("x-12-true-y"));
+    // // alternatively from tuple
+    // let input = ('x', 12, true, "y".to_string()).into();
+    // let result = concat(input);
+    // assert_eq!(result, String::from("x-12-true-y"));
 }
 
 fn main() {

@@ -14,8 +14,6 @@ define_queue!(
             empty: Empty,
             single: Single,
             pair: Pair,
-            composition: QueueComposition,
-            builder: Builder,
         },
     };
 );

@@ -57,29 +57,3 @@ macro_rules! define_queue_builder {
         }
     };
 }
-
-use crate::define_queue;
-
-define_queue!(
-    names => {
-        traits: {
-            queue: Queue,
-            non_empty_queue: NonEmptyQueue,
-        },
-        structs: {
-            empty: Empty,
-            single: Single,
-            pair: Pair,
-            composition: QueueComposition,
-            builder: Builder,
-        },
-    };
-);
-
-define_queue_builder!(
-    lifetimes => [];
-    generics => [];
-    queue => Queue;
-    empty_queue => Empty;
-    builder => Blocker;
-);

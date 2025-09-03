@@ -83,26 +83,3 @@ macro_rules! define_queue_composition {
         }
     };
 }
-
-use crate::define_queue;
-
-define_queue!(
-    names => {
-        traits: {
-            queue: Queue,
-            non_empty_queue: NonEmptyQueue,
-        },
-        structs: {
-            empty: Empty,
-            single: Single,
-            pair: Pair,
-            composition: QueueComposition,
-            builder: Builder,
-        },
-    };
-);
-
-define_queue_composition!(
-    queues => { trait: Queue, empty: Empty, single: Single };
-    composition => Composer;
-);
