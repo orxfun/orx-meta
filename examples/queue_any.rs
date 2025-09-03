@@ -4,13 +4,13 @@ define_queue!(
     names => {
         traits: {
             queue: Queue,
-            non_empty_queue: NonEmptyQueue,
+            non_empty_queue: NonEmptyQueue
         },
         structs: {
             empty: Empty,
             single: Single,
-            pair: Pair,
-        },
+            pair: Pair
+        }
     };
 );
 

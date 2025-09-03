@@ -3,8 +3,7 @@ macro_rules! define_queue_builder {
     (
         lifetimes => [$($g_lt:tt)& *];
         generics => [$($g:tt:$($g_bnd:ident$(< $( $g_bnd_g:tt ),* >)?)| *)& *];
-        queue => $q:ident;
-        empty_queue => $empty:ident;
+        queues => { trait: $q:ident, empty: $empty:ident, single: $single:ident, pair: $pair:ident };
         builder => $builder:ident;
     ) => {
         // builder
