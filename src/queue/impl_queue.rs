@@ -692,13 +692,6 @@ macro_rules! define_queue {
                 $pair::new(x.0, $pair::new(x.1, $pair::new(x.2, $pair::new(x.3, $pair::new(x.4, $pair::new(x.5, $pair::new(x.6, $single::new(x.7))))))))
             }
         }
-
-
-        // impl<$($g_lt ,)* F, B, $($g ,)*> $q<$($g_lt ,)* $($g ,)*> for $pair<$($g_lt ,)* F, B, $($g ,)*>
-        // where
-        //     F: $( $el_bnd $( < $( $el_bnd_g ),* > )? + ) *,
-        //     B: $q<$($g_lt ,)* $($g ,)*>,
-        //     $( $g: $( $g_bnd $(<$( $g_bnd_g ),*> )? + ) * , )*
     };
 }
 

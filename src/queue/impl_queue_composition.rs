@@ -1,0 +1,108 @@
+#[macro_export]
+macro_rules! define_queue_composition {
+    (
+        queues => { trait: $q:ident, empty: $empty:ident, single: $single:ident };
+        composition => $composition:ident;
+    ) => {
+        define_queue_composition!(
+            lifetimes => [];
+            generics => [];
+            elements => [];
+            queues => { trait: $q, empty: $empty, single: $single };
+            composition => $composition;
+        );
+    };
+
+    (
+        elements => [$($el_bnd:ident$(< $( $el_bnd_g:tt ),* >)?)& *];
+        queues => { trait: $q:ident, empty: $empty:ident, single: $single:ident };
+        composition => $composition:ident;
+    ) => {
+        define_queue_composition!(
+            lifetimes => [];
+            generics => [];
+            elements => [$($el_bnd$(< $( $el_bnd_g ),* >)?)& *];
+            queues => { trait: $q, empty: $empty, single: $single };
+            composition => $composition;
+        );
+    };
+
+    (
+        generics => [$($g:tt:$($g_bnd:ident$(< $( $g_bnd_g:tt ),* >)?)| *)& *];
+        elements => [$($el_bnd:ident$(< $( $el_bnd_g:tt ),* >)?)& *];
+        queues => { trait: $q:ident, empty: $empty:ident, single: $single:ident };
+        composition => $composition:ident;
+    ) => {
+        define_queue_composition!(
+            lifetimes => [];
+            generics => [$($g:tt:$($g_bnd:ident$(< $( $g_bnd_g:tt ),* >)?)| *)& *];
+            elements => [$($el_bnd$(< $( $el_bnd_g ),* >)?)& *];
+            queues => { trait: $q, empty: $empty, single: $single };
+            composition => $composition;
+        );
+    };
+
+    // complete impl
+    (
+        lifetimes => [$($g_lt:tt)& *];
+        generics => [$($g:tt:$($g_bnd:ident$(< $( $g_bnd_g:tt ),* >)?)| *)& *];
+        elements => [$($el_bnd:ident$(< $( $el_bnd_g:tt ),* >)?)& *];
+        queues => { trait: $q:ident, empty: $empty:ident, single: $single:ident };
+        composition => $composition:ident;
+    ) => {
+        pub struct $composition<$($g_lt ,)* $($g ,)*>
+        where
+            $( $g: $( $g_bnd $(<$( $g_bnd_g ),*> )? + ) * , )*
+        {
+            phantom: core::marker::PhantomData<$(&$g_lt)* ($($g ,)*)>,
+        }
+
+        impl<$($g_lt ,)* $($g ,)*> $composition<$($g_lt ,)* $($g ,)*>
+        where
+            $( $g: $( $g_bnd $(<$( $g_bnd_g ),*> )? + ) * , )*
+        {
+            pub fn empty() -> $empty<$($g_lt ,)* $($g ,)*> {
+                $empty::new()
+            }
+
+            pub fn single<Elem>(x: Elem) -> $single<$($g_lt ,)* Elem, $($g ,)*>
+            where
+                Elem: $( $el_bnd $( < $( $el_bnd_g ),* > )? + ) *,
+                $( $g: $( $g_bnd $(<$( $g_bnd_g ),*> )? + ) * , )*
+            {
+                $single::new(x)
+            }
+
+            pub fn compose<Que, Elem>(q: Que, x: Elem) -> Que::PushBack<Elem>
+            where
+                Elem: $( $el_bnd $( < $( $el_bnd_g ),* > )? + ) *,
+                Que: $q<$($g_lt ,)* $($g ,)*>,
+            {
+                q.push_back(x)
+            }
+        }
+    };
+}
+
+use crate::define_queue;
+
+define_queue!(
+    names => {
+        traits: {
+            queue: Queue,
+            non_empty_queue: NonEmptyQueue,
+        },
+        structs: {
+            empty: Empty,
+            single: Single,
+            pair: Pair,
+            composition: QueueComposition,
+            builder: Builder,
+        },
+    };
+);
+
+define_queue_composition!(
+    queues => { trait: Queue, empty: Empty, single: Single };
+    composition => Composer;
+);
