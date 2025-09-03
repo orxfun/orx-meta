@@ -1,0 +1,110 @@
+#![allow(dead_code)]
+
+use orx_meta::define_queue;
+
+define_queue!(
+    elements => [Draw];
+    names => {
+        traits: { queue: DrawQueue, non_empty_queue: NonEmptyDrawQueue },
+        structs: { empty: Empty, single: Single, pair: Pair }
+    };
+);
+
+// behavior of elements
+pub trait Draw {
+    fn draw(&self);
+}
+
+impl Draw for Empty {
+    fn draw(&self) {} // draw identity
+}
+
+impl<F: Draw> Draw for Single<F> {
+    fn draw(&self) {
+        self.f.draw(); // implementation of single is usually pretty standard
+    }
+}
+
+impl<F: Draw, B: DrawQueue> Draw for Pair<F, B> {
+    fn draw(&self) {
+        // define composition over the Draw behavior
+        self.f.draw();
+        self.b.draw(); // notice that self.b.draw() is recursive since B itself is a queue
+    }
+}
+
+// screen with convenient push method
+
+pub struct Screen<Q: DrawQueue>(Q);
+
+impl Screen<Empty> {
+    pub fn new() -> Self {
+        Self(Empty::new())
+    }
+}
+
+impl<Q: DrawQueue> Screen<Q> {
+    fn push<D: Draw>(self, shape: D) -> Screen<Q::PushBack<D>> {
+        Screen(self.0.push_back(shape))
+    }
+
+    fn run(&self) {
+        self.0.draw();
+    }
+}
+
+fn main() {
+    // some actual shape examples
+
+    pub struct Button {
+        pub width: u32,
+        pub height: u32,
+        pub label: String,
+    }
+
+    impl Draw for Button {
+        fn draw(&self) {
+            let (w, h) = (self.width, self.height);
+            println!("Button({w}x{h})");
+        }
+    }
+
+    struct SelectBox {
+        width: u32,
+        height: u32,
+        options: Vec<String>,
+    }
+
+    impl Draw for SelectBox {
+        fn draw(&self) {
+            let (w, h) = (self.width, self.height);
+            println!("SelectBox({w}x{h})");
+        }
+    }
+
+    println!("\n\n# 1: screen.run()");
+    let screen = Screen::new()
+        .push(SelectBox {
+            width: 75,
+            height: 10,
+            options: vec![
+                String::from("Yes"),
+                String::from("Maybe"),
+                String::from("No"),
+            ],
+        })
+        .push(Button {
+            width: 50,
+            height: 10,
+            label: String::from("OK"),
+        });
+    screen.run();
+
+    println!("\n\n# 2: screen.run()");
+    let screen = screen.push(Button {
+        width: 42,
+        height: 42,
+        label: String::from("42"),
+    });
+    screen.run();
+}

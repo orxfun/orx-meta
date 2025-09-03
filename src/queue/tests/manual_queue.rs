@@ -507,6 +507,7 @@ fn builder() {
     assert_eq!(x.len(), 4);
 
     // alternatively
+
     type QueueOf<A, B, C, D> = Pair<A, Pair<B, Pair<C, Single<D>>>>;
 
     type Target2 = QueueOf<char, i32, String, bool>;
