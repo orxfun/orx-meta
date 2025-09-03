@@ -12,5 +12,5 @@
 )]
 #![cfg_attr(not(test), no_std)]
 
-// /// Module including `MetaQueue` and its implementations.
+/// Module including macros to create type-safe queues.
 pub mod queue;
