@@ -8,13 +8,17 @@ trait Queue {
 
     type Back: Queue;
 
-    fn push_back<X>(self, x: X) -> Self::PushBack<X>;
+    type Elevated: Queue;
+
+    fn push_back<X>(self, x: impl Into<Single<X>>) -> Self::PushBack<X>;
 
     fn len(&self) -> usize;
 
     fn is_empty(&self) -> bool {
         self.len() == 0
     }
+
+    fn elevate(self) -> Self::Elevated;
 }
 
 trait NonEmptyQueue: Queue {
@@ -42,12 +46,18 @@ impl Queue for EmptyQueue {
 
     type Back = Self;
 
-    fn push_back<X>(self, x: X) -> Self::PushBack<X> {
-        Single(x)
+    type Elevated = EmptyQueue;
+
+    fn push_back<X>(self, x: impl Into<Single<X>>) -> Self::PushBack<X> {
+        x.into()
     }
 
     fn len(&self) -> usize {
         0
+    }
+
+    fn elevate(self) -> Self::Elevated {
+        EmptyQueue
     }
 }
 
@@ -63,12 +73,18 @@ impl<F> Queue for Single<F> {
 
     type Back = EmptyQueue;
 
-    fn push_back<X>(self, x: X) -> Self::PushBack<X> {
-        Pair(self.0, Single(x))
+    type Elevated = Single<Single<F>>;
+
+    fn push_back<X>(self, x: impl Into<Single<X>>) -> Self::PushBack<X> {
+        Pair(self.0, x.into())
     }
 
     fn len(&self) -> usize {
         1
+    }
+
+    fn elevate(self) -> Single<Self> {
+        Single(self)
     }
 }
 
@@ -102,12 +118,21 @@ impl<F, B: Queue> Queue for Pair<F, B> {
 
     type Back = B;
 
-    fn push_back<X>(self, x: X) -> Self::PushBack<X> {
+    type Elevated = Pair<Single<F>, B::Elevated>;
+
+    fn push_back<X>(self, x: impl Into<Single<X>>) -> Self::PushBack<X> {
         Pair(self.0, self.1.push_back(x))
     }
 
     fn len(&self) -> usize {
         1 + self.1.len()
+    }
+
+    fn elevate(self) -> Self::Elevated
+    where
+        Self: Sized,
+    {
+        Pair(Single(self.0), self.1.elevate())
     }
 }
 

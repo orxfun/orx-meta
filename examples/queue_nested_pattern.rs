@@ -1,12 +1,29 @@
-use orx_meta::define_queue;
-use std::fmt::{Debug, Display};
+use core::fmt::Debug;
+use orx_meta::{define_queue, define_queue_tuple_transformation};
 
-pub trait Analysis: Debug {
-    type Input<'i>: Debug;
+pub trait Analysis: Debug + Default {
+    type Input<'i>: Debug + Print;
 
-    type Output: Display;
+    type Output: Clone + Debug + Print;
 
     fn analyze(&self, input: &Self::Input<'_>) -> Self::Output;
+}
+
+pub trait Print {
+    fn print(&self);
+}
+impl<T: Debug> Print for &[T] {
+    fn print(&self) {
+        let mut iter = self.iter();
+        print!("[");
+        if let Some(x) = iter.next() {
+            print!("{x:?}");
+            for x in iter {
+                print!(", {x:?}")
+            }
+        }
+        print!("]");
+    }
 }
 
 // some things to analyze
@@ -14,17 +31,11 @@ pub trait Analysis: Debug {
 struct Hero {
     name: &'static str,
     attack: u32,
-    defense: u32,
-    power: u32,
     knowledge: u32,
 }
 impl Debug for Hero {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        write!(
-            f,
-            "{} ({}x{}x{}x{})",
-            self.name, self.attack, self.defense, self.power, self.knowledge
-        )
+        write!(f, "{} ({}x{})", self.name, self.attack, self.knowledge)
     }
 }
 
@@ -46,7 +57,7 @@ impl Debug for Creature {
 
 // actual analysis
 
-#[derive(Debug)]
+#[derive(Debug, Default)]
 struct AvgOfHeroAttack;
 impl Analysis for AvgOfHeroAttack {
     type Input<'i> = &'i [Hero];
@@ -58,17 +69,18 @@ impl Analysis for AvgOfHeroAttack {
         }
     }
 }
+impl Print for u32 {
+    fn print(&self) {
+        print!("{self}");
+    }
+}
 
+#[derive(Clone, Debug)]
 struct Rng {
     min: u32,
     max: u32,
 }
-impl Display for Rng {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        write!(f, "[{}, {}]", self.min, self.max)
-    }
-}
-#[derive(Debug)]
+#[derive(Debug, Default)]
 struct CreatureHpRange;
 impl Analysis for CreatureHpRange {
     type Input<'i> = &'i [Creature];
@@ -79,8 +91,13 @@ impl Analysis for CreatureHpRange {
         Rng { min, max }
     }
 }
+impl Print for Rng {
+    fn print(&self) {
+        print!("[{}, {}]", self.min, self.max);
+    }
+}
 
-#[derive(Debug)]
+#[derive(Debug, Default)]
 struct NumRangeCreatures;
 impl Analysis for NumRangeCreatures {
     type Input<'i> = &'i [Creature];
@@ -91,46 +108,70 @@ impl Analysis for NumRangeCreatures {
         input.iter().filter(|x| x.is_range).count()
     }
 }
+impl Print for usize {
+    fn print(&self) {
+        print!("{self}");
+    }
+}
 
 // # DEFINE COMPOSITION
 
 // inputs
 define_queue!(
     lifetimes => ['i];
-    elements => [Debug];
+    elements => [Debug & Print];
     names => {
         traits: { queue: InQueue, non_empty_queue: NonEmptyInQueue },
         structs: { empty: InEmpty, single: InSingle, pair: InPair }
     };
 );
+impl Print for InEmpty<'_> {
+    fn print(&self) {}
+}
+impl<F: Debug + Print> Print for InSingle<'_, F> {
+    fn print(&self) {
+        print!("=i=> ");
+        self.f.print();
+    }
+}
+impl<'i, F: Debug + Print, B: InQueue<'i>> Print for InPair<'i, F, B> {
+    fn print(&self) {
+        print!("=i=> ");
+        self.f.print();
+        println!();
+        self.b.print();
+    }
+}
 
 // outputs
 define_queue!(
-    elements => [Display];
+    elements => [Clone & Debug & Print];
     names => {
         traits: { queue: OutQueue, non_empty_queue: NonEmptyOutQueue },
         structs: { empty: OutEmpty, single: OutSingle, pair: OutPair }
     };
 );
-impl Display for OutEmpty {
-    fn fmt(&self, _: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        Ok(())
+impl Print for OutEmpty {
+    fn print(&self) {}
+}
+impl<F: Clone + Debug + Print> Print for OutSingle<F> {
+    fn print(&self) {
+        print!("=o=> ");
+        self.f.print();
     }
 }
-impl<F: Display> Display for OutSingle<F> {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        write!(f, "{}", self.f)
-    }
-}
-impl<F: Display, B: OutQueue> Display for OutPair<F, B> {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        write!(f, "{} && {}", self.f, self.b)
+impl<F: Clone + Debug + Print, B: OutQueue> Print for OutPair<F, B> {
+    fn print(&self) {
+        print!("=o=> ");
+        self.f.print();
+        println!();
+        self.b.print();
     }
 }
 
 // define composition
 
-pub trait Analyses: Debug {
+pub trait Analyses: Debug + Print + Default {
     type Input<'i>: InQueue<'i>;
 
     type Output: OutQueue;
@@ -146,7 +187,7 @@ pub trait Analyses: Debug {
     >;
 }
 
-#[derive(Debug)]
+#[derive(Debug, Default)]
 struct AnalysesEmpty;
 impl Analyses for AnalysesEmpty {
     type Input<'i> = InEmpty<'i>;
@@ -168,7 +209,13 @@ impl Analyses for AnalysesEmpty {
     }
 }
 
-#[derive(Debug)]
+impl Print for AnalysesEmpty {
+    fn print(&self) {
+        print!("AnalysesEmpty")
+    }
+}
+
+#[derive(Debug, Default)]
 struct AnalysesSingle<F: Analysis>(F);
 impl<F: Analysis> Analyses for AnalysesSingle<F> {
     type Input<'i> = InSingle<'i, F::Input<'i>>;
@@ -189,8 +236,13 @@ impl<F: Analysis> Analyses for AnalysesSingle<F> {
         AnalysesPair(self.0, AnalysesSingle(analysis))
     }
 }
+impl<F: Analysis> Print for AnalysesSingle<F> {
+    fn print(&self) {
+        print!("{:?}", self.0);
+    }
+}
 
-#[derive(Debug)]
+#[derive(Debug, Default)]
 struct AnalysesPair<F: Analysis, B: Analyses>(F, B);
 impl<F: Analysis, B: Analyses> Analyses for AnalysesPair<F, B> {
     type Input<'i> = InPair<'i, F::Input<'i>, B::Input<'i>>;
@@ -214,76 +266,188 @@ impl<F: Analysis, B: Analyses> Analyses for AnalysesPair<F, B> {
         AnalysesPair(self.0, self.1.compose(analysis))
     }
 }
+impl<F: Analysis, B: Analyses> Print for AnalysesPair<F, B> {
+    fn print(&self) {
+        print!("{:?} & ", self.0);
+        self.1.print();
+    }
+}
 
-fn main() {
-    // inputs
-    let heroes = vec![
-        Hero {
-            name: "Solymr",
-            attack: 0,
-            defense: 0,
-            power: 2,
-            knowledge: 3,
-        },
-        Hero {
-            name: "Crag Hack",
-            attack: 4,
-            defense: 0,
-            power: 1,
-            knowledge: 1,
-        },
-    ];
+fn print_results<'i, A: Analyses>(analyses: &A, inputs: &A::Input<'i>, outputs: &A::Output) {
+    print!("\n# ");
+    analyses.print();
+    println!();
 
-    let creatures = vec![
-        Creature {
-            name: "Titan",
-            level: 7,
-            hp: 300,
-            is_range: true,
-        },
-        Creature {
-            name: "Thunderbird",
-            level: 5,
-            hp: 60,
-            is_range: false,
-        },
-        Creature {
-            name: "Ancient Behemoth",
-            level: 7,
-            hp: 300,
-            is_range: false,
-        },
-    ];
+    println!("Inputs");
+    inputs.print();
+    println!();
+
+    println!("Outputs");
+    outputs.print();
+    println!();
+}
+
+fn get_input(id: usize) -> (Vec<Hero>, Vec<Creature>) {
+    match id % 2 == 0 {
+        true => {
+            let heroes = vec![
+                Hero {
+                    name: "Solymr",
+                    attack: 0,
+                    knowledge: 3,
+                },
+                Hero {
+                    name: "Crag Hack",
+                    attack: 4,
+                    knowledge: 1,
+                },
+            ];
+
+            let creatures = vec![
+                Creature {
+                    name: "Titan",
+                    level: 7,
+                    hp: 300,
+                    is_range: true,
+                },
+                Creature {
+                    name: "Thunderbird",
+                    level: 5,
+                    hp: 60,
+                    is_range: false,
+                },
+                Creature {
+                    name: "Ancient Behemoth",
+                    level: 7,
+                    hp: 300,
+                    is_range: false,
+                },
+            ];
+            (heroes, creatures)
+        }
+        false => {
+            let heroes = vec![
+                Hero {
+                    name: "Kyrre",
+                    attack: 1,
+                    knowledge: 1,
+                },
+                Hero {
+                    name: "Vidomina",
+                    attack: 1,
+                    knowledge: 2,
+                },
+            ];
+
+            let creatures = vec![
+                Creature {
+                    name: "Archangel",
+                    level: 7,
+                    hp: 250,
+                    is_range: false,
+                },
+                Creature {
+                    name: "Grand Elf",
+                    level: 3,
+                    hp: 15,
+                    is_range: true,
+                },
+                Creature {
+                    name: "Skeleton Warrior",
+                    level: 1,
+                    hp: 6,
+                    is_range: false,
+                },
+            ];
+            (heroes, creatures)
+        }
+    }
+}
+
+fn adhoc_analyses() {
+    let (heroes, creatures) = get_input(0);
 
     // empty analysis
 
     let analyses = AnalysesEmpty;
     let input = InEmpty::new();
     let output = analyses.analyze(&input);
-    println!(
-        "\n# Empty analysis\n  analyses => {:?}\n  inputs => {:?}\n  outputs => {}",
-        analyses, input, output
-    );
+    print_results(&analyses, &input, &output);
 
     // single analyses
     let analyses = AnalysesEmpty.compose(AvgOfHeroAttack);
     let input = InEmpty::new().push_back(heroes.as_slice());
     let output = analyses.analyze(&input);
-    println!(
-        "\n# Single analysis\n  analyses => {:?}\n  inputs => {:?}\n  outputs => {}",
-        analyses, input, output
-    );
+    print_results(&analyses, &input, &output);
 
-    // pair of analyses
+    // three analysis
     let analyses = AnalysesEmpty
         .compose(AvgOfHeroAttack)
-        .compose(CreatureHpRange);
+        .compose(CreatureHpRange)
+        .compose(NumRangeCreatures);
     let input = InEmpty::new()
         .push_back(heroes.as_slice())
+        .push_back(creatures.as_slice())
         .push_back(creatures.as_slice());
     let output = analyses.analyze(&input);
-    println!(
-        "\n# Single analysis\n  analyses => {:?}\n  inputs => {:?}\n  outputs => {}",
-        analyses, input, output
-    );
+    print_results(&analyses, &input, &output);
+}
+
+define_queue_tuple_transformation!(
+    lifetimes => ['i];
+    elements => [Debug & Print];
+    queues => { trait: InQueue, empty: InEmpty, single: InSingle, pair: InPair };
+);
+define_queue_tuple_transformation!(
+    elements => [Clone & Debug & Print];
+    queues => { trait: OutQueue, empty: OutEmpty, single: OutSingle, pair: OutPair };
+);
+
+fn defined_analyses_1() {
+    type Analyses2<A, B> = AnalysesPair<A, AnalysesSingle<B>>;
+    type MyAnalyses = Analyses2<CreatureHpRange, NumRangeCreatures>;
+
+    fn run(input: &<MyAnalyses as Analyses>::Input<'_>) -> <MyAnalyses as Analyses>::Output {
+        MyAnalyses::default().analyze(input)
+    }
+
+    let (_, c) = get_input(0);
+    let input = (c.as_slice(), c.as_slice()).into();
+    let outputs = run(&input).into_tuple();
+    println!("{outputs:?}");
+
+    let (_, c) = get_input(1);
+    let input = (c.as_slice(), c.as_slice()).into();
+    let outputs = run(&input).into_tuple();
+    println!("{outputs:?}");
+}
+
+fn defined_analyses_2() {
+    type Analyses3<A, B, C> = AnalysesPair<A, AnalysesPair<B, AnalysesSingle<C>>>;
+    type MyAnalyses = Analyses3<AvgOfHeroAttack, CreatureHpRange, NumRangeCreatures>;
+
+    fn run(input: &<MyAnalyses as Analyses>::Input<'_>) -> <MyAnalyses as Analyses>::Output {
+        MyAnalyses::default().analyze(input)
+    }
+
+    let (h, c) = get_input(0);
+    let input = (h.as_slice(), c.as_slice(), c.as_slice()).into();
+    let outputs = run(&input).into_tuple();
+    println!("{outputs:?}");
+
+    let (h, c) = get_input(1);
+    let input = (h.as_slice(), c.as_slice(), c.as_slice()).into();
+    let outputs = run(&input).into_tuple();
+    println!("{outputs:?}");
+}
+
+fn main() {
+    println!("\n\n ---  ADHOC ANALYSES  --- ");
+    adhoc_analyses();
+
+    println!("\n\n ---  DEFINED ANALYSES - 1 --- ");
+    defined_analyses_1();
+
+    println!("\n\n ---  DEFINED ANALYSES - 2 --- ");
+    defined_analyses_2();
 }

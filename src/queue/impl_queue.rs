@@ -146,7 +146,7 @@ macro_rules! define_queue {
 
         // struct empty
 
-        #[derive(Clone, Copy, Debug, PartialEq, Eq)]
+        #[derive(Clone, Copy, PartialEq, Eq)]
         pub struct $empty<$($g_lt ,)* $($g ,)*>
         where
             $( $g: $( $g_bnd $(<$( $g_bnd_g ),*> )? + ) * , )*
@@ -160,6 +160,15 @@ macro_rules! define_queue {
         {
             pub fn new() -> Self {
                 Self { phantom: Default::default() }
+            }
+        }
+
+        impl<$($g_lt ,)* $($g ,)*> core::fmt::Debug for $empty<$($g_lt ,)* $($g ,)*>
+        where
+            $( $g: $( $g_bnd $(<$( $g_bnd_g ),*> )? + ) * , )*
+        {
+            fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
+                write!(f, "{}", stringify!($empty))
             }
         }
 
@@ -189,7 +198,7 @@ macro_rules! define_queue {
 
         // struct single
 
-        #[derive(Clone, Copy, Debug, PartialEq, Eq)]
+        #[derive(Clone, Copy, PartialEq, Eq)]
         pub struct $single<$($g_lt ,)* F, $($g ,)*>
         where
             F: $( $el_bnd $( < $( $el_bnd_g ),* > )? + ) *,
@@ -211,6 +220,27 @@ macro_rules! define_queue {
                     empty: $empty::new(),
                     f,
                 }
+            }
+        }
+
+        impl<$($g_lt ,)* X1, $($g ,)*> From<X1> for $single<$($g_lt ,)* X1, $($g ,)*>
+        where
+            X1: $( $el_bnd $( < $( $el_bnd_g ),* > )? + ) *,
+            $( $g: $( $g_bnd $(<$( $g_bnd_g ),*> )? + ) * , )*
+        {
+            fn from(x: X1) -> Self {
+                $single::new(x)
+            }
+        }
+
+        impl<$($g_lt ,)* F, $($g ,)*> core::fmt::Debug for $single<$($g_lt ,)* F, $($g ,)*>
+        where
+            F: core::fmt::Debug,
+            F: $( $el_bnd $( < $( $el_bnd_g ),* > )? + ) *,
+            $( $g: $( $g_bnd $(<$( $g_bnd_g ),*> )? + ) * , )*
+        {
+            fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
+                write!(f, "{}({:?})", stringify!($single), self.f)
             }
         }
 
@@ -283,7 +313,7 @@ macro_rules! define_queue {
 
         // struct pair
 
-        #[derive(Clone, Copy, Debug, PartialEq, Eq)]
+        #[derive(Clone, Copy, PartialEq, Eq)]
         pub struct $pair<$($g_lt ,)* F, B, $($g ,)*>
         where
             F: $( $el_bnd $( < $( $el_bnd_g ),* > )? + ) *,
@@ -307,6 +337,19 @@ macro_rules! define_queue {
                     f,
                     b,
                 }
+            }
+        }
+
+        impl<$($g_lt ,)* F, B, $($g ,)*> core::fmt::Debug for $pair<$($g_lt ,)* F, B, $($g ,)*>
+        where
+            F: core::fmt::Debug,
+            B: core::fmt::Debug,
+            F: $( $el_bnd $( < $( $el_bnd_g ),* > )? + ) *,
+            B: $q<$($g_lt ,)* $($g ,)*>,
+            $( $g: $( $g_bnd $(<$( $g_bnd_g ),*> )? + ) * , )*
+        {
+            fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
+                write!(f, "{}({:?}, {:?})", stringify!($pair), self.f, self.b)
             }
         }
 

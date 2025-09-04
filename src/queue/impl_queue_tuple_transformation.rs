@@ -67,16 +67,6 @@ macro_rules! define_queue_tuple_transformation {
             }
         }
 
-        impl<$($g_lt ,)* X1, $($g ,)*> From<X1> for $single<$($g_lt ,)* X1, $($g ,)*>
-        where
-            X1: $( $el_bnd $( < $( $el_bnd_g ),* > )? + ) *,
-            $( $g: $( $g_bnd $(<$( $g_bnd_g ),*> )? + ) * , )*
-        {
-            fn from(x: X1) -> Self {
-                $single::new(x)
-            }
-        }
-
         // tuple - 2
 
         impl<$($g_lt ,)* X1, X2, $($g ,)*> $pair<$($g_lt ,)* X1, $single<$($g_lt ,)* X2, $($g ,)*>, $($g ,)*>

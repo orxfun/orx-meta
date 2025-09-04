@@ -6,12 +6,14 @@ trait Req {}
 
 // traits
 
-trait Queue {
+trait Queue: Req {
     type PushBack<X: Req>: NonEmptyQueue;
 
     type Front: Req;
 
     type Back: Queue;
+
+    type Elevated: Queue;
 
     fn push_back<X: Req>(self, x: X) -> Self::PushBack<X>;
 
@@ -48,6 +50,8 @@ impl Queue for EmptyQueue {
 
     type Back = Self;
 
+    type Elevated = EmptyQueue;
+
     fn push_back<X: Req>(self, x: X) -> Self::PushBack<X> {
         Single(x)
     }
@@ -56,6 +60,7 @@ impl Queue for EmptyQueue {
         0
     }
 }
+impl Req for EmptyQueue {}
 
 // impl: single
 
@@ -69,6 +74,8 @@ impl<F: Req> Queue for Single<F> {
 
     type Back = EmptyQueue;
 
+    type Elevated = Single<Single<F>>;
+
     fn push_back<X: Req>(self, x: X) -> Self::PushBack<X> {
         Pair(self.0, Single(x))
     }
@@ -77,6 +84,7 @@ impl<F: Req> Queue for Single<F> {
         1
     }
 }
+impl<F: Req> Req for Single<F> {}
 
 impl<F: Req> NonEmptyQueue for Single<F> {
     fn into_front(self) -> Self::Front {
@@ -101,12 +109,16 @@ impl<F: Req> NonEmptyQueue for Single<F> {
 #[derive(Clone, Copy, Debug)]
 struct Pair<F: Req, B: Queue>(F, B);
 
+impl<F: Req, B: Queue> Req for Pair<F, B> {}
+
 impl<F: Req, B: Queue> Queue for Pair<F, B> {
     type PushBack<X: Req> = Pair<F, B::PushBack<X>>;
 
     type Front = F;
 
     type Back = B;
+
+    type Elevated = Pair<Single<F>, B::Elevated>;
 
     fn push_back<X: Req>(self, x: X) -> Self::PushBack<X> {
         Pair(self.0, self.1.push_back(x))
@@ -640,4 +652,33 @@ fn tuple_support() {
     let t = ('x', 32, String::from("xyz"), true);
     let x: Pair<char, Pair<i32, Pair<String, Single<bool>>>> = t.clone().into();
     assert_eq!(x.clone().into_tuple(), t);
+}
+
+#[test]
+fn elevation() {
+    // let q = EmptyQueue.elevate();
+    // assert!(q.is_empty());
+
+    // let q = EmptyQueue.push_back('x').elevate();
+    // assert_eq!(q.front().front(), &'x');
+
+    // let q = EmptyQueue.push_back('x').push_back(32).elevate();
+    // let (f, q) = q.pop_front();
+    // assert_eq!(f.into_front(), 'x');
+    // let (f, q) = q.pop_front();
+    // assert_eq!(f.into_front(), 32);
+    // assert!(q.is_empty());
+
+    // let q = EmptyQueue
+    //     .push_back('x')
+    //     .push_back(32)
+    //     .push_back(true)
+    //     .elevate();
+    // let (f, q) = q.pop_front();
+    // assert_eq!(f.into_front(), 'x');
+    // let (f, q) = q.pop_front();
+    // assert_eq!(f.into_front(), 32);
+    // let (f, q) = q.pop_front();
+    // assert_eq!(f.into_front(), true);
+    // assert!(q.is_empty());
 }
