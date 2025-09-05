@@ -1,7 +1,7 @@
 #![allow(dead_code)]
 
 #[macro_export]
-macro_rules! define_queue {
+macro_rules! define_queue_zzz {
     // q
     (
         queue => {traits: $q:ident, $q_ne:ident; structs: $empty:ident, $single:ident, $pair:ident;};
@@ -87,7 +87,7 @@ macro_rules! define_queue {
     };
 }
 
-// define_queue!(
+// define_queue_zzz!(
 //     lifetimes => [];
 //     generics => [T: & Q:];
 //     elements => [];

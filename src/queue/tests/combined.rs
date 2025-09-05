@@ -1,23 +1,13 @@
-use crate::{define_queue_builder, define_queue_core, define_queue_of};
+use crate::{define_queue, define_queue_builder, define_queue_core, define_queue_of};
 
 #[test]
 fn plain() {
-    define_queue_core!(
+    define_queue!(
         lt => [];
         generics => [];
         elements => [];
         queue => [ Q, NeQ ; Em, Sng, Pr ];
-    );
-    define_queue_of!(
-        lt => [];
-        generics => [];
-        queue => [ Q, NeQ ; Em, Sng, Pr ];
         queue_of => qof;
-    );
-    define_queue_builder!(
-        lt => [];
-        generics => [];
-        queue => [ Q, NeQ ; Em, Sng, Pr ];
         builder => Bld;
     );
 
@@ -79,26 +69,41 @@ fn plain() {
         .push_back('y')
         .push_back(0)
         .finish();
+
+    let q: Q1 = 2usize.into();
+    assert_eq!(q.as_tuple(), &2);
+
+    let mut q: Q2 = (2, 'x').into();
+    *q.as_tuple_mut().1 = 'y';
+    assert_eq!(q.as_tuple(), (&2, &'y'));
+
+    let q: Q3 = (2, 'x', true).into();
+    assert_eq!(q.as_tuple(), (&2, &'x', &true));
+
+    let q: Q4 = (2, 'x', true, 4).into();
+    assert_eq!(q.into_tuple(), (2, 'x', true, 4));
+
+    let q: Q5 = (2, 'x', true, 4, false).into();
+    assert_eq!(q.into_tuple(), (2, 'x', true, 4, false));
+
+    let q: Q6 = (2, 'x', true, 4, false, 7).into();
+    assert_eq!(q.into_tuple(), (2, 'x', true, 4, false, 7));
+
+    let q: Q7 = (2, 'x', true, 4, false, 7, 'y').into();
+    assert_eq!(q.into_tuple(), (2, 'x', true, 4, false, 7, 'y'));
+
+    let q: Q8 = (2, 'x', true, 4, false, 7, 'y', 0).into();
+    assert_eq!(q.into_tuple(), (2, 'x', true, 4, false, 7, 'y', 0));
 }
 
 #[test]
 fn with_lt() {
-    define_queue_core!(
+    define_queue!(
         lt => ['a];
         generics => [];
         elements => [];
         queue => [ Q, NeQ ; Em, Sng, Pr ];
-    );
-    define_queue_of!(
-        lt => ['a];
-        generics => [];
-        queue => [ Q, NeQ ; Em, Sng, Pr ];
         queue_of => qof;
-    );
-    define_queue_builder!(
-        lt => ['a];
-        generics => [];
-        queue => [ Q, NeQ ; Em, Sng, Pr ];
         builder => Bld;
     );
 
@@ -160,26 +165,41 @@ fn with_lt() {
         .push_back('y')
         .push_back(0)
         .finish();
+
+    let q: Q1 = 2usize.into();
+    assert_eq!(q.as_tuple(), &2);
+
+    let mut q: Q2 = (2, 'x').into();
+    *q.as_tuple_mut().1 = 'y';
+    assert_eq!(q.as_tuple(), (&2, &'y'));
+
+    let q: Q3 = (2, 'x', true).into();
+    assert_eq!(q.as_tuple(), (&2, &'x', &true));
+
+    let q: Q4 = (2, 'x', true, 4).into();
+    assert_eq!(q.into_tuple(), (2, 'x', true, 4));
+
+    let q: Q5 = (2, 'x', true, 4, false).into();
+    assert_eq!(q.into_tuple(), (2, 'x', true, 4, false));
+
+    let q: Q6 = (2, 'x', true, 4, false, 7).into();
+    assert_eq!(q.into_tuple(), (2, 'x', true, 4, false, 7));
+
+    let q: Q7 = (2, 'x', true, 4, false, 7, 'y').into();
+    assert_eq!(q.into_tuple(), (2, 'x', true, 4, false, 7, 'y'));
+
+    let q: Q8 = (2, 'x', true, 4, false, 7, 'y', 0).into();
+    assert_eq!(q.into_tuple(), (2, 'x', true, 4, false, 7, 'y', 0));
 }
 
 #[test]
 fn with_gen() {
-    define_queue_core!(
+    define_queue!(
         lt => [];
         generics => [T];
         elements => [];
         queue => [ Q, NeQ ; Em, Sng, Pr ];
-    );
-    define_queue_of!(
-        lt => [];
-        generics => [T];
-        queue => [ Q, NeQ ; Em, Sng, Pr ];
         queue_of => qof;
-    );
-    define_queue_builder!(
-        lt => [];
-        generics => [T];
-        queue => [ Q, NeQ ; Em, Sng, Pr ];
         builder => Bld;
     );
 
@@ -244,26 +264,41 @@ fn with_gen() {
         .push_back('y')
         .push_back(0)
         .finish();
+
+    let q: Q1<usize> = 2usize.into();
+    assert_eq!(q.as_tuple(), &2);
+
+    let mut q: Q2<char> = (2, 'x').into();
+    *q.as_tuple_mut().1 = 'y';
+    assert_eq!(q.as_tuple(), (&2, &'y'));
+
+    let q: Q3<char> = (2, 'x', true).into();
+    assert_eq!(q.as_tuple(), (&2, &'x', &true));
+
+    let q: Q4<char> = (2, 'x', true, 4).into();
+    assert_eq!(q.into_tuple(), (2, 'x', true, 4));
+
+    let q: Q5<char> = (2, 'x', true, 4, false).into();
+    assert_eq!(q.into_tuple(), (2, 'x', true, 4, false));
+
+    let q: Q6<char> = (2, 'x', true, 4, false, 7).into();
+    assert_eq!(q.into_tuple(), (2, 'x', true, 4, false, 7));
+
+    let q: Q7<char> = (2, 'x', true, 4, false, 7, 'y').into();
+    assert_eq!(q.into_tuple(), (2, 'x', true, 4, false, 7, 'y'));
+
+    let q: Q8<char> = (2, 'x', true, 4, false, 7, 'y', 0).into();
+    assert_eq!(q.into_tuple(), (2, 'x', true, 4, false, 7, 'y', 0));
 }
 
 #[test]
 fn with_gens() {
-    define_queue_core!(
+    define_queue!(
         lt => [];
         generics => [T, U];
         elements => [];
         queue => [ Q, NeQ ; Em, Sng, Pr ];
-    );
-    define_queue_of!(
-        lt => [];
-        generics => [T, U];
-        queue => [ Q, NeQ ; Em, Sng, Pr ];
         queue_of => qof;
-    );
-    define_queue_builder!(
-        lt => [];
-        generics => [T, U];
-        queue => [ Q, NeQ ; Em, Sng, Pr ];
         builder => Bld;
     );
 
@@ -330,26 +365,41 @@ fn with_gens() {
         .push_back('y')
         .push_back(0)
         .finish();
+
+    let q: Q1<char, bool> = 2usize.into();
+    assert_eq!(q.as_tuple(), &2);
+
+    let mut q: Q2<char, bool> = (2, 'x').into();
+    *q.as_tuple_mut().1 = 'y';
+    assert_eq!(q.as_tuple(), (&2, &'y'));
+
+    let q: Q3<char, bool> = (2, 'x', true).into();
+    assert_eq!(q.as_tuple(), (&2, &'x', &true));
+
+    let q: Q4<char, bool> = (2, 'x', true, 4).into();
+    assert_eq!(q.into_tuple(), (2, 'x', true, 4));
+
+    let q: Q5<char, bool> = (2, 'x', true, 4, false).into();
+    assert_eq!(q.into_tuple(), (2, 'x', true, 4, false));
+
+    let q: Q6<char, bool> = (2, 'x', true, 4, false, 7).into();
+    assert_eq!(q.into_tuple(), (2, 'x', true, 4, false, 7));
+
+    let q: Q7<char, bool> = (2, 'x', true, 4, false, 7, 'y').into();
+    assert_eq!(q.into_tuple(), (2, 'x', true, 4, false, 7, 'y'));
+
+    let q: Q8<char, bool> = (2, 'x', true, 4, false, 7, 'y', 0).into();
+    assert_eq!(q.into_tuple(), (2, 'x', true, 4, false, 7, 'y', 0));
 }
 
 #[test]
 fn with_gens_with_bounds() {
-    define_queue_core!(
+    define_queue!(
         lt => [];
         generics => [T, U: Clone, V: Default | Clone];
         elements => [];
         queue => [ Q, NeQ ; Em, Sng, Pr ];
-    );
-    define_queue_of!(
-        lt => [];
-        generics => [T, U: Clone, V: Default | Clone];
-        queue => [ Q, NeQ ; Em, Sng, Pr ];
         queue_of => qof;
-    );
-    define_queue_builder!(
-        lt => [];
-        generics => [T, U: Clone, V: Default | Clone];
-        queue => [ Q, NeQ ; Em, Sng, Pr ];
         builder => Bld;
     );
 
@@ -416,6 +466,31 @@ fn with_gens_with_bounds() {
         .push_back('y')
         .push_back(0)
         .finish();
+
+    let q: Q1<char, bool, u8> = 2usize.into();
+    assert_eq!(q.as_tuple(), &2);
+
+    let mut q: Q2<char, bool, u8> = (2, 'x').into();
+    *q.as_tuple_mut().1 = 'y';
+    assert_eq!(q.as_tuple(), (&2, &'y'));
+
+    let q: Q3<char, bool, u8> = (2, 'x', true).into();
+    assert_eq!(q.as_tuple(), (&2, &'x', &true));
+
+    let q: Q4<char, bool, u8> = (2, 'x', true, 4).into();
+    assert_eq!(q.into_tuple(), (2, 'x', true, 4));
+
+    let q: Q5<char, bool, u8> = (2, 'x', true, 4, false).into();
+    assert_eq!(q.into_tuple(), (2, 'x', true, 4, false));
+
+    let q: Q6<char, bool, u8> = (2, 'x', true, 4, false, 7).into();
+    assert_eq!(q.into_tuple(), (2, 'x', true, 4, false, 7));
+
+    let q: Q7<char, bool, u8> = (2, 'x', true, 4, false, 7, 'y').into();
+    assert_eq!(q.into_tuple(), (2, 'x', true, 4, false, 7, 'y'));
+
+    let q: Q8<char, bool, u8> = (2, 'x', true, 4, false, 7, 'y', 0).into();
+    assert_eq!(q.into_tuple(), (2, 'x', true, 4, false, 7, 'y', 0));
 }
 
 #[test]
@@ -423,22 +498,12 @@ fn with_lt_and_gens() {
     pub trait Req<'a> {}
     impl<'a> Req<'a> for usize {}
 
-    define_queue_core!(
+    define_queue!(
         lt => ['a];
         generics => [T: Req<'a>, U, V: Default];
         elements => [];
         queue => [ Q, NeQ ; Em, Sng, Pr ];
-    );
-    define_queue_of!(
-        lt => ['a];
-        generics => [T: Req<'a>, U, V: Default];
-        queue => [ Q, NeQ ; Em, Sng, Pr ];
         queue_of => qof;
-    );
-    define_queue_builder!(
-        lt => ['a];
-        generics => [T: Req<'a>, U, V: Default];
-        queue => [ Q, NeQ ; Em, Sng, Pr ];
         builder => Bld;
     );
 
@@ -505,6 +570,35 @@ fn with_lt_and_gens() {
         .push_back('y')
         .push_back(0)
         .finish();
+
+    impl<'a> Req<'a> for char {}
+    impl<'a> Req<'a> for bool {}
+    impl<'a> Req<'a> for u8 {}
+
+    let q: Q1<char, bool, u8> = 2usize.into();
+    assert_eq!(q.as_tuple(), &2);
+
+    let mut q: Q2<char, bool, u8> = (2, 'x').into();
+    *q.as_tuple_mut().1 = 'y';
+    assert_eq!(q.as_tuple(), (&2, &'y'));
+
+    let q: Q3<char, bool, u8> = (2, 'x', true).into();
+    assert_eq!(q.as_tuple(), (&2, &'x', &true));
+
+    let q: Q4<char, bool, u8> = (2, 'x', true, 4).into();
+    assert_eq!(q.into_tuple(), (2, 'x', true, 4));
+
+    let q: Q5<char, bool, u8> = (2, 'x', true, 4, false).into();
+    assert_eq!(q.into_tuple(), (2, 'x', true, 4, false));
+
+    let q: Q6<char, bool, u8> = (2, 'x', true, 4, false, 7).into();
+    assert_eq!(q.into_tuple(), (2, 'x', true, 4, false, 7));
+
+    let q: Q7<char, bool, u8> = (2, 'x', true, 4, false, 7, 'y').into();
+    assert_eq!(q.into_tuple(), (2, 'x', true, 4, false, 7, 'y'));
+
+    let q: Q8<char, bool, u8> = (2, 'x', true, 4, false, 7, 'y', 0).into();
+    assert_eq!(q.into_tuple(), (2, 'x', true, 4, false, 7, 'y', 0));
 }
 
 #[test]
@@ -512,11 +606,13 @@ fn with_all() {
     pub trait Req<'a, 'b> {}
     pub trait Req2<'a, 'b, T> {}
 
-    define_queue_core!(
+    define_queue!(
         lt => ['a, 'b];
         generics => [T: Copy];
         elements => [Req<'a, 'b> | Req2<'a, 'b, T>];
         queue => [ Q, NeQ ; Em, Sng, Pr ];
+        queue_of => qof;
+        builder => Bld;
     );
 
     impl<'a, 'b, T: Copy> Req<'a, 'b> for Em<'a, 'b, T> {}
@@ -547,19 +643,6 @@ fn with_all() {
     impl<'a, 'b, T> Req2<'a, 'b, T> for u64 {}
     impl<'a, 'b> Req<'a, 'b> for u8 {}
     impl<'a, 'b, T> Req2<'a, 'b, T> for u8 {}
-
-    define_queue_of!(
-        lt => ['a, 'b];
-        generics => [T: Copy];
-        queue => [ Q, NeQ ; Em, Sng, Pr ];
-        queue_of => qof;
-    );
-    define_queue_builder!(
-         lt => ['a, 'b];
-        generics => [T: Copy];
-        queue => [ Q, NeQ ; Em, Sng, Pr ];
-        builder => Bld;
-    );
 
     type Q0<'a, 'b, T> = qof!();
     type Q1<'a, 'b, T> = qof!(usize);
@@ -622,4 +705,29 @@ fn with_all() {
         .push_back('y')
         .push_back(0)
         .finish();
+
+    let q: Q1<char> = 2usize.into();
+    assert_eq!(q.as_tuple(), &2);
+
+    let mut q: Q2<char> = (2, 'x').into();
+    *q.as_tuple_mut().1 = 'y';
+    assert_eq!(q.as_tuple(), (&2, &'y'));
+
+    let q: Q3<char> = (2, 'x', true).into();
+    assert_eq!(q.as_tuple(), (&2, &'x', &true));
+
+    let q: Q4<char> = (2, 'x', true, 4).into();
+    assert_eq!(q.into_tuple(), (2, 'x', true, 4));
+
+    let q: Q5<char> = (2, 'x', true, 4, false).into();
+    assert_eq!(q.into_tuple(), (2, 'x', true, 4, false));
+
+    let q: Q6<char> = (2, 'x', true, 4, false, 7).into();
+    assert_eq!(q.into_tuple(), (2, 'x', true, 4, false, 7));
+
+    let q: Q7<char> = (2, 'x', true, 4, false, 7, 'y').into();
+    assert_eq!(q.into_tuple(), (2, 'x', true, 4, false, 7, 'y'));
+
+    let q: Q8<char> = (2, 'x', true, 4, false, 7, 'y', 0).into();
+    assert_eq!(q.into_tuple(), (2, 'x', true, 4, false, 7, 'y', 0));
 }
