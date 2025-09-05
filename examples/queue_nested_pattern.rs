@@ -1,5 +1,5 @@
 use core::fmt::Debug;
-use orx_meta::{define_queue_core_zzz, define_queue_tuple_transformation};
+use orx_meta::{define_queue_core_zzz, define_queue_tuple_transformation_zzz};
 
 pub trait Analysis: Debug + Default {
     type Input<'i>: Debug + Print;
@@ -393,12 +393,12 @@ fn adhoc_analyses() {
     print_results(&analyses, &input, &output);
 }
 
-define_queue_tuple_transformation!(
+define_queue_tuple_transformation_zzz!(
     lifetimes => ['i];
     elements => [Debug & Print];
     queues => { trait: InQueue, empty: InEmpty, single: InSingle, pair: InPair };
 );
-define_queue_tuple_transformation!(
+define_queue_tuple_transformation_zzz!(
     elements => [Clone & Debug & Print];
     queues => { trait: OutQueue, empty: OutEmpty, single: OutSingle, pair: OutPair };
 );

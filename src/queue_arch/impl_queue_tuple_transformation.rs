@@ -1,9 +1,9 @@
 #[macro_export]
-macro_rules! define_queue_tuple_transformation {
+macro_rules! define_queue_tuple_transformation_zzz {
     (
         queues => { trait: $q:ident, empty: $empty:ident, single: $single:ident, pair: $pair:ident };
     ) => {
-        define_queue_tuple_transformation!(
+        define_queue_tuple_transformation_zzz!(
             lifetimes => [];
             generics => [];
             elements => [];
@@ -15,7 +15,7 @@ macro_rules! define_queue_tuple_transformation {
         elements => [$($el_bnd:ident$(< $( $el_bnd_g:tt ),* >)?)& *];
         queues => { trait: $q:ident, empty: $empty:ident, single: $single:ident, pair: $pair:ident };
     ) => {
-        define_queue_tuple_transformation!(
+        define_queue_tuple_transformation_zzz!(
             lifetimes => [];
             generics => [];
             elements => [$($el_bnd$(< $( $el_bnd_g ),* >)?)& *];
@@ -28,7 +28,7 @@ macro_rules! define_queue_tuple_transformation {
         elements => [$($el_bnd:ident$(< $( $el_bnd_g:tt ),* >)?)& *];
         queues => { trait: $q:ident, empty: $empty:ident, single: $single:ident, pair: $pair:ident };
     ) => {
-        define_queue_tuple_transformation!(
+        define_queue_tuple_transformation_zzz!(
             lifetimes => [$($g_lt)& *];
             generics => [];
             elements => [$($el_bnd$(< $( $el_bnd_g ),* >)?)& *];
@@ -41,7 +41,7 @@ macro_rules! define_queue_tuple_transformation {
         elements => [$($el_bnd:ident$(< $( $el_bnd_g:tt ),* >)?)& *];
         queues => { trait: $q:ident, empty: $empty:ident, single: $single:ident, pair: $pair:ident };
     ) => {
-        define_queue_tuple_transformation!(
+        define_queue_tuple_transformation_zzz!(
             lifetimes => [];
             generics => [$($g:$($g_bnd$(< $( $g_bnd_g ),* >)?)| *)& *];
             elements => [$($el_bnd$(< $( $el_bnd_g ),* >)?)& *];
