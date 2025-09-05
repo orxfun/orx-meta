@@ -17,8 +17,6 @@ trait Queue {
     fn is_empty(&self) -> bool {
         self.len() == 0
     }
-
-    fn elevate(self) -> Self::Elevated;
 }
 
 trait NonEmptyQueue: Queue {
@@ -55,10 +53,6 @@ impl Queue for EmptyQueue {
     fn len(&self) -> usize {
         0
     }
-
-    fn elevate(self) -> Self::Elevated {
-        EmptyQueue
-    }
 }
 
 // impl: single
@@ -81,10 +75,6 @@ impl<F> Queue for Single<F> {
 
     fn len(&self) -> usize {
         1
-    }
-
-    fn elevate(self) -> Single<Self> {
-        Single(self)
     }
 }
 
@@ -126,13 +116,6 @@ impl<F, B: Queue> Queue for Pair<F, B> {
 
     fn len(&self) -> usize {
         1 + self.1.len()
-    }
-
-    fn elevate(self) -> Self::Elevated
-    where
-        Self: Sized,
-    {
-        Pair(Single(self.0), self.1.elevate())
     }
 }
 

@@ -16,6 +16,24 @@ impl Input for InEmpty {}
 impl<F: Input> Input for InSingle<F> {}
 impl<F: Input, B: InQueue> Input for InPair<F, B> {}
 
+macro_rules! queue_of {
+    () => {
+        InEmpty
+    };
+
+    ($t1:ty) => {
+        InSingle<$t1>
+    };
+
+    ($t1:ty, $t2:ty) => {
+        InPair<$t1, InSingle<$t2>>
+    };
+
+    ($t1:ty, $t2:ty, $t3:ty) => {
+        InPair<$t1, InPair<$t2, InSingle<$t3>>>
+    };
+}
+
 // outputs
 
 pub trait Output {}
