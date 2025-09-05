@@ -13,7 +13,7 @@
 #![cfg_attr(not(test), no_std)]
 
 /// Module including macros to create type-safe queues.
-pub mod queue;
+pub mod queue_arch;
 
 mod trythis;
 mod trythis_manual;

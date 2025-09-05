@@ -61,7 +61,8 @@ macro_rules! define_queue_core {
 
         generics => [
             $(
-                $g:tt:
+                $g:tt
+                :
                 $(
                     $g_bnd:ident
                     $(
@@ -425,43 +426,15 @@ macro_rules! define_queue_core {
                 (&mut self.f, &mut self.b)
             }
         }
-
-        // // queue of
-
-        // $(
-        //     crate::with_dollar_sign! {
-        //         ($d:tt) => {
-        //             macro_rules! $q_of {
-        //                 ([$d($qg:tt)& *]) => { $empty<$d($qg),*> };
-        //                 ([$d($qg:tt)& *], $t1:ty) => { $single<$d($qg),*, $t1> };
-        //                 ([$d($qg:tt)& *], $t1:ty, $t2:ty) => { $pair<$d($qg),*, $t1, $single<$d($qg),*, $t2>> };
-        //                 ([$d($qg:tt)& *], $t1:ty, $t2:ty, $t3:ty) => { $pair<$d($qg),*, $t1, $pair<$d($qg),*, $t2, $single<$d($qg),*, $t3>>> };
-        //                 ([$d($qg:tt)& *], $t1:ty, $t2:ty, $t3:ty, $t4:ty) => { $pair<$d($qg),*, $t1, $pair<$d($qg),*, $t2, $pair<$d($qg),*, $t3, $single<$d($qg),*, $t4>>>> };
-        //                 ([$d($qg:tt)& *], $t1:ty, $t2:ty, $t3:ty, $t4:ty, $t5:ty)
-        //                     => { $pair<$d($qg),*, $t1, $pair<$d($qg),*, $t2, $pair<$d($qg),*, $t3, $pair<$d($qg),*, $t4, $single<$d($qg),*, $t5>>>>> };
-        //                 ([$d($qg:tt)& *], $t1:ty, $t2:ty, $t3:ty, $t4:ty, $t5:ty, $t6:ty)
-        //                     => { $pair<$d($qg),*, $t1, $pair<$d($qg),*, $t2, $pair<$d($qg),*, $t3, $pair<$d($qg),*, $t4, $pair<$d($qg),*, $t5, $single<$d($qg),*, $t6>>>>>> };
-        //                 ([$d($qg:tt)& *], $t1:ty, $t2:ty, $t3:ty, $t4:ty, $t5:ty, $t6:ty, $t7:ty)
-        //                     => { $pair<$d($qg),*, $t1, $pair<$d($qg),*, $t2, $pair<$d($qg),*, $t3, $pair<$d($qg),*, $t4, $pair<$d($qg),*, $t5, $pair<$d($qg),*, $t6, $single<$d($qg),*, $t7>>>>>>> };
-        //                 ([$d($qg:tt)& *], $t1:ty, $t2:ty, $t3:ty, $t4:ty, $t5:ty, $t6:ty, $t7:ty, $t8:ty)
-        //                     => { $pair<$d($qg),*, $t1, $pair<$d($qg),*, $t2, $pair<$d($qg),*, $t3, $pair<$d($qg),*, $t4, $pair<$d($qg),*, $t5, $pair<$d($qg),*, $t6, $pair<$d($qg),*, $t7, $single<$d($qg),*, $t8>>>>>>>> };
-
-        //                 () => { $empty };
-        //                 ($t1:ty) => { $single<$t1> };
-        //                 ($t1:ty, $t2:ty) => { $pair<$t1, $single<$t2>> };
-        //                 ($t1:ty, $t2:ty, $t3:ty) => { $pair<$t1, $pair<$t2, $single<$t3>>> };
-        //                 ($t1:ty, $t2:ty, $t3:ty, $t4:ty) => { $pair<$t1, $pair<$t2, $pair<$t3, $single<$t4>>>> };
-        //                 ($t1:ty, $t2:ty, $t3:ty, $t4:ty, $t5:ty)
-        //                     => { $pair<$t1, $pair<$t2, $pair<$t3, $pair<$t4, $single<$t5>>>>> };
-        //                 ($t1:ty, $t2:ty, $t3:ty, $t4:ty, $t5:ty, $t6:ty)
-        //                     => { $pair<$t1, $pair<$t2, $pair<$t3, $pair<$t4, $pair<$t5, $single<$t6>>>>>> };
-        //                 ($t1:ty, $t2:ty, $t3:ty, $t4:ty, $t5:ty, $t6:ty, $t7:ty)
-        //                     => { $pair<$t1, $pair<$t2, $pair<$t3, $pair<$t4, $pair<$t5, $pair<$t6, $single<$t7>>>>>>> };
-        //                 ($t1:ty, $t2:ty, $t3:ty, $t4:ty, $t5:ty, $t6:ty, $t7:ty, $t8:ty)
-        //                     => { $pair<$t1, $pair<$t2, $pair<$t3, $pair<$t4, $pair<$t5, $pair<$t6, $pair<$t7, $single<$t8>>>>>>>> };
-        //             }
-        //         };
-        //     }
-        // )?
     };
 }
+
+define_queue_core!(
+    lifetimes => [];
+    generics => [T: & Q:];
+    elements => [];
+    names => {
+        traits: { queue: InQueue, non_empty_queue: InNonEmptyQueue },
+        structs: { empty: InEmpty, single: InSingle, pair: InPair }
+    };
+);
