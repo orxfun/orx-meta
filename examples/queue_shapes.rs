@@ -1,8 +1,8 @@
 #![allow(dead_code)]
 
-use orx_meta::define_queue;
+use orx_meta::define_queue_core;
 
-define_queue!(
+define_queue_core!(
     elements => [Draw];
     names => {
         traits: { queue: DrawQueue, non_empty_queue: NonEmptyDrawQueue },

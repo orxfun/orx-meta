@@ -1,14 +1,15 @@
 #![allow(dead_code)]
 
 use crate::{
-    define_queue, define_queue_builder, define_queue_composition, define_queue_tuple_transformation,
+    define_queue_builder, define_queue_composition, define_queue_core,
+    define_queue_tuple_transformation,
 };
 
 // bounds
 
 pub trait Req {}
 
-define_queue!(
+define_queue_core!(
     elements => [Req];
     names => {
         traits: { queue: Queue, non_empty_queue: NonEmptyQueue },
