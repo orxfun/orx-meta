@@ -83,7 +83,7 @@ macro_rules! define_queue {
         queue_of => $queue_of:ident;
     ) => {
         crate::define_queue_core_zzz!(lifetimes => [$($g_lt)& *];generics => [$($g:$($g_bnd$(< $( $g_bnd_g ),* >)?)| *)& *];elements => [$( $el_bnd $( < $( $el_bnd_g ),* > )?)& * ];names => { traits: { queue: $q, non_empty_queue: $q_ne}, structs: { empty: $empty, single: $single, pair: $pair}};);
-        crate::define_queue_of!(lifetimes => [$($g_lt)& *];generics => [$( $g: $( $g_bnd $( < $( $g_bnd_g ),* > )? )| * )& * ];queue => {traits: $q, $q_ne; structs: $empty, $single, $pair;};queue_of => $queue_of;);
+        crate::define_queue_of_zzz!(lifetimes => [$($g_lt)& *];generics => [$( $g: $( $g_bnd $( < $( $g_bnd_g ),* > )? )| * )& * ];queue => {traits: $q, $q_ne; structs: $empty, $single, $pair;};queue_of => $queue_of;);
     };
 }
 

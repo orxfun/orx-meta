@@ -2,12 +2,12 @@
 
 use crate::define_queue_core;
 
+#[macro_export]
 macro_rules! define_queue_of {
     (
         lt => [$($g_lt:tt), *];
         generics => [ $( $g:tt $( : $( $g_bnd:ident $( < $( $g_bnd_g:tt ),* > )? )| * )? ), * ];
-        elements => [ $( $el_bnd:ident $( < $( $el_bnd_g:tt ),* > )? )| * ];
-        queue => [$q:ident, $q_ne:ident | $empty:ident, $single:ident, $pair:ident];
+        queue => [$q:ident, $q_ne:ident ; $empty:ident, $single:ident, $pair:ident];
         queue_of => $queue_of:ident;
     ) => {
         macro_rules! $queue_of {
@@ -309,8 +309,7 @@ impl<'a, T, F: Req, B: Q<'a, T>> Req for Pr<'a, T, F, B> {}
 define_queue_of!(
     lt => ['a];
     generics => [T];
-    elements => [];
-    queue => [ Q, NeQ | Em, Sng, Pr ];
+    queue => [ Q, NeQ ; Em, Sng, Pr ];
     queue_of => q;
 );
 

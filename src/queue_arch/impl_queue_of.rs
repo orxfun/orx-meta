@@ -9,7 +9,7 @@ macro_rules! with_dollar_sign {
 // $pair<$($g_lt ,)* $($g ,)* F, B>
 
 #[macro_export]
-macro_rules! define_queue_of {
+macro_rules! define_queue_of_zzz {
     (
         lifetimes => [$($g_lt:tt)& *];
         generics => [$($g:tt:$($g_bnd:ident$(< $( $g_bnd_g:tt ),* >)?)| *)& *];
