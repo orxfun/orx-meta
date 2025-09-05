@@ -4,11 +4,12 @@ macro_rules! define_queue_core {
         lt => [$($g_lt:tt), *];
         generics => [ $( $g:tt $( : $( $g_bnd:ident $( < $( $g_bnd_g:tt ),* > )? )| * )? ), * ];
         elements => [ $( $el_bnd:ident $( < $( $el_bnd_g:tt ),* > )? )| * ];
-        queue => [$q:ident, $q_ne:ident | $empty:ident, $single:ident, $pair:ident];
+        queue => [$q:ident, $q_ne:ident ; $empty:ident, $single:ident, $pair:ident];
     ) =>
     {
         // trait: queue
 
+        #[allow(dead_code)]
         pub trait $q<$($g_lt ,)* $($g ,)*>
         where
             Self: $( $el_bnd $( < $( $el_bnd_g ),* > )? + ) *,
@@ -35,6 +36,7 @@ macro_rules! define_queue_core {
 
         // trait non-empty queue
 
+        #[allow(dead_code)]
         pub trait $q_ne<$($g_lt ,)* $($g ,)*>: $q<$($g_lt ,)* $($g ,)*>
         where
             Self: $( $el_bnd $( < $( $el_bnd_g ),* > )? + ) *,
@@ -147,15 +149,15 @@ macro_rules! define_queue_core {
             }
         }
 
-        impl<$($g_lt ,)* X1, $($g ,)*> From<X1> for $single<$($g_lt ,)* $($g ,)* X1>
-        where
-            X1: $( $el_bnd $( < $( $el_bnd_g ),* > )? + ) *,
-            $( $g: $( $( $g_bnd $( < $( $g_bnd_g ),* > )? + )* )? ), *
-        {
-            fn from(x: X1) -> Self {
-                $single::new(x)
-            }
-        }
+        // impl<$($g_lt ,)* X1, $($g ,)*> From<X1> for $single<$($g_lt ,)* $($g ,)* X1>
+        // where
+        //     X1: $( $el_bnd $( < $( $el_bnd_g ),* > )? + ) *,
+        //     $( $g: $( $( $g_bnd $( < $( $g_bnd_g ),* > )? + )* )? ), *
+        // {
+        //     fn from(x: X1) -> Self {
+        //         $single::new(x)
+        //     }
+        // }
 
         impl<$($g_lt ,)* F, $($g ,)*> core::fmt::Debug for $single<$($g_lt ,)* $($g ,)* F>
         where

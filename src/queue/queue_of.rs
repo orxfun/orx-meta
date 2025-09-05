@@ -300,7 +300,7 @@ define_queue_core!(
     lt => ['a];
     generics => [T];
     elements => [Req];
-    queue => [ Q, NeQ | Em, Sng, Pr ];
+    queue => [ Q, NeQ ; Em, Sng, Pr ];
 );
 impl<'a, T> Req for Em<'a, T> {}
 impl<'a, T, F: Req> Req for Sng<'a, T, F> {}
