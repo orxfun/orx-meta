@@ -41,42 +41,23 @@ pub trait Computation {
     fn run(&self, input: Self::Input) -> Self::Output;
 }
 
-// define_queue!(
-//     lt => [];
-//     generics => [];
-//     elements => [Computation];
-//     queue => [ CompQ, CompNeQ ; CompEmpty, CompSingle, CompPair ];
-//     queue_of => out_of;
-//     builder => CompBuilder;
-// );
-// impl Computation for CompEmpty {
-//     type Input = InEmpty;
-//     type Output = OutEmpty;
-//     fn run(&self, _: Self::Input) -> Self::Output {
-//         Default::default()
-//     }
-// }
-// impl<F: Computation> Computation for CompSingle<F> {
-//     type Input = F::Input;
-//     type Output = F::Output;
-//     fn run(&self, input: Self::Input) -> Self::Output {
-//         self.f.run(input)
-//     }
-// }
-// impl<F: Computation, B: CompQ> Computation for CompPair<F, B> {
-//     type Input = InPair<F::Input, B::Input>;
-//     type Output = OutEmpty;
-//     fn run(&self, input: Self::Input) -> Self::Output {
-//         return Default::default();
-//     }
-// }
-
 // computation queue
 
 pub trait Computations {
     type Input: InQ;
     type Output: OutQ;
     fn run(&self, input: Self::Input) -> Self::Output;
+}
+macro_rules! impl_computations_from_computation {
+    ($comp:ty) => {
+        impl Computations for $comp {
+            type Input = InSingle<<Self as Computation>::Input>;
+            type Output = OutSingle<<Self as Computation>::Output>;
+            fn run(&self, input: Self::Input) -> Self::Output {
+                OutSingle::new(<Self as Computation>::run(self, input.into_front()))
+            }
+        }
+    };
 }
 
 define_queue!(
@@ -135,13 +116,7 @@ mod example {
             input
         }
     }
-    impl Computations for AddNumToSeries {
-        type Input = InSingle<<Self as Computation>::Input>;
-        type Output = OutSingle<<Self as Computation>::Output>;
-        fn run(&self, input: Self::Input) -> Self::Output {
-            OutSingle::new(<Self as Computation>::run(self, input.into_front()))
-        }
-    }
+    impl_computations_from_computation!(AddNumToSeries);
 
     struct LenOfString;
     impl Computation for LenOfString {
@@ -151,13 +126,7 @@ mod example {
             input.len()
         }
     }
-    impl Computations for LenOfString {
-        type Input = InSingle<<Self as Computation>::Input>;
-        type Output = OutSingle<<Self as Computation>::Output>;
-        fn run(&self, input: Self::Input) -> Self::Output {
-            OutSingle::new(<Self as Computation>::run(self, input.into_front()))
-        }
-    }
+    impl_computations_from_computation!(LenOfString);
 
     struct FirstLetter;
     impl Computation for FirstLetter {
@@ -167,13 +136,7 @@ mod example {
             input.chars().next()
         }
     }
-    impl Computations for FirstLetter {
-        type Input = InSingle<<Self as Computation>::Input>;
-        type Output = OutSingle<<Self as Computation>::Output>;
-        fn run(&self, input: Self::Input) -> Self::Output {
-            OutSingle::new(<Self as Computation>::run(self, input.into_front()))
-        }
-    }
+    impl_computations_from_computation!(FirstLetter);
 
     // #[test]
     fn adhoc_computations() {
