@@ -1,10 +1,10 @@
 #[macro_export]
-macro_rules! define_queue_builder {
+macro_rules! define_queue_builder_zzz {
     (
         queues => { trait: $q:ident, empty: $empty:ident, single: $single:ident, pair: $pair:ident };
         builder => $builder:ident;
     ) => {
-        define_queue_builder!(
+        define_queue_builder_zzz!(
             lifetimes => [];
             generics => [];
             queues => { trait: $q, empty: $empty, single: $single, pair: $pair };
@@ -17,7 +17,7 @@ macro_rules! define_queue_builder {
         queues => { trait: $q:ident, empty: $empty:ident, single: $single:ident, pair: $pair:ident };
         builder => $builder:ident;
     ) => {
-        define_queue_builder!(
+        define_queue_builder_zzz!(
             lifetimes => [];
             generics => [$($g:$($g_bnd$(< $( $g_bnd_g ),* >)?)| *)& *];
             queues => { trait: $q, empty: $empty, single: $single, pair: $pair };
@@ -30,7 +30,7 @@ macro_rules! define_queue_builder {
         queues => { trait: $q:ident, empty: $empty:ident, single: $single:ident, pair: $pair:ident };
         builder => $builder:ident;
     ) => {
-        define_queue_builder!(
+        define_queue_builder_zzz!(
             lifetimes => [$($g_lt)& *];
             generics => [];
             queues => { trait: $q, empty: $empty, single: $single, pair: $pair };

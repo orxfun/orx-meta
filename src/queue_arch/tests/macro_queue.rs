@@ -1,30 +1,18 @@
 #![allow(dead_code)]
 
 use crate::{
-    define_queue, define_queue_builder, define_queue_composition, define_queue_tuple_transformation,
+    define_queue_builder_zzz, define_queue_composition, define_queue_core_zzz,
+    define_queue_tuple_transformation_zzz,
 };
 
-// bounds
-
-pub trait Req {}
-
-define_queue!(
-    elements => [Req];
+define_queue_core_zzz!(
     names => {
         traits: { queue: Queue, non_empty_queue: NonEmptyQueue },
         structs: { empty: EmptyQueue, single: Single, pair: Pair }
     };
 );
-impl Req for EmptyQueue {}
-impl<F: Req> Req for Single<F> {}
-impl<F: Req, B: Queue> Req for Pair<F, B> {}
 
 // tests
-
-impl Req for char {}
-impl Req for i32 {}
-impl Req for String {}
-impl Req for bool {}
 
 #[test]
 fn one() {
@@ -105,12 +93,13 @@ fn four() {
 }
 
 define_queue_composition!(
-    elements => [Req];
     queues => { trait: Queue, empty: EmptyQueue, single: Single, pair: Pair };
     composition => QueueComposition;
 );
 #[test]
 fn composition() {
+    // start from empty
+
     type C = QueueComposition;
 
     let x = C::empty();
@@ -137,6 +126,7 @@ fn composition() {
 
     assert!(x.is_empty());
 
+    // start from single
     let x = C::single('x');
     let x = C::compose(x, 32);
     let x = C::compose(x, String::from("xyz"));
@@ -161,7 +151,7 @@ fn composition() {
     assert!(x.is_empty());
 }
 
-define_queue_builder!(
+define_queue_builder_zzz!(
     queues => { trait: Queue, empty: EmptyQueue, single: Single, pair: Pair };
     builder => Builder;
 );
@@ -183,6 +173,16 @@ fn builder() {
     let builder: Builder<EmptyQueue, Target> = builder.push_back(true);
 
     let x = builder.finish();
+    assert_eq!(x.len(), 4);
+
+    // or briefly
+
+    let x = Builder::<Target, _>::new()
+        .push_back('x')
+        .push_back(32)
+        .push_back("xyz".to_string())
+        .push_back(true)
+        .finish();
 
     assert_eq!(x.front(), &'x');
     let (f, x) = x.pop();
@@ -204,8 +204,7 @@ fn builder() {
     assert_eq!(f, true);
 }
 
-define_queue_tuple_transformation!(
-    elements => [Req];
+define_queue_tuple_transformation_zzz!(
     queues => { trait: Queue, empty: EmptyQueue, single: Single, pair: Pair };
 );
 #[test]

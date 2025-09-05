@@ -1,19 +1,16 @@
 #![allow(dead_code)]
 
-// bounds
-
-trait Req {}
-
-// traits
-
 trait Queue {
-    type PushBack<X: Req>: NonEmptyQueue;
+    // traits
+    type PushBack<X>: NonEmptyQueue;
 
-    type Front: Req;
+    type Front;
 
     type Back: Queue;
 
-    fn push_back<X: Req>(self, x: X) -> Self::PushBack<X>;
+    type Elevated: Queue;
+
+    fn push_back<X>(self, x: impl Into<Single<X>>) -> Self::PushBack<X>;
 
     fn len(&self) -> usize;
 
@@ -36,20 +33,21 @@ trait NonEmptyQueue: Queue {
 
 #[derive(Clone, Copy, Debug)]
 enum Never {}
-impl Req for Never {}
 
 #[derive(Clone, Copy, Debug, Default)]
 struct EmptyQueue;
 
 impl Queue for EmptyQueue {
-    type PushBack<X: Req> = Single<X>;
+    type PushBack<X> = Single<X>;
 
     type Front = Never;
 
     type Back = Self;
 
-    fn push_back<X: Req>(self, x: X) -> Self::PushBack<X> {
-        Single(x)
+    type Elevated = EmptyQueue;
+
+    fn push_back<X>(self, x: impl Into<Single<X>>) -> Self::PushBack<X> {
+        x.into()
     }
 
     fn len(&self) -> usize {
@@ -60,17 +58,19 @@ impl Queue for EmptyQueue {
 // impl: single
 
 #[derive(Clone, Copy, Debug)]
-struct Single<F: Req>(F);
+struct Single<F>(F);
 
-impl<F: Req> Queue for Single<F> {
-    type PushBack<X: Req> = Pair<F, Single<X>>;
+impl<F> Queue for Single<F> {
+    type PushBack<X> = Pair<F, Single<X>>;
 
     type Front = F;
 
     type Back = EmptyQueue;
 
-    fn push_back<X: Req>(self, x: X) -> Self::PushBack<X> {
-        Pair(self.0, Single(x))
+    type Elevated = Single<Single<F>>;
+
+    fn push_back<X>(self, x: impl Into<Single<X>>) -> Self::PushBack<X> {
+        Pair(self.0, x.into())
     }
 
     fn len(&self) -> usize {
@@ -78,7 +78,7 @@ impl<F: Req> Queue for Single<F> {
     }
 }
 
-impl<F: Req> NonEmptyQueue for Single<F> {
+impl<F> NonEmptyQueue for Single<F> {
     fn into_front(self) -> Self::Front {
         self.0
     }
@@ -99,16 +99,18 @@ impl<F: Req> NonEmptyQueue for Single<F> {
 // impl: pair
 
 #[derive(Clone, Copy, Debug)]
-struct Pair<F: Req, B: Queue>(F, B);
+struct Pair<F, B: Queue>(F, B);
 
-impl<F: Req, B: Queue> Queue for Pair<F, B> {
-    type PushBack<X: Req> = Pair<F, B::PushBack<X>>;
+impl<F, B: Queue> Queue for Pair<F, B> {
+    type PushBack<X> = Pair<F, B::PushBack<X>>;
 
     type Front = F;
 
     type Back = B;
 
-    fn push_back<X: Req>(self, x: X) -> Self::PushBack<X> {
+    type Elevated = Pair<Single<F>, B::Elevated>;
+
+    fn push_back<X>(self, x: impl Into<Single<X>>) -> Self::PushBack<X> {
         Pair(self.0, self.1.push_back(x))
     }
 
@@ -117,7 +119,7 @@ impl<F: Req, B: Queue> Queue for Pair<F, B> {
     }
 }
 
-impl<F: Req, B: Queue> NonEmptyQueue for Pair<F, B> {
+impl<F, B: Queue> NonEmptyQueue for Pair<F, B> {
     fn into_front(self) -> Self::Front {
         self.0
     }
@@ -137,7 +139,6 @@ impl<F: Req, B: Queue> NonEmptyQueue for Pair<F, B> {
 
 // composition
 
-#[derive(Clone, Copy, Default)]
 struct QueueComposition;
 
 impl QueueComposition {
@@ -145,11 +146,11 @@ impl QueueComposition {
         Default::default()
     }
 
-    fn single<X: Req>(x: X) -> Single<X> {
+    fn single<X>(x: X) -> Single<X> {
         Single(x)
     }
 
-    fn compose<C: Queue, X: Req>(q: C, x: X) -> C::PushBack<X> {
+    fn compose<C: Queue, X>(q: C, x: X) -> C::PushBack<X> {
         q.push_back(x)
     }
 }
@@ -190,19 +191,13 @@ where
 
 // tuple support - 1
 
-impl<X1> Single<X1>
-where
-    X1: Req,
-{
+impl<X1> Single<X1> {
     pub fn into_tuple(self) -> X1 {
         self.0
     }
 }
 
-impl<X1> From<X1> for Single<X1>
-where
-    X1: Req,
-{
+impl<X1> From<X1> for Single<X1> {
     fn from(x: X1) -> Self {
         Single(x)
     }
@@ -210,21 +205,13 @@ where
 
 // tuple support - 2
 
-impl<X1, X2> Pair<X1, Single<X2>>
-where
-    X1: Req,
-    X2: Req,
-{
+impl<X1, X2> Pair<X1, Single<X2>> {
     pub fn into_tuple(self) -> (X1, X2) {
         (self.0, self.1.0)
     }
 }
 
-impl<X1, X2> From<(X1, X2)> for Pair<X1, Single<X2>>
-where
-    X1: Req,
-    X2: Req,
-{
+impl<X1, X2> From<(X1, X2)> for Pair<X1, Single<X2>> {
     fn from(x: (X1, X2)) -> Self {
         Single::from(x.0).push_back(x.1)
     }
@@ -232,23 +219,13 @@ where
 
 // tuple support - 3
 
-impl<X1, X2, X3> Pair<X1, Pair<X2, Single<X3>>>
-where
-    X1: Req,
-    X2: Req,
-    X3: Req,
-{
+impl<X1, X2, X3> Pair<X1, Pair<X2, Single<X3>>> {
     pub fn into_tuple(self) -> (X1, X2, X3) {
         (self.0, self.1.0, self.1.1.0)
     }
 }
 
-impl<X1, X2, X3> From<(X1, X2, X3)> for Pair<X1, Pair<X2, Single<X3>>>
-where
-    X1: Req,
-    X2: Req,
-    X3: Req,
-{
+impl<X1, X2, X3> From<(X1, X2, X3)> for Pair<X1, Pair<X2, Single<X3>>> {
     fn from(x: (X1, X2, X3)) -> Self {
         Single::from(x.0).push_back(x.1).push_back(x.2)
     }
@@ -256,25 +233,13 @@ where
 
 // tuple support - 4
 
-impl<X1, X2, X3, X4> Pair<X1, Pair<X2, Pair<X3, Single<X4>>>>
-where
-    X1: Req,
-    X2: Req,
-    X3: Req,
-    X4: Req,
-{
+impl<X1, X2, X3, X4> Pair<X1, Pair<X2, Pair<X3, Single<X4>>>> {
     pub fn into_tuple(self) -> (X1, X2, X3, X4) {
         (self.0, self.1.0, self.1.1.0, self.1.1.1.0)
     }
 }
 
-impl<X1, X2, X3, X4> From<(X1, X2, X3, X4)> for Pair<X1, Pair<X2, Pair<X3, Single<X4>>>>
-where
-    X1: Req,
-    X2: Req,
-    X3: Req,
-    X4: Req,
-{
+impl<X1, X2, X3, X4> From<(X1, X2, X3, X4)> for Pair<X1, Pair<X2, Pair<X3, Single<X4>>>> {
     fn from(x: (X1, X2, X3, X4)) -> Self {
         Single::from(x.0)
             .push_back(x.1)
@@ -285,14 +250,7 @@ where
 
 // tuple support - 5
 
-impl<X1, X2, X3, X4, X5> Pair<X1, Pair<X2, Pair<X3, Pair<X4, Single<X5>>>>>
-where
-    X1: Req,
-    X2: Req,
-    X3: Req,
-    X4: Req,
-    X5: Req,
-{
+impl<X1, X2, X3, X4, X5> Pair<X1, Pair<X2, Pair<X3, Pair<X4, Single<X5>>>>> {
     pub fn into_tuple(self) -> (X1, X2, X3, X4, X5) {
         (self.0, self.1.0, self.1.1.0, self.1.1.1.0, self.1.1.1.1.0)
     }
@@ -300,12 +258,6 @@ where
 
 impl<X1, X2, X3, X4, X5> From<(X1, X2, X3, X4, X5)>
     for Pair<X1, Pair<X2, Pair<X3, Pair<X4, Single<X5>>>>>
-where
-    X1: Req,
-    X2: Req,
-    X3: Req,
-    X4: Req,
-    X5: Req,
 {
     fn from(x: (X1, X2, X3, X4, X5)) -> Self {
         Single::from(x.0)
@@ -318,15 +270,7 @@ where
 
 // tuple support - 6
 
-impl<X1, X2, X3, X4, X5, X6> Pair<X1, Pair<X2, Pair<X3, Pair<X4, Pair<X5, Single<X6>>>>>>
-where
-    X1: Req,
-    X2: Req,
-    X3: Req,
-    X4: Req,
-    X5: Req,
-    X6: Req,
-{
+impl<X1, X2, X3, X4, X5, X6> Pair<X1, Pair<X2, Pair<X3, Pair<X4, Pair<X5, Single<X6>>>>>> {
     pub fn into_tuple(self) -> (X1, X2, X3, X4, X5, X6) {
         (
             self.0,
@@ -341,13 +285,6 @@ where
 
 impl<X1, X2, X3, X4, X5, X6> From<(X1, X2, X3, X4, X5, X6)>
     for Pair<X1, Pair<X2, Pair<X3, Pair<X4, Pair<X5, Single<X6>>>>>>
-where
-    X1: Req,
-    X2: Req,
-    X3: Req,
-    X4: Req,
-    X5: Req,
-    X6: Req,
 {
     fn from(x: (X1, X2, X3, X4, X5, X6)) -> Self {
         Single::from(x.0)
@@ -363,14 +300,6 @@ where
 
 impl<X1, X2, X3, X4, X5, X6, X7>
     Pair<X1, Pair<X2, Pair<X3, Pair<X4, Pair<X5, Pair<X6, Single<X7>>>>>>>
-where
-    X1: Req,
-    X2: Req,
-    X3: Req,
-    X4: Req,
-    X5: Req,
-    X6: Req,
-    X7: Req,
 {
     pub fn into_tuple(self) -> (X1, X2, X3, X4, X5, X6, X7) {
         (
@@ -387,14 +316,6 @@ where
 
 impl<X1, X2, X3, X4, X5, X6, X7> From<(X1, X2, X3, X4, X5, X6, X7)>
     for Pair<X1, Pair<X2, Pair<X3, Pair<X4, Pair<X5, Pair<X6, Single<X7>>>>>>>
-where
-    X1: Req,
-    X2: Req,
-    X3: Req,
-    X4: Req,
-    X5: Req,
-    X6: Req,
-    X7: Req,
 {
     fn from(x: (X1, X2, X3, X4, X5, X6, X7)) -> Self {
         Single::from(x.0)
@@ -411,15 +332,6 @@ where
 
 impl<X1, X2, X3, X4, X5, X6, X7, X8>
     Pair<X1, Pair<X2, Pair<X3, Pair<X4, Pair<X5, Pair<X6, Pair<X7, Single<X8>>>>>>>>
-where
-    X1: Req,
-    X2: Req,
-    X3: Req,
-    X4: Req,
-    X5: Req,
-    X6: Req,
-    X7: Req,
-    X8: Req,
 {
     pub fn into_tuple(self) -> (X1, X2, X3, X4, X5, X6, X7, X8) {
         (
@@ -437,15 +349,6 @@ where
 
 impl<X1, X2, X3, X4, X5, X6, X7, X8> From<(X1, X2, X3, X4, X5, X6, X7, X8)>
     for Pair<X1, Pair<X2, Pair<X3, Pair<X4, Pair<X5, Pair<X6, Pair<X7, Single<X8>>>>>>>>
-where
-    X1: Req,
-    X2: Req,
-    X3: Req,
-    X4: Req,
-    X5: Req,
-    X6: Req,
-    X7: Req,
-    X8: Req,
 {
     fn from(x: (X1, X2, X3, X4, X5, X6, X7, X8)) -> Self {
         Single::from(x.0)
@@ -460,11 +363,6 @@ where
 }
 
 // tests
-
-impl Req for char {}
-impl Req for i32 {}
-impl Req for String {}
-impl Req for bool {}
 
 #[test]
 fn one() {
@@ -614,7 +512,20 @@ fn builder() {
     let builder: Builder<EmptyQueue, Target> = builder.push_back(true);
 
     let x = builder.finish();
+    assert_eq!(x.len(), 4);
 
+    // alternatively
+
+    type QueueOf<A, B, C, D> = Pair<A, Pair<B, Pair<C, Single<D>>>>;
+
+    type Target2 = QueueOf<char, i32, String, bool>;
+
+    let x = Builder::<Target2, _>::new()
+        .push_back('x')
+        .push_back(32)
+        .push_back("xyz".to_string())
+        .push_back(true)
+        .finish();
     assert_eq!(x.front(), &'x');
     let (f, x) = x.pop_front();
     assert_eq!(f, 'x');

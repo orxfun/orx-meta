@@ -1,8 +1,8 @@
 #![allow(dead_code)]
 
-use orx_meta::define_queue;
+use orx_meta::define_queue_core_zzz;
 
-define_queue!(
+define_queue_core_zzz!(
     elements => [Draw];
     names => {
         traits: { queue: DrawQueue, non_empty_queue: NonEmptyDrawQueue },
@@ -56,7 +56,7 @@ impl<Q: DrawQueue> Screen<Q> {
         (Screen(b), f)
     }
 
-    fn run(&self) {
+    fn drap_all_shapes(&self) {
         println!("=> Drawing {} shapes on the screen", self.0.len());
         self.0.draw();
         println!();
@@ -105,7 +105,7 @@ fn main() {
             height: 10,
             label: String::from("OK"),
         });
-    screen.run();
+    screen.drap_all_shapes();
 
     // add two more shapes and pop the first shape in the front
     let screen = screen
@@ -126,5 +126,5 @@ fn main() {
     let (screen, front) = screen.pop();
     assert_eq!(front.options, vec![String::from("Yes"),]);
 
-    screen.run();
+    screen.drap_all_shapes();
 }

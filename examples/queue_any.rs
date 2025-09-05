@@ -1,6 +1,6 @@
-use orx_meta::{define_queue, define_queue_tuple_transformation};
+use orx_meta::{define_queue_core_zzz, define_queue_tuple_transformation_zzz};
 
-define_queue!(
+define_queue_core_zzz!(
     names => {
         traits: { queue: Queue, non_empty_queue: NonEmptyQueue },
         structs: { empty: Empty, single: Single, pair: Pair }
@@ -28,7 +28,7 @@ fn as_queue_of_different_type_elements() {
     assert!(q.is_empty());
 }
 
-define_queue_tuple_transformation!(
+define_queue_tuple_transformation_zzz!(
     queues => { trait: Queue, empty: Empty, single: Single, pair: Pair };
 );
 

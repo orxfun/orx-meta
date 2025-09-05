@@ -1,7 +1,8 @@
 #![allow(dead_code)]
 
 use crate::{
-    define_queue, define_queue_builder, define_queue_composition, define_queue_tuple_transformation,
+    define_queue_builder_zzz, define_queue_composition, define_queue_core_zzz,
+    define_queue_tuple_transformation_zzz,
 };
 
 // bounds
@@ -14,7 +15,7 @@ pub trait Req<'i> {} // marker requirement that combines Sth<'i> and Clone
 
 impl<'i, X> Req<'i> for X where X: Sth<'i> + Clone {}
 
-define_queue!(
+define_queue_core_zzz!(
     lifetimes => ['i];
     elements => [Req<'i>];
     names => {
@@ -168,7 +169,7 @@ fn composition() {
     assert!(x.is_empty());
 }
 
-define_queue_builder!(
+define_queue_builder_zzz!(
     lifetimes => ['i];
     queues => { trait: Queue, empty: EmptyQueue, single: Single, pair: Pair };
     builder => Builder;
@@ -212,7 +213,7 @@ fn builder() {
     assert_eq!(f, true);
 }
 
-define_queue_tuple_transformation!(
+define_queue_tuple_transformation_zzz!(
     lifetimes => ['i];
     elements => [Req<'i>];
     queues => { trait: Queue, empty: EmptyQueue, single: Single, pair: Pair };

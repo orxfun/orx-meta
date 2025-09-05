@@ -1,11 +1,11 @@
 #![allow(dead_code)]
 
 #[macro_export]
-macro_rules! define_queue {
+macro_rules! define_queue_core_zzz {
     (
         names => {traits: {queue: $q:ident,non_empty_queue: $q_ne:ident},structs: {empty: $empty:ident,single: $single:ident,pair: $pair:ident}};
     ) => {
-        define_queue!(
+        define_queue_core_zzz!(
             lifetimes => [];
             generics => [];
             elements => [];
@@ -17,7 +17,7 @@ macro_rules! define_queue {
         elements => [$($el_bnd:ident$(< $( $el_bnd_g:tt ),* >)?)& *];
         names => {traits: {queue: $q:ident,non_empty_queue: $q_ne:ident},structs: {empty: $empty:ident,single: $single:ident,pair: $pair:ident}};
     ) => {
-        define_queue!(
+        define_queue_core_zzz!(
             lifetimes => [];
             generics => [];
             elements => [$( $el_bnd $( < $( $el_bnd_g ),* > )?)& * ];
@@ -30,7 +30,7 @@ macro_rules! define_queue {
         elements => [$($el_bnd:ident$(< $( $el_bnd_g:tt ),* >)?)& *];
         names => {traits: {queue: $q:ident,non_empty_queue: $q_ne:ident},structs: {empty: $empty:ident,single: $single:ident,pair: $pair:ident}};
     ) => {
-        define_queue!(
+        define_queue_core_zzz!(
             lifetimes => [$($g_lt)& *];
             generics => [];
             elements => [$( $el_bnd $( < $( $el_bnd_g ),* > )?)& * ];
@@ -43,7 +43,7 @@ macro_rules! define_queue {
         elements => [$($el_bnd:ident$(< $( $el_bnd_g:tt ),* >)?)& *];
         names => {traits: {queue: $q:ident,non_empty_queue: $q_ne:ident},structs: {empty: $empty:ident,single: $single:ident,pair: $pair:ident}};
     ) => {
-        define_queue!(
+        define_queue_core_zzz!(
             lifetimes => [];
             generics => [$( $g: $( $g_bnd $( < $( $g_bnd_g ),* > )? )| * )& * ];
             elements => [$( $el_bnd $( < $( $el_bnd_g ),* > )?)& * ];
@@ -61,7 +61,8 @@ macro_rules! define_queue {
 
         generics => [
             $(
-                $g:tt:
+                $g:tt
+                :
                 $(
                     $g_bnd:ident
                     $(
@@ -91,6 +92,10 @@ macro_rules! define_queue {
                 pair: $pair:ident
             }
         };
+
+        $(queue_of => $q_of:ident;)?
+
+        $(builder => $builder:ident;)?
     ) => {
         // trait: queue
 
@@ -146,7 +151,7 @@ macro_rules! define_queue {
 
         // struct empty
 
-        #[derive(Clone, Copy, Debug, PartialEq, Eq)]
+        #[derive(Clone, Copy, PartialEq, Eq)]
         pub struct $empty<$($g_lt ,)* $($g ,)*>
         where
             $( $g: $( $g_bnd $(<$( $g_bnd_g ),*> )? + ) * , )*
@@ -163,11 +168,20 @@ macro_rules! define_queue {
             }
         }
 
+        impl<$($g_lt ,)* $($g ,)*> core::fmt::Debug for $empty<$($g_lt ,)* $($g ,)*>
+        where
+            $( $g: $( $g_bnd $(<$( $g_bnd_g ),*> )? + ) * , )*
+        {
+            fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
+                write!(f, "{}", stringify!($empty))
+            }
+        }
+
         impl<$($g_lt ,)* $($g ,)*> $q<$($g_lt ,)* $($g ,)*> for $empty<$($g_lt ,)* $($g ,)*>
         where
             $( $g: $( $g_bnd $(<$( $g_bnd_g ),*> )? + ) * , )*
         {
-            type PushBack<Elem> = $single<$($g_lt ,)* Elem, $($g ,)*>
+            type PushBack<Elem> = $single<$($g_lt ,)* $($g ,)* Elem>
             where
                 Elem: $( $el_bnd $( < $( $el_bnd_g ),* > )? + ) *;
 
@@ -189,18 +203,18 @@ macro_rules! define_queue {
 
         // struct single
 
-        #[derive(Clone, Copy, Debug, PartialEq, Eq)]
-        pub struct $single<$($g_lt ,)* F, $($g ,)*>
+        #[derive(Clone, Copy, PartialEq, Eq)]
+        pub struct $single<$($g_lt ,)* $($g ,)* Front>
         where
-            F: $( $el_bnd $( < $( $el_bnd_g ),* > )? + ) *,
+            Front: $( $el_bnd $( < $( $el_bnd_g ),* > )? + ) *,
             $( $g: $( $g_bnd $(<$( $g_bnd_g ),*> )? + ) * , )*
         {
             phantom: core::marker::PhantomData<$(&$g_lt)* ($($g ,)*)>,
             empty: $empty<$($g_lt ,)* $($g ,)*>,
-            f: F,
+            f: Front,
         }
 
-        impl<$($g_lt ,)* F, $($g ,)*> $single<$($g_lt ,)* F, $($g ,)*>
+        impl<$($g_lt ,)* F, $($g ,)*> $single<$($g_lt ,)* $($g ,)* F>
         where
             F: $( $el_bnd $( < $( $el_bnd_g ),* > )? + ) *,
             $( $g: $( $g_bnd $(<$( $g_bnd_g ),*> )? + ) * , )*
@@ -214,12 +228,33 @@ macro_rules! define_queue {
             }
         }
 
-        impl<$($g_lt ,)* F, $($g ,)*> $q<$($g_lt ,)* $($g ,)*> for $single<$($g_lt ,)* F, $($g ,)*>
+        impl<$($g_lt ,)* X1, $($g ,)*> From<X1> for $single<$($g_lt ,)* $($g ,)* X1>
+        where
+            X1: $( $el_bnd $( < $( $el_bnd_g ),* > )? + ) *,
+            $( $g: $( $g_bnd $(<$( $g_bnd_g ),*> )? + ) * , )*
+        {
+            fn from(x: X1) -> Self {
+                $single::new(x)
+            }
+        }
+
+        impl<$($g_lt ,)* F, $($g ,)*> core::fmt::Debug for $single<$($g_lt ,)* $($g ,)* F>
+        where
+            F: core::fmt::Debug,
+            F: $( $el_bnd $( < $( $el_bnd_g ),* > )? + ) *,
+            $( $g: $( $g_bnd $(<$( $g_bnd_g ),*> )? + ) * , )*
+        {
+            fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
+                write!(f, "{}({:?})", stringify!($single), self.f)
+            }
+        }
+
+        impl<$($g_lt ,)* F, $($g ,)*> $q<$($g_lt ,)* $($g ,)*> for $single<$($g_lt ,)* $($g ,)* F>
         where
             F: $( $el_bnd $( < $( $el_bnd_g ),* > )? + ) *,
             $( $g: $( $g_bnd $(<$( $g_bnd_g ),*> )? + ) * , )*
         {
-            type PushBack<Elem> = $pair<$($g_lt ,)* F, $single<$($g_lt ,)* Elem, $($g ,)*>, $($g ,)*>
+            type PushBack<Elem> = $pair<$($g_lt ,)* $($g ,)* F, $single<$($g_lt ,)* $($g ,)* Elem>>
             where
                 Elem: $( $el_bnd $( < $( $el_bnd_g ),* > )? + ) *;
 
@@ -239,7 +274,7 @@ macro_rules! define_queue {
             }
         }
 
-        impl<$($g_lt ,)* F, $($g ,)*> $q_ne<$($g_lt ,)* $($g ,)*> for $single<$($g_lt ,)* F, $($g ,)*>
+        impl<$($g_lt ,)* F, $($g ,)*> $q_ne<$($g_lt ,)* $($g ,)*> for $single<$($g_lt ,)* $($g ,)* F>
         where
             F: $( $el_bnd $( < $( $el_bnd_g ),* > )? + ) *,
             $( $g: $( $g_bnd $(<$( $g_bnd_g ),*> )? + ) * , )*
@@ -283,19 +318,19 @@ macro_rules! define_queue {
 
         // struct pair
 
-        #[derive(Clone, Copy, Debug, PartialEq, Eq)]
-        pub struct $pair<$($g_lt ,)* F, B, $($g ,)*>
+        #[derive(Clone, Copy, PartialEq, Eq)]
+        pub struct $pair<$($g_lt ,)* $($g ,)* Front, Back>
         where
-            F: $( $el_bnd $( < $( $el_bnd_g ),* > )? + ) *,
-            B: $q<$($g_lt ,)* $($g ,)*>,
+            Front: $( $el_bnd $( < $( $el_bnd_g ),* > )? + ) *,
+            Back: $q<$($g_lt ,)* $($g ,)*>,
             $( $g: $( $g_bnd $(<$( $g_bnd_g ),*> )? + ) * , )*
         {
             phantom: core::marker::PhantomData<$(&$g_lt)* ($($g ,)*)>,
-            f: F,
-            b: B,
+            f: Front,
+            b: Back,
         }
 
-        impl<$($g_lt ,)* F, B, $($g ,)*> $pair<$($g_lt ,)* F, B, $($g ,)*>
+        impl<$($g_lt ,)* F, B, $($g ,)*> $pair<$($g_lt ,)* $($g ,)* F, B>
         where
             F: $( $el_bnd $( < $( $el_bnd_g ),* > )? + ) *,
             B: $q<$($g_lt ,)* $($g ,)*>,
@@ -310,13 +345,26 @@ macro_rules! define_queue {
             }
         }
 
-        impl<$($g_lt ,)* F, B, $($g ,)*> $q<$($g_lt ,)* $($g ,)*> for $pair<$($g_lt ,)* F, B, $($g ,)*>
+        impl<$($g_lt ,)* F, B, $($g ,)*> core::fmt::Debug for $pair<$($g_lt ,)* $($g ,)* F, B>
+        where
+            F: core::fmt::Debug,
+            B: core::fmt::Debug,
+            F: $( $el_bnd $( < $( $el_bnd_g ),* > )? + ) *,
+            B: $q<$($g_lt ,)* $($g ,)*>,
+            $( $g: $( $g_bnd $(<$( $g_bnd_g ),*> )? + ) * , )*
+        {
+            fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
+                write!(f, "{}({:?}, {:?})", stringify!($pair), self.f, self.b)
+            }
+        }
+
+        impl<$($g_lt ,)* F, B, $($g ,)*> $q<$($g_lt ,)* $($g ,)*> for $pair<$($g_lt ,)* $($g ,)* F, B>
         where
             F: $( $el_bnd $( < $( $el_bnd_g ),* > )? + ) *,
             B: $q<$($g_lt ,)* $($g ,)*>,
             $( $g: $( $g_bnd $(<$( $g_bnd_g ),*> )? + ) * , )*
         {
-            type PushBack<Elem> = $pair<$($g_lt ,)* F, B::PushBack<Elem>, $($g ,)*>
+            type PushBack<Elem> = $pair<$($g_lt ,)* $($g ,)* F, B::PushBack<Elem>>
             where
                 Elem: $( $el_bnd $( < $( $el_bnd_g ),* > )? + ) *;
 
@@ -336,7 +384,7 @@ macro_rules! define_queue {
             }
         }
 
-        impl<$($g_lt ,)* F, B, $($g ,)*> $q_ne<$($g_lt ,)* $($g ,)*> for $pair<$($g_lt ,)* F, B, $($g ,)*>
+        impl<$($g_lt ,)* F, B, $($g ,)*> $q_ne<$($g_lt ,)* $($g ,)*> for $pair<$($g_lt ,)* $($g ,)* F, B>
         where
             F: $( $el_bnd $( < $( $el_bnd_g ),* > )? + ) *,
             B: $q<$($g_lt ,)* $($g ,)*>,
@@ -380,3 +428,13 @@ macro_rules! define_queue {
         }
     };
 }
+
+define_queue_core_zzz!(
+    lifetimes => [];
+    generics => [T: & Q:];
+    elements => [];
+    names => {
+        traits: { queue: InQueue, non_empty_queue: InNonEmptyQueue },
+        structs: { empty: InEmpty, single: InSingle, pair: InPair }
+    };
+);

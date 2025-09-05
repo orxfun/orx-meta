@@ -1,7 +1,5 @@
-mod manual_queue;
-mod manual_queue_with_bounds;
-mod manual_queue_with_lt_bounds;
-
-mod macro_queue;
-mod macro_queue_with_bounds;
-mod macro_queue_with_lt_bounds;
+mod builder;
+mod combined;
+mod core;
+mod queue_of;
+mod tuple;
