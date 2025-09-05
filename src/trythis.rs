@@ -1,11 +1,11 @@
 #![allow(dead_code)]
-use crate::define_queue_core;
+use crate::define_queue_core_zzz;
 
 // inputs
 
 pub trait Input {}
 
-define_queue_core!(
+define_queue_core_zzz!(
     elements => [Input];
     names => {
         traits: { queue: InQueue, non_empty_queue: InNonEmptyQueue },
@@ -38,7 +38,7 @@ macro_rules! queue_of {
 
 pub trait Output {}
 
-define_queue_core!(
+define_queue_core_zzz!(
     elements => [Output];
     names => {
         traits: { queue: OutQueue, non_empty_queue: OutNonEmptyQueue },
@@ -65,7 +65,7 @@ pub trait Computations {
     fn run(&self, input: Self::Input) -> Self::Output;
 }
 
-define_queue_core!(
+define_queue_core_zzz!(
     elements => [Computations];
     names => {
         traits: { queue: CompQueue, non_empty_queue: CompNonEmptyQueue },

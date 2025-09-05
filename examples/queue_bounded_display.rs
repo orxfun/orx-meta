@@ -1,7 +1,7 @@
-use orx_meta::define_queue_core;
+use orx_meta::define_queue_core_zzz;
 use std::fmt::Display;
 
-define_queue_core!(
+define_queue_core_zzz!(
     elements => [Display];
     names => {
         traits: { queue: DisplayQueue, non_empty_queue: NonEmptyDisplayQueue },

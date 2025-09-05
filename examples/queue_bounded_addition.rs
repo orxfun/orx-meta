@@ -1,6 +1,6 @@
-use orx_meta::define_queue_core;
+use orx_meta::define_queue_core_zzz;
 
-define_queue_core!(
+define_queue_core_zzz!(
     elements => [Into<i64>];
     names => { traits: { queue: AdditiveQueue, non_empty_queue: NonEmptyAdditiveQueue },
         structs: { empty: NoNum, single: OneNum, pair: MultiNumbers }

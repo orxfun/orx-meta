@@ -1,6 +1,6 @@
-use orx_meta::{define_queue_core, define_queue_tuple_transformation};
+use orx_meta::{define_queue_core_zzz, define_queue_tuple_transformation};
 
-define_queue_core!(
+define_queue_core_zzz!(
     names => {
         traits: { queue: Queue, non_empty_queue: NonEmptyQueue },
         structs: { empty: Empty, single: Single, pair: Pair }

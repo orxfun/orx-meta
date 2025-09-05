@@ -1,7 +1,7 @@
 #![allow(dead_code)]
 
 use crate::{
-    define_queue_builder, define_queue_composition, define_queue_core,
+    define_queue_builder, define_queue_composition, define_queue_core_zzz,
     define_queue_tuple_transformation,
 };
 
@@ -15,7 +15,7 @@ pub trait Req<'i> {} // marker requirement that combines Sth<'i> and Clone
 
 impl<'i, X> Req<'i> for X where X: Sth<'i> + Clone {}
 
-define_queue_core!(
+define_queue_core_zzz!(
     lifetimes => ['i];
     elements => [Req<'i>];
     names => {

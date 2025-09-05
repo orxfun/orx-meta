@@ -1,10 +1,11 @@
 #![allow(dead_code)]
 
 use crate::{
-    define_queue_core, define_queue_builder, define_queue_composition, define_queue_tuple_transformation,
+    define_queue_builder, define_queue_composition, define_queue_core_zzz,
+    define_queue_tuple_transformation,
 };
 
-define_queue_core!(
+define_queue_core_zzz!(
     names => {
         traits: { queue: Queue, non_empty_queue: NonEmptyQueue },
         structs: { empty: EmptyQueue, single: Single, pair: Pair }

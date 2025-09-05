@@ -1,5 +1,5 @@
 use core::fmt::Debug;
-use orx_meta::{define_queue_core, define_queue_tuple_transformation};
+use orx_meta::{define_queue_core_zzz, define_queue_tuple_transformation};
 
 pub trait Analysis: Debug + Default {
     type Input<'i>: Debug + Print;
@@ -117,7 +117,7 @@ impl Print for usize {
 // # DEFINE COMPOSITION
 
 // inputs
-define_queue_core!(
+define_queue_core_zzz!(
     lifetimes => ['i];
     elements => [Debug & Print];
     names => {
@@ -144,7 +144,7 @@ impl<'i, F: Debug + Print, B: InQueue<'i>> Print for InPair<'i, F, B> {
 }
 
 // outputs
-define_queue_core!(
+define_queue_core_zzz!(
     elements => [Clone & Debug & Print];
     names => {
         traits: { queue: OutQueue, non_empty_queue: NonEmptyOutQueue },
