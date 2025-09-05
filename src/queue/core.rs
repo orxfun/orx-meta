@@ -31,6 +31,8 @@ macro_rules! define_queue_core {
 
             fn raise(self) -> Self::Raised;
 
+            fn from_raised(raised: Self::Raised) -> Self;
+
             fn len(&self) -> usize;
 
             fn is_empty(&self) -> bool {
@@ -127,6 +129,10 @@ macro_rules! define_queue_core {
                 Default::default()
             }
 
+            fn from_raised(raised: Self::Raised) -> Self{
+                raised
+            }
+
             fn len(&self) -> usize {
                 0
             }
@@ -194,6 +200,10 @@ macro_rules! define_queue_core {
 
             fn raise(self) -> Self::Raised {
                 $single::new(self)
+            }
+
+            fn from_raised(raised: Self::Raised) -> Self{
+                raised.f
             }
 
             fn len(&self) -> usize {
@@ -310,6 +320,13 @@ macro_rules! define_queue_core {
 
             fn raise(self) -> Self::Raised {
                 $pair::new($single::new(self.f), self.b.raise())
+            }
+
+
+            fn from_raised(raised: Self::Raised) -> Self{
+                let f = raised.f.f;
+                let b = B::from_raised(raised.b);
+                $pair::new(f, b)
             }
 
             fn len(&self) -> usize {
