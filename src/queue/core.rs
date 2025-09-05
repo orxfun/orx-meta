@@ -29,6 +29,8 @@ macro_rules! define_queue_core {
             where
                 Elem: $( $el_bnd $( < $( $el_bnd_g ),* > )? + ) *;
 
+            fn raise(self) -> Self::Raised;
+
             fn len(&self) -> usize;
 
             fn is_empty(&self) -> bool {
@@ -121,6 +123,10 @@ macro_rules! define_queue_core {
                 $single::new(x)
             }
 
+            fn raise(self) -> Self::Raised {
+                Default::default()
+            }
+
             fn len(&self) -> usize {
                 0
             }
@@ -184,6 +190,10 @@ macro_rules! define_queue_core {
                 Elem: $( $el_bnd $( < $( $el_bnd_g ),* > )? + ) *
             {
                 $pair::new(self.f, $single::new(x))
+            }
+
+            fn raise(self) -> Self::Raised {
+                $single::new(self)
             }
 
             fn len(&self) -> usize {
@@ -296,6 +306,10 @@ macro_rules! define_queue_core {
                 Elem: $( $el_bnd $( < $( $el_bnd_g ),* > )? + ) *
             {
                 $pair::new(self.f, self.b.push_back(x))
+            }
+
+            fn raise(self) -> Self::Raised {
+                $pair::new($single::new(self.f), self.b.raise())
             }
 
             fn len(&self) -> usize {
