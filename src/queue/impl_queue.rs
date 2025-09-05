@@ -1,27 +1,39 @@
 #![allow(dead_code)]
 
 #[macro_export]
+macro_rules! with_dollar_sign {
+    ($($body:tt)*) => {
+        macro_rules! __with_dollar_sign { $($body)* }
+        __with_dollar_sign!($);
+    }
+}
+
+#[macro_export]
 macro_rules! define_queue {
     (
         names => {traits: {queue: $q:ident,non_empty_queue: $q_ne:ident},structs: {empty: $empty:ident,single: $single:ident,pair: $pair:ident}};
+        $(queue_of => $q_of:ident;)?
     ) => {
         define_queue!(
             lifetimes => [];
             generics => [];
             elements => [];
             names => {traits: {queue: $q,non_empty_queue: $q_ne},structs: {empty: $empty,single: $single,pair: $pair}};
+            $(queue_of => $q_of;)?
         );
     };
 
     (
         elements => [$($el_bnd:ident$(< $( $el_bnd_g:tt ),* >)?)& *];
         names => {traits: {queue: $q:ident,non_empty_queue: $q_ne:ident},structs: {empty: $empty:ident,single: $single:ident,pair: $pair:ident}};
+        $(queue_of => $q_of:ident;)?
     ) => {
         define_queue!(
             lifetimes => [];
             generics => [];
             elements => [$( $el_bnd $( < $( $el_bnd_g ),* > )?)& * ];
             names => { traits: { queue: $q, non_empty_queue: $q_ne}, structs: { empty: $empty, single: $single, pair: $pair}};
+            $(queue_of => $q_of;)?
         );
     };
 
@@ -29,12 +41,14 @@ macro_rules! define_queue {
         lifetimes => [$($g_lt:tt)& *];
         elements => [$($el_bnd:ident$(< $( $el_bnd_g:tt ),* >)?)& *];
         names => {traits: {queue: $q:ident,non_empty_queue: $q_ne:ident},structs: {empty: $empty:ident,single: $single:ident,pair: $pair:ident}};
+        $(queue_of => $q_of:ident;)?
     ) => {
         define_queue!(
             lifetimes => [$($g_lt)& *];
             generics => [];
             elements => [$( $el_bnd $( < $( $el_bnd_g ),* > )?)& * ];
             names => { traits: { queue: $q, non_empty_queue: $q_ne}, structs: { empty: $empty, single: $single, pair: $pair}};
+            $(queue_of => $q_of;)?
         );
     };
 
@@ -42,12 +56,14 @@ macro_rules! define_queue {
         generics => [$($g:tt:$($g_bnd:ident$(< $( $g_bnd_g:tt ),* >)?)| *)& *];
         elements => [$($el_bnd:ident$(< $( $el_bnd_g:tt ),* >)?)& *];
         names => {traits: {queue: $q:ident,non_empty_queue: $q_ne:ident},structs: {empty: $empty:ident,single: $single:ident,pair: $pair:ident}};
+        $(queue_of => $q_of:ident;)?
     ) => {
         define_queue!(
             lifetimes => [];
             generics => [$( $g: $( $g_bnd $( < $( $g_bnd_g ),* > )? )| * )& * ];
             elements => [$( $el_bnd $( < $( $el_bnd_g ),* > )?)& * ];
             names => { traits: { queue: $q, non_empty_queue: $q_ne}, structs: { empty: $empty, single: $single, pair: $pair}};
+            $(queue_of => $q_of;)?
         );
     };
 
@@ -91,6 +107,10 @@ macro_rules! define_queue {
                 pair: $pair:ident
             }
         };
+
+        $(
+            queue_of => $q_of:ident;
+        )?
     ) => {
         // trait: queue
 
@@ -421,5 +441,58 @@ macro_rules! define_queue {
                 (&mut self.f, &mut self.b)
             }
         }
+
+        // queue of
+
+        $(
+            crate::with_dollar_sign! {
+                ($d:tt) => {
+                    macro_rules! $q_of {
+                        ([$d($qg:tt),*]) => { $empty<$d($qg),*> };
+                        ([$d($qg:tt),*], $t1:ty) => { $single<$d($qg),*, $t1> };
+                        ([$d($qg:tt),*], $t1:ty, $t2:ty) => { $pair<$d($qg),*, $t1, $single<$d($qg),*, $t2>> };
+                        ([$d($qg:tt),*], $t1:ty, $t2:ty, $t3:ty) => { $pair<$d($qg),*, $t1, $pair<$d($qg),*, $t2, $single<$d($qg),*, $t3>>> };
+                        ([$d($qg:tt),*], $t1:ty, $t2:ty, $t3:ty, $t4:ty) => { $pair<$d($qg),*, $t1, $pair<$d($qg),*, $t2, $pair<$d($qg),*, $t3, $single<$d($qg),*, $t4>>>> };
+                        ([$d($qg:tt),*], $t1:ty, $t2:ty, $t3:ty, $t4:ty, $t5:ty)
+                            => { $pair<$d($qg),*, $t1, $pair<$d($qg),*, $t2, $pair<$d($qg),*, $t3, $pair<$d($qg),*, $t4, $single<$d($qg),*, $t5>>>>> };
+                        ([$d($qg:tt),*], $t1:ty, $t2:ty, $t3:ty, $t4:ty, $t5:ty, $t6:ty)
+                            => { $pair<$d($qg),*, $t1, $pair<$d($qg),*, $t2, $pair<$d($qg),*, $t3, $pair<$d($qg),*, $t4, $pair<$d($qg),*, $t5, $single<$d($qg),*, $t6>>>>>> };
+                        ([$d($qg:tt),*], $t1:ty, $t2:ty, $t3:ty, $t4:ty, $t5:ty, $t6:ty, $t7:ty)
+                            => { $pair<$d($qg),*, $t1, $pair<$d($qg),*, $t2, $pair<$d($qg),*, $t3, $pair<$d($qg),*, $t4, $pair<$d($qg),*, $t5, $pair<$d($qg),*, $t6, $single<$d($qg),*, $t7>>>>>>> };
+                        ([$d($qg:tt),*], $t1:ty, $t2:ty, $t3:ty, $t4:ty, $t5:ty, $t6:ty, $t7:ty, $t8:ty)
+                            => { $pair<$d($qg),*, $t1, $pair<$d($qg),*, $t2, $pair<$d($qg),*, $t3, $pair<$d($qg),*, $t4, $pair<$d($qg),*, $t5, $pair<$d($qg),*, $t6, $pair<$d($qg),*, $t7, $single<$d($qg),*, $t8>>>>>>>> };
+
+                        () => { $empty };
+                        ($t1:ty) => { $single<$t1> };
+                        ($t1:ty, $t2:ty) => { $pair<$t1, $single<$t2>> };
+                        ($t1:ty, $t2:ty, $t3:ty) => { $pair<$t1, $pair<$t2, $single<$t3>>> };
+                        ($t1:ty, $t2:ty, $t3:ty, $t4:ty) => { $pair<$t1, $pair<$t2, $pair<$t3, $single<$t4>>>> };
+                        ($t1:ty, $t2:ty, $t3:ty, $t4:ty, $t5:ty)
+                            => { $pair<$t1, $pair<$t2, $pair<$t3, $pair<$t4, $single<$t5>>>>> };
+                        ($t1:ty, $t2:ty, $t3:ty, $t4:ty, $t5:ty, $t6:ty)
+                            => { $pair<$t1, $pair<$t2, $pair<$t3, $pair<$t4, $pair<$t5, $single<$t6>>>>>> };
+                        ($t1:ty, $t2:ty, $t3:ty, $t4:ty, $t5:ty, $t6:ty, $t7:ty)
+                            => { $pair<$t1, $pair<$t2, $pair<$t3, $pair<$t4, $pair<$t5, $pair<$t6, $single<$t7>>>>>>> };
+                        ($t1:ty, $t2:ty, $t3:ty, $t4:ty, $t5:ty, $t6:ty, $t7:ty, $t8:ty)
+                            => { $pair<$t1, $pair<$t2, $pair<$t3, $pair<$t4, $pair<$t5, $pair<$t6, $pair<$t7, $single<$t8>>>>>>>> };
+                    }
+                };
+            }
+            // macro_rules! $q_of {
+            //     () => {
+            //         with_dollar_sign! {
+            //             ([$($qg:tt &)*]) => {  };
+            //         }
+            //     };
+            //     // () => { $empty };
+            //     // ($t1:ty) => { $single<$t1> };
+            //     // ($t1:ty, $t2:ty) => { $pair<$t1, $single<$t2>> };
+            //     // ($t1:ty, $t2:ty, $t3:ty) => { $pair<$t1, $pair<$t2, $single<$t3>>> };
+
+            //     // ([$($qg:tt &)*]) => {  };
+            //     // (@internal ($($qg:tt &)*)) => {};
+            // }
+        )?
     };
 }
+//         generics => [$($g:tt:$($g_bnd:ident$(< $( $g_bnd_g:tt ),* >)?)| *)& *];

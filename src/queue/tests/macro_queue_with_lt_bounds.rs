@@ -21,10 +21,16 @@ define_queue!(
         traits: { queue: Queue, non_empty_queue: NonEmptyQueue },
         structs: { empty: EmptyQueue, single: Single, pair: Pair }
     };
+    queue_of => queue_of;
 );
 impl<'i> Req<'i> for EmptyQueue<'i> {}
 impl<'i, F: Req<'i>> Req<'i> for Single<'i, F> {}
 impl<'i, F: Req<'i>, B: Queue<'i>> Req<'i> for Pair<'i, F, B> {}
+
+// type X<'i> = queue_of!('i |);
+
+type X<'i> = queue_of!(['i]);
+type Y<'i> = queue_of!(['i], char, usize, bool, u32, u8, u16, i64, u32);
 
 // tests
 
