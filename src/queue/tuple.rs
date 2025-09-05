@@ -8,6 +8,7 @@ macro_rules! define_queue_tuple_transformation {
     ) => {
         // tuple - 1
 
+        #[allow(dead_code)]
         impl<$($g_lt ,)* X1, $($g ,)*> $single<$($g_lt ,)* $($g ,)* X1>
         where
             X1: $( $el_bnd $( < $( $el_bnd_g ),* > )? + ) *,
@@ -26,8 +27,19 @@ macro_rules! define_queue_tuple_transformation {
             }
         }
 
+        impl<$($g_lt ,)* $($g ,)* X1> From<X1> for $single<$($g_lt ,)* $($g ,)* X1>
+        where
+            X1: $( $el_bnd $( < $( $el_bnd_g ),* > )? + ) *,
+            $( $g: $( $( $g_bnd $( < $( $g_bnd_g ),* > )? + )* )? ), *
+        {
+            fn from(x: X1) -> Self {
+                $single::new(x)
+            }
+        }
+
         // tuple - 2
 
+        #[allow(dead_code)]
         impl<$($g_lt ,)* $($g ,)* X1, X2> $pair<$($g_lt ,)* $($g ,)* X1, $single<$($g_lt ,)* $($g ,)* X2>>
         where
             X1: $( $el_bnd $( < $( $el_bnd_g ),* > )? + ) *,
@@ -60,6 +72,7 @@ macro_rules! define_queue_tuple_transformation {
 
         // tuple - 3
 
+        #[allow(dead_code)]
         impl<$($g_lt ,)* $($g ,)* X1, X2, X3>
             $pair<$($g_lt ,)* $($g ,)* X1,
                 $pair<$($g_lt ,)* $($g ,)* X2, $single<$($g_lt ,)* $($g ,)* X3>>
@@ -100,6 +113,7 @@ macro_rules! define_queue_tuple_transformation {
 
         // tuple - 4
 
+        #[allow(dead_code)]
         impl<$($g_lt ,)* $($g ,)* X1, X2, X3, X4>
             $pair<$($g_lt ,)* $($g ,)* X1,
                 $pair<$($g_lt ,)* $($g ,)* X2,
@@ -146,6 +160,7 @@ macro_rules! define_queue_tuple_transformation {
 
         // tuple - 5
 
+        #[allow(dead_code)]
         impl<$($g_lt ,)* $($g ,)* X1, X2, X3, X4, X5>
             $pair<$($g_lt ,)* $($g ,)* X1,
                 $pair<$($g_lt ,)* $($g ,)* X2,
@@ -198,6 +213,7 @@ macro_rules! define_queue_tuple_transformation {
 
         // tuple - 6
 
+        #[allow(dead_code)]
         impl<$($g_lt ,)* $($g ,)* X1, X2, X3, X4, X5, X6>
             $pair<$($g_lt ,)* $($g ,)* X1,
                 $pair<$($g_lt ,)* $($g ,)* X2,
@@ -256,6 +272,7 @@ macro_rules! define_queue_tuple_transformation {
 
         // tuple - 7
 
+        #[allow(dead_code)]
         impl<$($g_lt ,)* $($g ,)* X1, X2, X3, X4, X5, X6, X7>
             $pair<$($g_lt ,)* $($g ,)* X1,
                 $pair<$($g_lt ,)* $($g ,)* X2,
@@ -320,6 +337,7 @@ macro_rules! define_queue_tuple_transformation {
 
         // tuple - 8
 
+        #[allow(dead_code)]
         impl<$($g_lt ,)* $($g ,)* X1, X2, X3, X4, X5, X6, X7, X8>
             $pair<$($g_lt ,)* $($g ,)* X1,
                 $pair<$($g_lt ,)* $($g ,)* X2,
