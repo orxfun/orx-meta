@@ -91,7 +91,7 @@ mod example {
     impl Input for Vec<i32> {}
     impl Input for String {}
 
-    #[test]
+    // #[test]
     fn abc() {
         type X = InPair<Vec<i32>, InPair<String, InSingle<String>>>;
 

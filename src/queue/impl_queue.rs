@@ -478,21 +478,6 @@ macro_rules! define_queue {
                     }
                 };
             }
-            // macro_rules! $q_of {
-            //     () => {
-            //         with_dollar_sign! {
-            //             ([$($qg:tt &)*]) => {  };
-            //         }
-            //     };
-            //     // () => { $empty };
-            //     // ($t1:ty) => { $single<$t1> };
-            //     // ($t1:ty, $t2:ty) => { $pair<$t1, $single<$t2>> };
-            //     // ($t1:ty, $t2:ty, $t3:ty) => { $pair<$t1, $pair<$t2, $single<$t3>>> };
-
-            //     // ([$($qg:tt &)*]) => {  };
-            //     // (@internal ($($qg:tt &)*)) => {};
-            // }
         )?
     };
 }
-//         generics => [$($g:tt:$($g_bnd:ident$(< $( $g_bnd_g:tt ),* >)?)| *)& *];

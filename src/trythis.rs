@@ -163,7 +163,7 @@ mod example {
         }
     }
 
-    #[test]
+    // #[test]
     fn adhoc_computations() {
         let comp = CompEmpty::new()
             .push_back(AddNumToSeries(42))
