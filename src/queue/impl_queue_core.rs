@@ -203,14 +203,14 @@ macro_rules! define_queue_core {
         // struct single
 
         #[derive(Clone, Copy, PartialEq, Eq)]
-        pub struct $single<$($g_lt ,)* $($g ,)* F>
+        pub struct $single<$($g_lt ,)* $($g ,)* Front>
         where
-            F: $( $el_bnd $( < $( $el_bnd_g ),* > )? + ) *,
+            Front: $( $el_bnd $( < $( $el_bnd_g ),* > )? + ) *,
             $( $g: $( $g_bnd $(<$( $g_bnd_g ),*> )? + ) * , )*
         {
             phantom: core::marker::PhantomData<$(&$g_lt)* ($($g ,)*)>,
             empty: $empty<$($g_lt ,)* $($g ,)*>,
-            f: F,
+            f: Front,
         }
 
         impl<$($g_lt ,)* F, $($g ,)*> $single<$($g_lt ,)* $($g ,)* F>
@@ -318,15 +318,15 @@ macro_rules! define_queue_core {
         // struct pair
 
         #[derive(Clone, Copy, PartialEq, Eq)]
-        pub struct $pair<$($g_lt ,)* $($g ,)* F, B>
+        pub struct $pair<$($g_lt ,)* $($g ,)* Front, Back>
         where
-            F: $( $el_bnd $( < $( $el_bnd_g ),* > )? + ) *,
-            B: $q<$($g_lt ,)* $($g ,)*>,
+            Front: $( $el_bnd $( < $( $el_bnd_g ),* > )? + ) *,
+            Back: $q<$($g_lt ,)* $($g ,)*>,
             $( $g: $( $g_bnd $(<$( $g_bnd_g ),*> )? + ) * , )*
         {
             phantom: core::marker::PhantomData<$(&$g_lt)* ($($g ,)*)>,
-            f: F,
-            b: B,
+            f: Front,
+            b: Back,
         }
 
         impl<$($g_lt ,)* F, B, $($g ,)*> $pair<$($g_lt ,)* $($g ,)* F, B>

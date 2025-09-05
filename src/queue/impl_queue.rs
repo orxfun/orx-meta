@@ -79,7 +79,7 @@ macro_rules! define_queue {
 
 define_queue!(
     lifetimes => [];
-    generics => [T:];
+    generics => [T:Copy];
     elements => [];
     queue => { traits: Q, NeQ; structs: Em, S, P; };
     // queue_of => qof;
