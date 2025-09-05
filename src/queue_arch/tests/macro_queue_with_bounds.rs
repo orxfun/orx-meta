@@ -1,7 +1,7 @@
 #![allow(dead_code)]
 
 use crate::{
-    define_queue_builder, define_queue_composition, define_queue_core_zzz,
+    define_queue_builder_zzz, define_queue_composition, define_queue_core_zzz,
     define_queue_tuple_transformation,
 };
 
@@ -162,7 +162,7 @@ fn composition() {
     assert!(x.is_empty());
 }
 
-define_queue_builder!(
+define_queue_builder_zzz!(
     queues => { trait: Queue, empty: EmptyQueue, single: Single, pair: Pair };
     builder => Builder;
 );

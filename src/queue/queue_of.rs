@@ -1,7 +1,3 @@
-#![allow(dead_code)]
-
-use crate::define_queue_core;
-
 #[macro_export]
 macro_rules! define_queue_of {
     (
@@ -291,43 +287,3 @@ macro_rules! define_queue_of {
         }
     };
 }
-
-pub trait Xof<Y> {}
-pub trait Yoz<'a, S> {}
-
-pub trait Req {}
-define_queue_core!(
-    lt => ['a];
-    generics => [T];
-    elements => [Req];
-    queue => [ Q, NeQ ; Em, Sng, Pr ];
-);
-impl<'a, T> Req for Em<'a, T> {}
-impl<'a, T, F: Req> Req for Sng<'a, T, F> {}
-impl<'a, T, F: Req, B: Q<'a, T>> Req for Pr<'a, T, F, B> {}
-
-define_queue_of!(
-    lt => ['a];
-    generics => [T];
-    queue => [ Q, NeQ ; Em, Sng, Pr ];
-    queue_of => q;
-);
-
-type X0<'a, T> = q!();
-type X1<'a, T> = q!(char);
-type X2<'a, T> = q!(char, &'a [T]);
-type X3<'a, T> = q!(
-    char,
-    &'a [T],
-    bool,
-    u8,
-    u16,
-    u32,
-    u64,
-    i8,
-    bool,
-    char,
-    u32,
-    i64,
-    usize
-);
