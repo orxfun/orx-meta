@@ -11,14 +11,10 @@ define_queue!(
         traits: { queue: InQueue, non_empty_queue: InNonEmptyQueue },
         structs: { empty: InEmpty, single: InSingle, pair: InPair }
     };
-    queue_of => inputs_of;
 );
 impl Input for InEmpty {}
 impl<F: Input> Input for InSingle<F> {}
 impl<F: Input, B: InQueue> Input for InPair<F, B> {}
-
-// type X = inputs_of!(char);
-type Y = inputs_of!(char, usize, bool, u32, u8, u16, i64, u32);
 
 macro_rules! queue_of {
     () => {

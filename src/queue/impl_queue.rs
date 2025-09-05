@@ -448,18 +448,18 @@ macro_rules! define_queue {
             crate::with_dollar_sign! {
                 ($d:tt) => {
                     macro_rules! $q_of {
-                        ([$d($qg:tt),*]) => { $empty<$d($qg),*> };
-                        ([$d($qg:tt),*], $t1:ty) => { $single<$d($qg),*, $t1> };
-                        ([$d($qg:tt),*], $t1:ty, $t2:ty) => { $pair<$d($qg),*, $t1, $single<$d($qg),*, $t2>> };
-                        ([$d($qg:tt),*], $t1:ty, $t2:ty, $t3:ty) => { $pair<$d($qg),*, $t1, $pair<$d($qg),*, $t2, $single<$d($qg),*, $t3>>> };
-                        ([$d($qg:tt),*], $t1:ty, $t2:ty, $t3:ty, $t4:ty) => { $pair<$d($qg),*, $t1, $pair<$d($qg),*, $t2, $pair<$d($qg),*, $t3, $single<$d($qg),*, $t4>>>> };
-                        ([$d($qg:tt),*], $t1:ty, $t2:ty, $t3:ty, $t4:ty, $t5:ty)
+                        ([$d($qg:tt)& *]) => { $empty<$d($qg),*> };
+                        ([$d($qg:tt)& *], $t1:ty) => { $single<$d($qg),*, $t1> };
+                        ([$d($qg:tt)& *], $t1:ty, $t2:ty) => { $pair<$d($qg),*, $t1, $single<$d($qg),*, $t2>> };
+                        ([$d($qg:tt)& *], $t1:ty, $t2:ty, $t3:ty) => { $pair<$d($qg),*, $t1, $pair<$d($qg),*, $t2, $single<$d($qg),*, $t3>>> };
+                        ([$d($qg:tt)& *], $t1:ty, $t2:ty, $t3:ty, $t4:ty) => { $pair<$d($qg),*, $t1, $pair<$d($qg),*, $t2, $pair<$d($qg),*, $t3, $single<$d($qg),*, $t4>>>> };
+                        ([$d($qg:tt)& *], $t1:ty, $t2:ty, $t3:ty, $t4:ty, $t5:ty)
                             => { $pair<$d($qg),*, $t1, $pair<$d($qg),*, $t2, $pair<$d($qg),*, $t3, $pair<$d($qg),*, $t4, $single<$d($qg),*, $t5>>>>> };
-                        ([$d($qg:tt),*], $t1:ty, $t2:ty, $t3:ty, $t4:ty, $t5:ty, $t6:ty)
+                        ([$d($qg:tt)& *], $t1:ty, $t2:ty, $t3:ty, $t4:ty, $t5:ty, $t6:ty)
                             => { $pair<$d($qg),*, $t1, $pair<$d($qg),*, $t2, $pair<$d($qg),*, $t3, $pair<$d($qg),*, $t4, $pair<$d($qg),*, $t5, $single<$d($qg),*, $t6>>>>>> };
-                        ([$d($qg:tt),*], $t1:ty, $t2:ty, $t3:ty, $t4:ty, $t5:ty, $t6:ty, $t7:ty)
+                        ([$d($qg:tt)& *], $t1:ty, $t2:ty, $t3:ty, $t4:ty, $t5:ty, $t6:ty, $t7:ty)
                             => { $pair<$d($qg),*, $t1, $pair<$d($qg),*, $t2, $pair<$d($qg),*, $t3, $pair<$d($qg),*, $t4, $pair<$d($qg),*, $t5, $pair<$d($qg),*, $t6, $single<$d($qg),*, $t7>>>>>>> };
-                        ([$d($qg:tt),*], $t1:ty, $t2:ty, $t3:ty, $t4:ty, $t5:ty, $t6:ty, $t7:ty, $t8:ty)
+                        ([$d($qg:tt)& *], $t1:ty, $t2:ty, $t3:ty, $t4:ty, $t5:ty, $t6:ty, $t7:ty, $t8:ty)
                             => { $pair<$d($qg),*, $t1, $pair<$d($qg),*, $t2, $pair<$d($qg),*, $t3, $pair<$d($qg),*, $t4, $pair<$d($qg),*, $t5, $pair<$d($qg),*, $t6, $pair<$d($qg),*, $t7, $single<$d($qg),*, $t8>>>>>>>> };
 
                         () => { $empty };
