@@ -128,7 +128,6 @@ fn with_gen() {
         queue_of => qof;
     );
 
-    type Q0<T> = qof!();
     type Q1<T> = qof!(usize);
     type Q2<T> = qof!(usize, char);
     type Q3<T> = qof!(usize, char, bool);

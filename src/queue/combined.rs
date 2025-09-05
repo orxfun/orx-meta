@@ -37,13 +37,3 @@ macro_rules! define_queue {
         );
     };
 }
-
-define_queue!(
-    lt => [];
-    generics => [];
-    elements => [];
-    queue => [ Q, NeQ ; Em, Sng, Pr ];
-
-    queue_of => qof;
-    builder => Bld;
-);

@@ -31,6 +31,16 @@ macro_rules! define_queue_builder {
                 }
         }
 
+        impl<$($g_lt ,)* $($g ,)* Remaining> Default for $builder<$($g_lt ,)* $($g ,)* Remaining, $empty<$($g_lt ,)* $($g ,)*>>
+        where
+            Remaining:  $q<$($g_lt ,)* $($g ,)*>,
+            $( $g: $( $( $g_bnd $( < $( $g_bnd_g ),* > )? + )* )? ), *
+        {
+                fn default() -> Self {
+                    Self::new()
+                }
+        }
+
         impl<$($g_lt ,)* $($g ,)* Remaining, Current> $builder<$($g_lt ,)* $($g ,)* Remaining, Current>
         where
             Remaining:  $q<$($g_lt ,)* $($g ,)*>,

@@ -1,4 +1,4 @@
-use crate::{define_queue, define_queue_builder, define_queue_core, define_queue_of};
+use crate::define_queue;
 
 #[test]
 fn plain() {
