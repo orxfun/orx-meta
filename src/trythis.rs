@@ -150,7 +150,22 @@ mod example {
         let input = InEmpty::new()
             .push_back(vec![1, 2, 3])
             .push_back("xyz".to_string())
-            .push_back("hello".to_string());
+            .push_back("hello".to_string())
+            .push_back(33)
+            // .push_back(InSingle::from(vec![1, 2]))
+            // .push_back(InSingle::from(vec![1]))
+            // abc
+            ;
+        // let raised = input.raise();
+        // InPair<InSingle<Vec<i32>>, InPair<InSingle<String>, InPair<InSingle<String>, InSingle<InSingle<i32>>>>>
+        // InPair<InSingle<Vec<i32>>, InPair<InSingle<String>, InPair<InSingle<String>, InSingle<i32>>>>
+
+        // InPair<InSingle<Vec<i32>>, InPair<InSingle<String>, InPair<InSingle<String>, InPair<InSingle<InSingle<Vec<i32>>>, InSingle<InSingle<InSingle<Vec<i32>>>>>>>>
+        let other = InEmpty::new()
+            .push_back(InSingle::from(vec![1, 2, 3]))
+            .push_back(InSingle::from("xyz".to_string()))
+            .push_back(InSingle::from("hello".to_string()))
+            .push_back(33);
 
         let output = comp.run(
             InEmpty::new()
