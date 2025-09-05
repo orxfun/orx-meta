@@ -23,9 +23,13 @@ macro_rules! define_queue_core {
 
             type Back: $q<$($g_lt ,)* $($g ,)*>;
 
+            type Raised: $q<$($g_lt ,)* $($g ,)*>;
+
             fn push_back<Elem>(self, x: Elem) -> Self::PushBack<Elem>
             where
                 Elem: $( $el_bnd $( < $( $el_bnd_g ),* > )? + ) *;
+
+            fn raise(self) -> Self::Raised;
 
             fn len(&self) -> usize;
 
@@ -110,11 +114,17 @@ macro_rules! define_queue_core {
 
             type Back = Self;
 
+            type Raised = Self;
+
             fn push_back<Elem>(self, x: Elem) -> Self::PushBack<Elem>
             where
                 Elem: $( $el_bnd $( < $( $el_bnd_g ),* > )? + ) *
             {
                 $single::new(x)
+            }
+
+            fn raise(self) -> Self::Raised {
+                Default::default()
             }
 
             fn len(&self) -> usize {
@@ -173,11 +183,17 @@ macro_rules! define_queue_core {
 
             type Back = $empty<$($g_lt ,)* $($g ,)*>;
 
+            type Raised = $single<$($g_lt ,)* $($g ,)* Self>;
+
             fn push_back<Elem>(self, x: Elem) -> Self::PushBack<Elem>
             where
                 Elem: $( $el_bnd $( < $( $el_bnd_g ),* > )? + ) *
             {
                 $pair::new(self.f, $single::new(x))
+            }
+
+            fn raise(self) -> Self::Raised {
+                $single::new(self)
             }
 
             fn len(&self) -> usize {
@@ -283,11 +299,17 @@ macro_rules! define_queue_core {
 
             type Back = B;
 
+            type Raised = $pair<$($g_lt ,)* $($g ,)* $single<$($g_lt ,)* $($g ,)* F>, B::Raised>;
+
             fn push_back<Elem>(self, x: Elem) -> Self::PushBack<Elem>
             where
                 Elem: $( $el_bnd $( < $( $el_bnd_g ),* > )? + ) *
             {
                 $pair::new(self.f, self.b.push_back(x))
+            }
+
+            fn raise(self) -> Self::Raised {
+                $pair::new($single::new(self.f), self.b.raise())
             }
 
             fn len(&self) -> usize {

@@ -11,7 +11,7 @@ where
     type PushBack<X: Input>: InQueue;
     type Front: Input;
     type Back: InQueue;
-    fn push_back<X: Input>(self, x: impl Into<InSingle<X>>) -> Self::PushBack<X>;
+    fn push_back<X: Input>(self, x: impl Into<S<X>>) -> Self::PushBack<X>;
 
     type Raised: InQueue;
     fn raise(self) -> Self::Raised;
@@ -22,10 +22,10 @@ where
 struct InEmpty;
 impl Input for InEmpty {}
 impl InQueue for InEmpty {
-    type PushBack<X: Input> = InSingle<X>;
+    type PushBack<X: Input> = S<X>;
     type Front = Self;
     type Back = Self;
-    fn push_back<X: Input>(self, x: impl Into<InSingle<X>>) -> Self::PushBack<X> {
+    fn push_back<X: Input>(self, x: impl Into<S<X>>) -> Self::PushBack<X> {
         x.into()
     }
 
@@ -39,24 +39,24 @@ impl InQueue for InEmpty {
 }
 
 #[derive(Debug)]
-struct InSingle<F: Input>(F);
-impl<F: Input> From<F> for InSingle<F> {
+struct S<F: Input>(F);
+impl<F: Input> From<F> for S<F> {
     fn from(value: F) -> Self {
-        InSingle(value)
+        S(value)
     }
 }
-impl<F: Input> Input for InSingle<F> {}
-impl<F: Input> InQueue for InSingle<F> {
-    type PushBack<X: Input> = InPair<F, InSingle<X>>;
+impl<F: Input> Input for S<F> {}
+impl<F: Input> InQueue for S<F> {
+    type PushBack<X: Input> = P<F, S<X>>;
     type Front = F;
     type Back = Self;
-    fn push_back<X: Input>(self, x: impl Into<InSingle<X>>) -> Self::PushBack<X> {
-        InPair(self.0, x.into())
+    fn push_back<X: Input>(self, x: impl Into<S<X>>) -> Self::PushBack<X> {
+        P(self.0, x.into())
     }
 
-    type Raised = InSingle<InSingle<F>>;
+    type Raised = S<Self>;
     fn raise(self) -> Self::Raised {
-        InSingle(self)
+        S(self)
     }
     fn from_raised(raised: Self::Raised) -> Self {
         raised.0
@@ -64,24 +64,24 @@ impl<F: Input> InQueue for InSingle<F> {
 }
 
 #[derive(Debug)]
-struct InPair<F: Input, B: InQueue>(F, B);
-impl<F: Input, B: InQueue> Input for InPair<F, B> {}
-impl<F: Input, B: InQueue> InQueue for InPair<F, B> {
-    type PushBack<X: Input> = InPair<F, B::PushBack<X>>;
+struct P<F: Input, B: InQueue>(F, B);
+impl<F: Input, B: InQueue> Input for P<F, B> {}
+impl<F: Input, B: InQueue> InQueue for P<F, B> {
+    type PushBack<X: Input> = P<F, B::PushBack<X>>;
     type Front = F;
     type Back = B;
-    fn push_back<X: Input>(self, x: impl Into<InSingle<X>>) -> Self::PushBack<X> {
-        InPair(self.0, self.1.push_back(x))
+    fn push_back<X: Input>(self, x: impl Into<S<X>>) -> Self::PushBack<X> {
+        P(self.0, self.1.push_back(x))
     }
 
-    type Raised = InPair<InSingle<F>, B::Raised>;
+    type Raised = P<S<F>, B::Raised>;
     fn raise(self) -> Self::Raised {
-        InPair(InSingle(self.0), self.1.raise())
+        P(S(self.0), self.1.raise())
     }
     fn from_raised(raised: Self::Raised) -> Self {
         let f = raised.0.0;
         let b = B::from_raised(raised.1);
-        InPair(f, b)
+        P(f, b)
     }
 }
 
@@ -92,24 +92,28 @@ mod example {
     // inputs
     impl Input for Vec<i32> {}
     impl Input for String {}
+    impl Input for bool {}
+    impl Input for char {}
 
-    // #[test]
+    #[test]
     fn abc() {
-        type X = InPair<Vec<i32>, InPair<String, InSingle<String>>>;
+        type X = P<Vec<i32>, P<String, S<String>>>;
 
         let input = InEmpty
             .push_back(vec![1, 2, 3])
             .push_back("xyz".to_string())
-            .push_back("hello".to_string());
+            .push_back("hello".to_string())
+            .push_back(true)
+            .push_back('x');
 
         let raised = input.raise();
 
         dbg!(&raised);
 
-        let input = X::from_raised(raised);
+        // let input = X::from_raised(raised);
 
-        dbg!(&input);
+        // dbg!(&input);
 
-        assert_eq!(input.0.len(), 33);
+        assert_eq!(raised.0.0.len(), 33);
     }
 }

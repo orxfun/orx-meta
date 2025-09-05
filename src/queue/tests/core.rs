@@ -1,6 +1,27 @@
 use crate::define_queue_core;
 
 #[test]
+fn abc() {
+    define_queue_core!(
+        lt => [];
+        generics => [];
+        elements => [];
+        queue => [ Q, NeQ ; Em, Sng, Pr ];
+    );
+
+    let q = Em::new()
+        .push_back('x')
+        .push_back(12)
+        .push_back(true)
+        .push_back(0u8)
+        .push_back(false);
+    // Pr<char, Pr<i32, Pr<bool, Pr<u8, Sng<bool>>>>>
+
+    let p = q.raise();
+    // Pr<Sng<char>, Pr<Sng<i32>, Pr<Sng<bool>, Pr<Sng<u8>, Sng<Sng<bool>>>>>>
+}
+
+#[test]
 fn plain() {
     define_queue_core!(
         lt => [];
