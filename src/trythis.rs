@@ -138,7 +138,7 @@ mod example {
     }
     impl_computations_from_computation!(FirstLetter);
 
-    // #[test]
+    #[test]
     fn adhoc_computations() {
         let comp = CompEmpty::new()
             .push_back(AddNumToSeries(42))

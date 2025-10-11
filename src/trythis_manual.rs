@@ -2,6 +2,8 @@
 
 // inputs
 
+use crate::trythis::InQ;
+
 trait Input {}
 
 trait InQueue
@@ -62,6 +64,11 @@ impl<F: Input> InQueue for S<F> {
         raised.0
     }
 }
+impl<F: Input> S<S<F>> {
+    fn lower(self) -> S<F> {
+        self.0
+    }
+}
 
 #[derive(Debug)]
 struct P<F: Input, B: InQueue>(F, B);
@@ -85,35 +92,9 @@ impl<F: Input, B: InQueue> InQueue for P<F, B> {
     }
 }
 
-#[cfg(test)]
-mod example {
-    use super::*;
-
-    // inputs
-    impl Input for Vec<i32> {}
-    impl Input for String {}
-    impl Input for bool {}
-    impl Input for char {}
-
-    #[test]
-    fn abc() {
-        type X = P<Vec<i32>, P<String, S<String>>>;
-
-        let input = InEmpty
-            .push_back(vec![1, 2, 3])
-            .push_back("xyz".to_string())
-            .push_back("hello".to_string())
-            .push_back(true)
-            .push_back('x');
-
-        let raised = input.raise();
-
-        dbg!(&raised);
-
-        // let input = X::from_raised(raised);
-
-        // dbg!(&input);
-
-        assert_eq!(raised.0.0.len(), 33);
+impl<F: Input, B: InQueue> P<S<F>, B> {
+    fn lower(self) -> S<F> {
+        // self.0
+        todo!()
     }
 }

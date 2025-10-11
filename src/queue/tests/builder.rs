@@ -21,6 +21,13 @@ fn plain() {
         builder => Bld;
     );
 
+    trait NewBld: Q + Sized {
+        fn builder() -> Bld<Self, Em> {
+            Default::default()
+        }
+    }
+    impl<P: Q> NewBld for P {}
+
     type Q0 = qof!();
     type Q1 = qof!(usize);
     type Q2 = qof!(usize, char);
@@ -70,6 +77,17 @@ fn plain() {
         .push_back('y')
         .finish();
     let _: Q8 = Bld::<Q8, _>::new()
+        .push_back(2)
+        .push_back('x')
+        .push_back(true)
+        .push_back(4)
+        .push_back(false)
+        .push_back(4)
+        .push_back('y')
+        .push_back(0)
+        .finish();
+
+    let _: Q8 = Q8::builder()
         .push_back(2)
         .push_back('x')
         .push_back(true)
