@@ -56,7 +56,7 @@ impl<Q: DrawQueue> Screen<Q> {
         (Screen(b), f)
     }
 
-    fn drap_all_shapes(&self) {
+    fn draw_all_shapes(&self) {
         println!("=> Drawing {} shapes on the screen", self.0.len());
         self.0.draw();
         println!();
@@ -92,7 +92,7 @@ fn main() {
         }
     }
 
-    // init screen with chaned push calls
+    // init screen with chained push calls
 
     let screen = Screen::new()
         .push(SelectBox {
@@ -105,7 +105,7 @@ fn main() {
             height: 10,
             label: String::from("OK"),
         });
-    screen.drap_all_shapes();
+    screen.draw_all_shapes();
 
     // add two more shapes and pop the first shape in the front
     let screen = screen
@@ -126,5 +126,5 @@ fn main() {
     let (screen, front) = screen.pop();
     assert_eq!(front.options, vec![String::from("Yes"),]);
 
-    screen.drap_all_shapes();
+    screen.draw_all_shapes();
 }
