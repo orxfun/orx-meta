@@ -97,6 +97,26 @@ pub trait NonEmptyQueue: Queue {
     /// assert_eq!(queue.into_front(), 42);
     /// ```
     fn into_front(self) -> Self::Front;
+
+    /// Consumes the queue and returns the queue containing elements except for the front element.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use orx_meta::queue::*;
+    ///
+    /// // front: 42; back: []
+    /// let queue = Empty::new().push(42);
+    /// assert_eq!(queue.into_back(), Empty::new());
+    ///
+    /// // front: 42; back: [true]
+    /// let queue = Empty::new().push(42).push(true);
+    /// assert_eq!(queue.into_back(), Single::new(true));
+    ///
+    /// // front: 42; back: [true, 'x']
+    /// let queue = Empty::new().push(42).push(true).push('x');
+    /// assert_eq!(queue.into_back(), Single::new(true).push('x'));
+    /// ```
     fn into_back(self) -> Self::Back;
     fn pop(self) -> (Self::Front, Self::Back);
     fn front(&self) -> &Self::Front;
