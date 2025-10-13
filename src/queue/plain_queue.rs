@@ -220,6 +220,28 @@ pub trait NonEmptyQueue: Queue {
     /// ```
     fn front_back(&self) -> (&Self::Front, &Self::Back);
 
+    /// Returns mutable a reference to the element at the front of the queue.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use orx_meta::queue::*;
+    ///
+    /// // front: 42; back: []
+    /// let mut queue = Empty::new().push(42);
+    /// *queue.front_mut() += 1;
+    /// assert_eq!(queue.front(), &43);
+    ///
+    /// // front: 42; back: [true]
+    /// let mut queue = Empty::new().push(42).push(true);
+    /// *queue.front_mut() += 1;
+    /// assert_eq!(queue.front(), &43);
+    ///
+    /// // front: 42; back: [true, 'x']
+    /// let mut queue = Empty::new().push(42).push(true).push('x');
+    /// *queue.front_mut() += 1;
+    /// assert_eq!(queue.front(), &43);
+    /// ```
     fn front_mut(&mut self) -> &mut Self::Front;
     fn back_mut(&mut self) -> &mut Self::Back;
     fn front_back_mut(&mut self) -> (&mut Self::Front, &mut Self::Back);
