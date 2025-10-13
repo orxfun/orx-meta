@@ -753,6 +753,49 @@ where
     Remaining: Queue,
     Current: Queue,
 {
+    /// Pushes the next element to the builder, returns the builder for the remaining elements
+    /// to reach the target type.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use orx_meta::queue::*;
+    /// use orx_meta::queue_of;
+    ///
+    /// type MyQueue = queue_of!(u32, bool, char, &'static str);
+    ///
+    /// // remaining:[u32, bool, char, &'static str]
+    /// // current: []
+    /// let builder = QueueBuilder::<MyQueue>::new();
+    ///
+    /// // remaining:[bool, char, &'static str]
+    /// // current: [u32]
+    /// let builder = builder.push(42);
+    ///
+    /// // remaining:[char, &'static str]
+    /// // current: [u32, bool]
+    /// let builder = builder.push(true);
+    ///
+    /// // remaining:[&'static str]
+    /// // current: [u32, bool, char]
+    /// let builder = builder.push('x');
+    ///
+    /// // remaining:[] -> we can now call finish
+    /// // current: [u32, bool, char, &'static str]
+    /// let builder = builder.push("foo");
+    ///
+    /// let instance = builder.finish();
+    /// assert_eq!(instance.as_tuple(), (&42, &true, &'x', &"foo"));
+    ///
+    /// // it is often more convenient to chain the push calls
+    /// let instance = QueueBuilder::<MyQueue>::new()
+    ///     .push(42)
+    ///     .push(true)
+    ///     .push('x')
+    ///     .push("foo")
+    ///     .finish();
+    /// assert_eq!(instance.as_tuple(), (&42, &true, &'x', &"foo"));
+    /// ```
     pub fn push(
         self,
         x: Remaining::Front,
