@@ -508,6 +508,33 @@ impl<F, B> Multi<F, B>
 where
     B: Queue,
 {
+    /// Creates a new queue with multiple elements such that:
+    /// * the front of the queue is the element `f`, and
+    /// * the remaining elements of the queue form the queue `b`.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use orx_meta::queue::*;
+    ///
+    /// let pair = Multi::new(42, Single::new(true));
+    /// assert_eq!(pair.front(), &42);
+    /// assert_eq!(pair.back(), &Single::new(true));
+    ///
+    /// let triple = Multi::new(42, Multi::new(true, Single::new('x')));
+    /// assert_eq!(triple.front(), &42);
+    /// assert_eq!(triple.back(), &Multi::new(true, Single::new('x')));
+    ///
+    /// let quad = Multi::new(42, Multi::new(true, Multi::new('x', Single::new("foo"))));
+    /// assert_eq!(quad.front(), &42);
+    /// assert_eq!(quad.back(), &Multi::new(true, Multi::new('x', Single::new("foo"))));
+    ///
+    /// // more convenient to build using push though
+    ///
+    /// let quad = Empty::new().push(42).push(true).push('x').push("foo");
+    /// assert_eq!(quad.front(), &42);
+    /// assert_eq!(quad.back(), &Empty::new().push(true).push('x').push("foo"));
+    /// ```
     pub fn new(f: F, b: B) -> Self {
         Self {
             phantom: Default::default(),
