@@ -806,6 +806,51 @@ where
             phantom: Default::default(),
         }
     }
+
+    /// Consumes the builder and returns the built instance of the target type.
+    ///
+    /// Note that `finish` can only be called after pushing all required elements of the queue.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use orx_meta::queue::*;
+    /// use orx_meta::queue_of;
+    ///
+    /// type MyQueue = queue_of!(u32, bool, char, &'static str);
+    ///
+    /// // remaining:[u32, bool, char, &'static str]
+    /// // current: []
+    /// let builder = QueueBuilder::<MyQueue>::new();
+    ///
+    /// // remaining:[bool, char, &'static str]
+    /// // current: [u32]
+    /// let builder = builder.push(42);
+    ///
+    /// // remaining:[char, &'static str]
+    /// // current: [u32, bool]
+    /// let builder = builder.push(true);
+    ///
+    /// // remaining:[&'static str]
+    /// // current: [u32, bool, char]
+    /// let builder = builder.push('x');
+    ///
+    /// // remaining:[] -> we can now call finish
+    /// // current: [u32, bool, char, &'static str]
+    /// let builder = builder.push("foo");
+    ///
+    /// let instance = builder.finish();
+    /// assert_eq!(instance.as_tuple(), (&42, &true, &'x', &"foo"));
+    ///
+    /// // it is often more convenient to chain the push calls
+    /// let instance = QueueBuilder::<MyQueue>::new()
+    ///     .push(42)
+    ///     .push(true)
+    ///     .push('x')
+    ///     .push("foo")
+    ///     .finish();
+    /// assert_eq!(instance.as_tuple(), (&42, &true, &'x', &"foo"));
+    /// ```
     pub fn finish(self) -> Current
     where
         Remaining: Queue<Back = Remaining>,
