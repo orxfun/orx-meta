@@ -319,6 +319,28 @@ macro_rules! define_queue_core {
 
         // struct empty
 
+        /// An empty queue.
+        ///
+        /// Implements [`Queue`] but not [`NonEmptyQueue`].
+        ///
+        /// # Examples
+        ///
+        /// ```
+        /// use orx_meta::queue::*;
+        ///
+        /// let queue = Empty::new();
+        /// assert!(queue.is_empty());
+        ///
+        /// let queue = Single::new(42);
+        /// let (num, queue) = queue.pop();
+        /// assert_eq!(num, 42);
+        /// assert!(queue.is_empty());
+        ///
+        /// let queue = Single::new(42).push(true);
+        /// let (num, queue) = queue.pop();
+        /// let (flag, queue) = queue.pop();
+        /// assert!(queue.is_empty());
+        /// ```
         #[derive(Clone, Copy, PartialEq, Eq)]
         pub struct $empty<$($g_lt ,)* $($g ,)*>
         where
@@ -331,6 +353,7 @@ macro_rules! define_queue_core {
         where
             $( $g: $( $( $g_bnd $( < $( $g_bnd_g ),* > )? + )* )? ), *
         {
+            /// Creates a new empty queue.
             pub fn new() -> Self {
                 Self { phantom: Default::default() }
             }
@@ -390,6 +413,32 @@ macro_rules! define_queue_core {
 
         // struct single
 
+        /// A queue with a single element of type `Front`.
+        ///
+        /// Implements both [`Queue`] and [`NonEmptyQueue`].
+        ///
+        /// It can be created using [`Single::new`] or calling [`push`] on an [`Empty`] queue.
+        ///
+        /// [`push`]: Queue::push
+        ///
+        /// # Examples
+        ///
+        /// ```
+        /// use orx_meta::queue::*;
+        ///
+        /// let queue: Single<u32> = Empty::new().push(42);
+        /// let queue: Single<u32> = Single::new(42);
+        ///
+        /// let queue = Empty::new().push(42).push(true).push('x');
+        ///
+        /// let (num, queue_pair) = queue.pop();
+        /// assert_eq!(num, 42);
+        ///
+        /// let (flag, queue_single) = queue_pair.pop();
+        /// assert_eq!(flag, true);
+        ///
+        /// assert_eq!(queue_single, Single::new('x'));
+        /// ```
         #[derive(Clone, Copy, PartialEq, Eq)]
         pub struct $single<$($g_lt ,)* $($g ,)* Front>
         where
@@ -406,6 +455,20 @@ macro_rules! define_queue_core {
             F: $( $el_bnd $( < $( $el_bnd_g ),* > )? + ) *,
             $( $g: $( $( $g_bnd $( < $( $g_bnd_g ),* > )? + )* )? ), *
         {
+            /// Creates a with a single element `f` of type `F`.
+            ///
+            /// # Examples
+            ///
+            /// ```
+            /// use orx_meta::queue::*;
+            ///
+            /// let queue = Single::new(42);
+            ///
+            /// // equivalent to
+            /// let queue2 = Empty::new().push(42);
+            ///
+            /// assert_eq!(queue, queue2);
+            /// ```
             pub fn new(f: F) -> Self {
                 Self {
                     phantom: Default::default(),
@@ -505,6 +568,38 @@ macro_rules! define_queue_core {
 
         // struct pair
 
+        /// A queue with multiple, at least two, elements such that:
+        /// * type of the element at the front of the queue is `Front`, and
+        /// * remaining elements form a queue of type `Back`.
+        ///
+        /// Implements both [`Queue`] and [`NonEmptyQueue`].
+        ///
+        /// It can be created using [`Multi::new`] or calling [`push`] multiple times on an [`Empty`] queue.
+        ///
+        /// Note that the back of the multiple elements queue can be any of the other queues including `Multi`.
+        /// This gives the recursive composition ability of the queues.
+        ///
+        /// [`push`]: Queue::push
+        ///
+        /// # Examples
+        ///
+        /// ```
+        /// use orx_meta::queue::*;
+        ///
+        /// let pair = Multi::new(42, Single::new(true));
+        /// assert_eq!(pair.as_tuple(), (&42, &true));
+        ///
+        /// let triple = Multi::new(42, Multi::new(true, Single::new('x')));
+        /// assert_eq!(triple.as_tuple(), (&42, &true, &'x'));
+        ///
+        /// let quad = Multi::new(42, Multi::new(true, Multi::new('x', Single::new("foo"))));
+        /// assert_eq!(quad.as_tuple(), (&42, &true, &'x', &"foo"));
+        ///
+        /// // more convenient to build using push though
+        ///
+        /// let quad = Empty::new().push(42).push(true).push('x').push("foo");
+        /// assert_eq!(quad.as_tuple(), (&42, &true, &'x', &"foo"));
+        /// ```
         #[derive(Clone, Copy, PartialEq, Eq)]
         pub struct $pair<$($g_lt ,)* $($g ,)* Front, Back>
         where
@@ -523,6 +618,33 @@ macro_rules! define_queue_core {
             B: $q<$($g_lt ,)* $($g ,)*>,
             $( $g: $( $( $g_bnd $( < $( $g_bnd_g ),* > )? + )* )? ), *
         {
+            /// Creates a new queue with multiple elements such that:
+            /// * the front of the queue is the element `f`, and
+            /// * the remaining elements of the queue form the queue `b`.
+            ///
+            /// # Examples
+            ///
+            /// ```
+            /// use orx_meta::queue::*;
+            ///
+            /// let pair = Multi::new(42, Single::new(true));
+            /// assert_eq!(pair.front(), &42);
+            /// assert_eq!(pair.back(), &Single::new(true));
+            ///
+            /// let triple = Multi::new(42, Multi::new(true, Single::new('x')));
+            /// assert_eq!(triple.front(), &42);
+            /// assert_eq!(triple.back(), &Multi::new(true, Single::new('x')));
+            ///
+            /// let quad = Multi::new(42, Multi::new(true, Multi::new('x', Single::new("foo"))));
+            /// assert_eq!(quad.front(), &42);
+            /// assert_eq!(quad.back(), &Multi::new(true, Multi::new('x', Single::new("foo"))));
+            ///
+            /// // more convenient to build using push though
+            ///
+            /// let quad = Empty::new().push(42).push(true).push('x').push("foo");
+            /// assert_eq!(quad.front(), &42);
+            /// assert_eq!(quad.back(), &Empty::new().push(true).push('x').push("foo"));
+            /// ```
             pub fn new(f: F, b: B) -> Self {
                 Self {
                     phantom: Default::default(),
