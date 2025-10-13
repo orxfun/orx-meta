@@ -20,10 +20,7 @@ fn main() {
     assert_eq!(queue.len(), 1);
     assert_eq!(queue.front(), &42);
 
-    let queue = queue
-        .push('x')
-        .push(true)
-        .push(String::from("xyz"));
+    let queue = queue.push('x').push(true).push(String::from("xyz"));
     assert_eq!(queue.len(), 4);
     assert_eq!(queue.front(), &42);
 
