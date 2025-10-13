@@ -9,7 +9,7 @@ fn plain() {
         queue => [ Q, NeQ ; Em, Sng, Pr ];
     );
 
-    let q = Em::new().push_back('x').push_back(12).push_back(true);
+    let q = Em::new().push('x').push(12).push(true);
     assert_eq!(q.front(), &'x');
     assert_eq!(q.len(), 3);
 }
@@ -23,7 +23,7 @@ fn with_lt() {
         queue => [ Q, NeQ ; Em, Sng, Pr ];
     );
 
-    let q = Em::new().push_back('x').push_back(12).push_back(true);
+    let q = Em::new().push('x').push(12).push(true);
     assert_eq!(q.front(), &'x');
     assert_eq!(q.len(), 3);
 }
@@ -37,10 +37,7 @@ fn with_gen() {
         queue => [ Q, NeQ ; Em, Sng, Pr ];
     );
 
-    let q = Em::<usize>::new()
-        .push_back('x')
-        .push_back(12)
-        .push_back(true);
+    let q = Em::<usize>::new().push('x').push(12).push(true);
     assert_eq!(q.front(), &'x');
     assert_eq!(q.len(), 3);
 }
@@ -54,10 +51,7 @@ fn with_gens() {
         queue => [ Q, NeQ ; Em, Sng, Pr ];
     );
 
-    let q = Em::<usize, char>::new()
-        .push_back('x')
-        .push_back(12)
-        .push_back(true);
+    let q = Em::<usize, char>::new().push('x').push(12).push(true);
     assert_eq!(q.front(), &'x');
     assert_eq!(q.len(), 3);
 }
@@ -71,10 +65,7 @@ fn with_gens_with_bounds() {
         queue => [ Q, NeQ ; Em, Sng, Pr ];
     );
 
-    let q = Em::<usize, char, bool>::new()
-        .push_back('x')
-        .push_back(12)
-        .push_back(true);
+    let q = Em::<usize, char, bool>::new().push('x').push(12).push(true);
     assert_eq!(q.front(), &'x');
     assert_eq!(q.len(), 3);
 }
@@ -91,10 +82,7 @@ fn with_lt_and_gens() {
         queue => [ Q, NeQ ; Em, Sng, Pr ];
     );
 
-    let q = Em::<usize, char, bool>::new()
-        .push_back('x')
-        .push_back(12)
-        .push_back(true);
+    let q = Em::<usize, char, bool>::new().push('x').push(12).push(true);
     assert_eq!(q.front(), &'x');
     assert_eq!(q.len(), 3);
 }
@@ -108,7 +96,7 @@ fn with_elem() {
         queue => [ Q, NeQ ; Em, Sng, Pr ];
     );
 
-    let q = Em::new().push_back('x').push_back(12).push_back(true);
+    let q = Em::new().push('x').push(12).push(true);
     assert_eq!(q.front(), &'x');
     assert_eq!(q.len(), 3);
 }
@@ -123,7 +111,7 @@ fn with_elems() {
         queue => [ Q, NeQ ; Em, Sng, Pr ];
     );
 
-    let q = Em::new().push_back('x').push_back(12).push_back(true);
+    let q = Em::new().push('x').push(12).push(true);
     assert_eq!(q.front(), &'x');
     assert_eq!(q.len(), 3);
 }
@@ -152,7 +140,7 @@ fn with_elem_bnd() {
         }
     }
 
-    let q = Em::new().push_back(4u32).push_back(12u32).push_back(3u8);
+    let q = Em::new().push(4u32).push(12u32).push(3u8);
     assert_eq!(q.front(), &4);
     assert_eq!(q.len(), 3);
     let sum: u64 = q.into();
@@ -192,10 +180,7 @@ fn with_all() {
     impl<'a, 'b> Req<'a, 'b> for u32 {}
     impl<'a, 'b, T> Req2<'a, 'b, T> for u32 {}
 
-    let q = Em::<char>::new()
-        .push_back('x')
-        .push_back(12)
-        .push_back(true);
+    let q = Em::<char>::new().push('x').push(12).push(true);
     assert_eq!(q.front(), &'x');
     assert_eq!(q.len(), 3);
 }

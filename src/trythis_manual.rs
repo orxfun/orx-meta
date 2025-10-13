@@ -13,7 +13,7 @@ where
     type PushBack<X: Input>: InQueue;
     type Front: Input;
     type Back: InQueue;
-    fn push_back<X: Input>(self, x: impl Into<S<X>>) -> Self::PushBack<X>;
+    fn push<X: Input>(self, x: impl Into<S<X>>) -> Self::PushBack<X>;
 
     type Raised: InQueue;
     fn raise(self) -> Self::Raised;
@@ -27,7 +27,7 @@ impl InQueue for InEmpty {
     type PushBack<X: Input> = S<X>;
     type Front = Self;
     type Back = Self;
-    fn push_back<X: Input>(self, x: impl Into<S<X>>) -> Self::PushBack<X> {
+    fn push<X: Input>(self, x: impl Into<S<X>>) -> Self::PushBack<X> {
         x.into()
     }
 
@@ -52,7 +52,7 @@ impl<F: Input> InQueue for S<F> {
     type PushBack<X: Input> = P<F, S<X>>;
     type Front = F;
     type Back = Self;
-    fn push_back<X: Input>(self, x: impl Into<S<X>>) -> Self::PushBack<X> {
+    fn push<X: Input>(self, x: impl Into<S<X>>) -> Self::PushBack<X> {
         P(self.0, x.into())
     }
 
@@ -77,8 +77,8 @@ impl<F: Input, B: InQueue> InQueue for P<F, B> {
     type PushBack<X: Input> = P<F, B::PushBack<X>>;
     type Front = F;
     type Back = B;
-    fn push_back<X: Input>(self, x: impl Into<S<X>>) -> Self::PushBack<X> {
-        P(self.0, self.1.push_back(x))
+    fn push<X: Input>(self, x: impl Into<S<X>>) -> Self::PushBack<X> {
+        P(self.0, self.1.push(x))
     }
 
     type Raised = P<S<F>, B::Raised>;

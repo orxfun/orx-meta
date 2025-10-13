@@ -25,7 +25,7 @@ macro_rules! define_queue_core {
 
             type Raised: $q<$($g_lt ,)* $($g ,)*>;
 
-            fn push_back<Elem>(self, x: Elem) -> Self::PushBack<Elem>
+            fn push<Elem>(self, x: Elem) -> Self::PushBack<Elem>
             where
                 Elem: $( $el_bnd $( < $( $el_bnd_g ),* > )? + ) *;
 
@@ -118,7 +118,7 @@ macro_rules! define_queue_core {
 
             type Raised = Self;
 
-            fn push_back<Elem>(self, x: Elem) -> Self::PushBack<Elem>
+            fn push<Elem>(self, x: Elem) -> Self::PushBack<Elem>
             where
                 Elem: $( $el_bnd $( < $( $el_bnd_g ),* > )? + ) *
             {
@@ -191,7 +191,7 @@ macro_rules! define_queue_core {
 
             type Raised = $single<$($g_lt ,)* $($g ,)* Self>;
 
-            fn push_back<Elem>(self, x: Elem) -> Self::PushBack<Elem>
+            fn push<Elem>(self, x: Elem) -> Self::PushBack<Elem>
             where
                 Elem: $( $el_bnd $( < $( $el_bnd_g ),* > )? + ) *
             {
@@ -311,11 +311,11 @@ macro_rules! define_queue_core {
 
             type Raised = $pair<$($g_lt ,)* $($g ,)* $single<$($g_lt ,)* $($g ,)* F>, B::Raised>;
 
-            fn push_back<Elem>(self, x: Elem) -> Self::PushBack<Elem>
+            fn push<Elem>(self, x: Elem) -> Self::PushBack<Elem>
             where
                 Elem: $( $el_bnd $( < $( $el_bnd_g ),* > )? + ) *
             {
-                $pair::new(self.f, self.b.push_back(x))
+                $pair::new(self.f, self.b.push(x))
             }
 
             fn raise(self) -> Self::Raised {

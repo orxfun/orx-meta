@@ -8,7 +8,7 @@ define_queue_core_zzz!(
 );
 
 fn as_queue_of_different_type_elements() {
-    let q = Empty::new().push_back('x').push_back(12).push_back(true);
+    let q = Empty::new().push('x').push(12).push(true);
 
     assert_eq!(q.front(), &'x');
     assert_eq!(q.len(), 3);
@@ -33,7 +33,7 @@ define_queue_tuple_transformation_zzz!(
 );
 
 fn basic_builder_pattern() {
-    let mut q = Empty::new().push_back('x').push_back(12).push_back(true);
+    let mut q = Empty::new().push('x').push(12).push(true);
 
     // into tuple
     let tuple = q.clone().into_tuple();
@@ -43,7 +43,7 @@ fn basic_builder_pattern() {
     q = ('y', 42, false).into();
     assert_eq!(
         q,
-        Empty::new().push_back('y').push_back(42).push_back(false)
+        Empty::new().push('y').push(42).push(false)
     );
 }
 

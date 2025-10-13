@@ -22,15 +22,15 @@ pub trait Queue {
     ///
     /// let queue = Empty::new();
     ///
-    /// let queue = queue.push_back(42);
+    /// let queue = queue.push(42);
     /// assert_eq!(queue.len(), 1);
     ///
-    /// let queue = queue.push_back(true).push_back('x');
+    /// let queue = queue.push(true).push('x');
     /// assert_eq!(queue.len(), 3);
     ///
     /// assert_eq!(queue.as_tuple(), (&42, &true, &'x'));
     /// ```
-    fn push_back<Elem>(self, x: Elem) -> Self::PushBack<Elem>;
+    fn push<Elem>(self, x: Elem) -> Self::PushBack<Elem>;
 
     /// Number of elements in the queue.
     ///
@@ -40,9 +40,9 @@ pub trait Queue {
     /// use orx_meta::queue::*;
     ///
     /// let queue = Empty::new();
-    /// assert_eq!(queue.len(), 1);
+    /// assert_eq!(queue.len(), 0);
     ///
-    /// let queue = queue.push_back()
+    /// let queue = queue.push(42);
     /// ```
     fn len(&self) -> usize;
 
@@ -90,7 +90,7 @@ impl Queue for Empty {
     type Front = Empty;
     type Back = Self;
     type Raised = Self;
-    fn push_back<Elem>(self, x: Elem) -> Self::PushBack<Elem> {
+    fn push<Elem>(self, x: Elem) -> Self::PushBack<Elem> {
         Single::new(x)
     }
     fn raise(self) -> Self::Raised {
@@ -126,7 +126,7 @@ impl<F> Queue for Single<F> {
     type Front = F;
     type Back = Empty;
     type Raised = Single<Self>;
-    fn push_back<Elem>(self, x: Elem) -> Self::PushBack<Elem> {
+    fn push<Elem>(self, x: Elem) -> Self::PushBack<Elem> {
         Multi::new(self.f, Single::new(x))
     }
     fn raise(self) -> Self::Raised {
@@ -205,8 +205,8 @@ where
     type Front = F;
     type Back = B;
     type Raised = Multi<Single<F>, B::Raised>;
-    fn push_back<Elem>(self, x: Elem) -> Self::PushBack<Elem> {
-        Multi::new(self.f, self.b.push_back(x))
+    fn push<Elem>(self, x: Elem) -> Self::PushBack<Elem> {
+        Multi::new(self.f, self.b.push(x))
     }
     fn raise(self) -> Self::Raised {
         Multi::new(Single::new(self.f), self.b.raise())
@@ -289,12 +289,12 @@ where
     Remaining: Queue,
     Current: Queue,
 {
-    pub fn push_back(
+    pub fn push(
         self,
         x: Remaining::Front,
     ) -> QueueBuilder<Remaining::Back, Current::PushBack<Remaining::Front>> {
         QueueBuilder {
-            cur: self.cur.push_back(x),
+            cur: self.cur.push(x),
             rem: Default::default(),
             phantom: Default::default(),
         }

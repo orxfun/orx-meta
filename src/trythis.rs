@@ -151,19 +151,19 @@ mod example {
     #[test]
     fn adhoc_computations() {
         let comp = CompEmpty::new()
-            .push_back(AddNumToSeries(42))
-            .push_back(LenOfString)
-            .push_back(FirstLetter)
-            .push_back(AddNumToSeries(33))
-            .push_back(AddNumToSeries(12));
+            .push(AddNumToSeries(42))
+            .push(LenOfString)
+            .push(FirstLetter)
+            .push(AddNumToSeries(33))
+            .push(AddNumToSeries(12));
 
         let output = comp.run(
             InEmpty::new()
-                .push_back(vec![1, 2, 3])
-                .push_back("xyz".to_string())
-                .push_back("hello".to_string())
-                .push_back(vec![1, 2])
-                .push_back(vec![1])
+                .push(vec![1, 2, 3])
+                .push("xyz".to_string())
+                .push("hello".to_string())
+                .push(vec![1, 2])
+                .push(vec![1])
                 .raise(),
         );
 

@@ -16,44 +16,36 @@ fn plain() {
     );
 
     let _: qof!() = Em::new();
-    let _: qof!(usize) = Em::new().push_back(2);
-    let _: qof!(usize, char) = Em::new().push_back(2).push_back('x');
-    let _: qof!(usize, char, bool) = Em::new().push_back(2).push_back('x').push_back(true);
-    let _: qof!(usize, char, bool, i32) = Em::new()
-        .push_back(2)
-        .push_back('x')
-        .push_back(true)
-        .push_back(3);
-    let _: qof!(usize, char, bool, i32, bool) = Em::new()
-        .push_back(2)
-        .push_back('x')
-        .push_back(true)
-        .push_back(3)
-        .push_back(true);
+    let _: qof!(usize) = Em::new().push(2);
+    let _: qof!(usize, char) = Em::new().push(2).push('x');
+    let _: qof!(usize, char, bool) = Em::new().push(2).push('x').push(true);
+    let _: qof!(usize, char, bool, i32) = Em::new().push(2).push('x').push(true).push(3);
+    let _: qof!(usize, char, bool, i32, bool) =
+        Em::new().push(2).push('x').push(true).push(3).push(true);
     let _: qof!(usize, char, bool, i32, bool, u64) = Em::new()
-        .push_back(2)
-        .push_back('x')
-        .push_back(true)
-        .push_back(3)
-        .push_back(true)
-        .push_back(55);
+        .push(2)
+        .push('x')
+        .push(true)
+        .push(3)
+        .push(true)
+        .push(55);
     let _: qof!(usize, char, bool, i32, bool, u64, char) = Em::new()
-        .push_back(2)
-        .push_back('x')
-        .push_back(true)
-        .push_back(3)
-        .push_back(true)
-        .push_back(55)
-        .push_back('y');
+        .push(2)
+        .push('x')
+        .push(true)
+        .push(3)
+        .push(true)
+        .push(55)
+        .push('y');
     let _: qof!(usize, char, bool, i32, bool, u64, char, u8) = Em::new()
-        .push_back(2)
-        .push_back('x')
-        .push_back(true)
-        .push_back(3)
-        .push_back(true)
-        .push_back(55)
-        .push_back('y')
-        .push_back(4);
+        .push(2)
+        .push('x')
+        .push(true)
+        .push(3)
+        .push(true)
+        .push(55)
+        .push('y')
+        .push(4);
 }
 
 #[test]
@@ -72,44 +64,36 @@ fn with_lt_omit() {
     );
 
     let _: qof!() = Em::new();
-    let _: qof!(usize) = Em::new().push_back(2);
-    let _: qof!(usize, char) = Em::new().push_back(2).push_back('x');
-    let _: qof!(usize, char, bool) = Em::new().push_back(2).push_back('x').push_back(true);
-    let _: qof!(usize, char, bool, i32) = Em::new()
-        .push_back(2)
-        .push_back('x')
-        .push_back(true)
-        .push_back(3);
-    let _: qof!(usize, char, bool, i32, bool) = Em::new()
-        .push_back(2)
-        .push_back('x')
-        .push_back(true)
-        .push_back(3)
-        .push_back(true);
+    let _: qof!(usize) = Em::new().push(2);
+    let _: qof!(usize, char) = Em::new().push(2).push('x');
+    let _: qof!(usize, char, bool) = Em::new().push(2).push('x').push(true);
+    let _: qof!(usize, char, bool, i32) = Em::new().push(2).push('x').push(true).push(3);
+    let _: qof!(usize, char, bool, i32, bool) =
+        Em::new().push(2).push('x').push(true).push(3).push(true);
     let _: qof!(usize, char, bool, i32, bool, u64) = Em::new()
-        .push_back(2)
-        .push_back('x')
-        .push_back(true)
-        .push_back(3)
-        .push_back(true)
-        .push_back(55);
+        .push(2)
+        .push('x')
+        .push(true)
+        .push(3)
+        .push(true)
+        .push(55);
     let _: qof!(usize, char, bool, i32, bool, u64, char) = Em::new()
-        .push_back(2)
-        .push_back('x')
-        .push_back(true)
-        .push_back(3)
-        .push_back(true)
-        .push_back(55)
-        .push_back('y');
+        .push(2)
+        .push('x')
+        .push(true)
+        .push(3)
+        .push(true)
+        .push(55)
+        .push('y');
     let _: qof!(usize, char, bool, i32, bool, u64, char, u8) = Em::new()
-        .push_back(2)
-        .push_back('x')
-        .push_back(true)
-        .push_back(3)
-        .push_back(true)
-        .push_back(55)
-        .push_back('y')
-        .push_back(4);
+        .push(2)
+        .push('x')
+        .push(true)
+        .push(3)
+        .push(true)
+        .push(55)
+        .push('y')
+        .push(4);
 }
 
 #[test]
@@ -131,58 +115,49 @@ fn with_lt() {
     let _: Q0<'_> = Em::new();
 
     type Q1<'a> = qof!(usize);
-    let _: Q1<'_> = Em::new().push_back(2);
+    let _: Q1<'_> = Em::new().push(2);
 
     type Q2<'a> = qof!(usize, char);
-    let _: Q2<'_> = Em::new().push_back(2).push_back('x');
+    let _: Q2<'_> = Em::new().push(2).push('x');
 
     type Q3<'a> = qof!(usize, char, bool);
-    let _: Q3<'_> = Em::new().push_back(2).push_back('x').push_back(true);
+    let _: Q3<'_> = Em::new().push(2).push('x').push(true);
 
     type Q4<'a> = qof!(usize, char, bool, i32);
-    let _: Q4<'_> = Em::new()
-        .push_back(2)
-        .push_back('x')
-        .push_back(true)
-        .push_back(3);
+    let _: Q4<'_> = Em::new().push(2).push('x').push(true).push(3);
 
     type Q5<'a> = qof!(usize, char, bool, i32, bool);
-    let _: Q5<'_> = Em::new()
-        .push_back(2)
-        .push_back('x')
-        .push_back(true)
-        .push_back(3)
-        .push_back(true);
+    let _: Q5<'_> = Em::new().push(2).push('x').push(true).push(3).push(true);
 
     type Q6<'a> = qof!(usize, char, bool, i32, bool, u64);
     let _: Q6<'_> = Em::new()
-        .push_back(2)
-        .push_back('x')
-        .push_back(true)
-        .push_back(3)
-        .push_back(true)
-        .push_back(55);
+        .push(2)
+        .push('x')
+        .push(true)
+        .push(3)
+        .push(true)
+        .push(55);
 
     type Q7<'a> = qof!(usize, char, bool, i32, bool, u64, char);
     let _: Q7<'_> = Em::new()
-        .push_back(2)
-        .push_back('x')
-        .push_back(true)
-        .push_back(3)
-        .push_back(true)
-        .push_back(55)
-        .push_back('y');
+        .push(2)
+        .push('x')
+        .push(true)
+        .push(3)
+        .push(true)
+        .push(55)
+        .push('y');
 
     type Q8<'a> = qof!(usize, char, bool, i32, bool, u64, char, u8);
     let _: Q8<'_> = Em::new()
-        .push_back(2)
-        .push_back('x')
-        .push_back(true)
-        .push_back(3)
-        .push_back(true)
-        .push_back(55)
-        .push_back('y')
-        .push_back(4);
+        .push(2)
+        .push('x')
+        .push(true)
+        .push(3)
+        .push(true)
+        .push(55)
+        .push('y')
+        .push(4);
 }
 
 #[test]
@@ -204,61 +179,54 @@ fn with_gen() {
     let _: Q0<_> = Em::<usize>::new();
 
     type Q1<T> = qof!(usize);
-    let _: Q1<_> = Em::<usize>::new().push_back(2);
+    let _: Q1<_> = Em::<usize>::new().push(2);
 
     type Q2<T> = qof!(usize, char);
-    let _: Q2<_> = Em::<usize>::new().push_back(2).push_back('x');
+    let _: Q2<_> = Em::<usize>::new().push(2).push('x');
 
     type Q3<T> = qof!(usize, char, bool);
-    let _: Q3<_> = Em::<usize>::new()
-        .push_back(2)
-        .push_back('x')
-        .push_back(true);
+    let _: Q3<_> = Em::<usize>::new().push(2).push('x').push(true);
 
     type Q4<T> = qof!(usize, char, bool, i32);
-    let _: Q4<_> = Em::<usize>::new()
-        .push_back(2)
-        .push_back('x')
-        .push_back(true)
-        .push_back(3);
+    let _: Q4<_> = Em::<usize>::new().push(2).push('x').push(true).push(3);
 
     type Q5<T> = qof!(usize, char, bool, i32, bool);
     let _: Q5<_> = Em::<usize>::new()
-        .push_back(2)
-        .push_back('x')
-        .push_back(true)
-        .push_back(3)
-        .push_back(true);
+        .push(2)
+        .push('x')
+        .push(true)
+        .push(3)
+        .push(true);
 
     type Q6<T> = qof!(usize, char, bool, i32, bool, u64);
     let _: Q6<_> = Em::<usize>::new()
-        .push_back(2)
-        .push_back('x')
-        .push_back(true)
-        .push_back(3)
-        .push_back(true)
-        .push_back(55);
+        .push(2)
+        .push('x')
+        .push(true)
+        .push(3)
+        .push(true)
+        .push(55);
 
     type Q7<T> = qof!(usize, char, bool, i32, bool, u64, char);
     let _: Q7<_> = Em::<usize>::new()
-        .push_back(2)
-        .push_back('x')
-        .push_back(true)
-        .push_back(3)
-        .push_back(true)
-        .push_back(55)
-        .push_back('y');
+        .push(2)
+        .push('x')
+        .push(true)
+        .push(3)
+        .push(true)
+        .push(55)
+        .push('y');
 
     type Q8<T> = qof!(usize, char, bool, i32, bool, u64, char, u8);
     let _: Q8<_> = Em::<usize>::new()
-        .push_back(2)
-        .push_back('x')
-        .push_back(true)
-        .push_back(3)
-        .push_back(true)
-        .push_back(55)
-        .push_back('y')
-        .push_back(4);
+        .push(2)
+        .push('x')
+        .push(true)
+        .push(3)
+        .push(true)
+        .push(55)
+        .push('y')
+        .push(4);
 }
 
 #[test]
@@ -280,58 +248,49 @@ fn with_gens() {
     let _: Q0<usize, char> = Em::new();
 
     type Q1<T, U> = qof!(usize);
-    let _: Q1<usize, char> = Em::new().push_back(2);
+    let _: Q1<usize, char> = Em::new().push(2);
 
     type Q2<T, U> = qof!(usize, char);
-    let _: Q2<usize, char> = Em::new().push_back(2).push_back('x');
+    let _: Q2<usize, char> = Em::new().push(2).push('x');
 
     type Q3<T, U> = qof!(usize, char, bool);
-    let _: Q3<usize, char> = Em::new().push_back(2).push_back('x').push_back(true);
+    let _: Q3<usize, char> = Em::new().push(2).push('x').push(true);
 
     type Q4<T, U> = qof!(usize, char, bool, i32);
-    let _: Q4<usize, char> = Em::new()
-        .push_back(2)
-        .push_back('x')
-        .push_back(true)
-        .push_back(3);
+    let _: Q4<usize, char> = Em::new().push(2).push('x').push(true).push(3);
 
     type Q5<T, U> = qof!(usize, char, bool, i32, bool);
-    let _: Q5<usize, char> = Em::new()
-        .push_back(2)
-        .push_back('x')
-        .push_back(true)
-        .push_back(3)
-        .push_back(true);
+    let _: Q5<usize, char> = Em::new().push(2).push('x').push(true).push(3).push(true);
 
     type Q6<T, U> = qof!(usize, char, bool, i32, bool, u64);
     let _: Q6<usize, char> = Em::new()
-        .push_back(2)
-        .push_back('x')
-        .push_back(true)
-        .push_back(3)
-        .push_back(true)
-        .push_back(55);
+        .push(2)
+        .push('x')
+        .push(true)
+        .push(3)
+        .push(true)
+        .push(55);
 
     type Q7<T, U> = qof!(usize, char, bool, i32, bool, u64, char);
     let _: Q7<usize, char> = Em::new()
-        .push_back(2)
-        .push_back('x')
-        .push_back(true)
-        .push_back(3)
-        .push_back(true)
-        .push_back(55)
-        .push_back('y');
+        .push(2)
+        .push('x')
+        .push(true)
+        .push(3)
+        .push(true)
+        .push(55)
+        .push('y');
 
     type Q8<T, U> = qof!(usize, char, bool, i32, bool, u64, char, u8);
     let _: Q8<usize, char> = Em::new()
-        .push_back(2)
-        .push_back('x')
-        .push_back(true)
-        .push_back(3)
-        .push_back(true)
-        .push_back(55)
-        .push_back('y')
-        .push_back(4);
+        .push(2)
+        .push('x')
+        .push(true)
+        .push(3)
+        .push(true)
+        .push(55)
+        .push('y')
+        .push(4);
 }
 
 #[test]
@@ -354,58 +313,49 @@ fn with_gens_with_bounds() {
     let _: Q0<usize, char, bool> = Em::new();
 
     type Q1<T, U, V> = qof!(usize);
-    let _: Q1<usize, char, bool> = Em::new().push_back(2);
+    let _: Q1<usize, char, bool> = Em::new().push(2);
 
     type Q2<T, U, V> = qof!(usize, char);
-    let _: Q2<usize, char, bool> = Em::new().push_back(2).push_back('x');
+    let _: Q2<usize, char, bool> = Em::new().push(2).push('x');
 
     type Q3<T, U, V> = qof!(usize, char, bool);
-    let _: Q3<usize, char, bool> = Em::new().push_back(2).push_back('x').push_back(true);
+    let _: Q3<usize, char, bool> = Em::new().push(2).push('x').push(true);
 
     type Q4<T, U, V> = qof!(usize, char, bool, i32);
-    let _: Q4<usize, char, bool> = Em::new()
-        .push_back(2)
-        .push_back('x')
-        .push_back(true)
-        .push_back(3);
+    let _: Q4<usize, char, bool> = Em::new().push(2).push('x').push(true).push(3);
 
     type Q5<T, U, V> = qof!(usize, char, bool, i32, bool);
-    let _: Q5<usize, char, bool> = Em::new()
-        .push_back(2)
-        .push_back('x')
-        .push_back(true)
-        .push_back(3)
-        .push_back(true);
+    let _: Q5<usize, char, bool> = Em::new().push(2).push('x').push(true).push(3).push(true);
 
     type Q6<T, U, V> = qof!(usize, char, bool, i32, bool, u64);
     let _: Q6<usize, char, bool> = Em::new()
-        .push_back(2)
-        .push_back('x')
-        .push_back(true)
-        .push_back(3)
-        .push_back(true)
-        .push_back(55);
+        .push(2)
+        .push('x')
+        .push(true)
+        .push(3)
+        .push(true)
+        .push(55);
 
     type Q7<T, U, V> = qof!(usize, char, bool, i32, bool, u64, char);
     let _: Q7<usize, char, bool> = Em::new()
-        .push_back(2)
-        .push_back('x')
-        .push_back(true)
-        .push_back(3)
-        .push_back(true)
-        .push_back(55)
-        .push_back('y');
+        .push(2)
+        .push('x')
+        .push(true)
+        .push(3)
+        .push(true)
+        .push(55)
+        .push('y');
 
     type Q8<T, U, V> = qof!(usize, char, bool, i32, bool, u64, char, u8);
     let _: Q8<usize, char, bool> = Em::new()
-        .push_back(2)
-        .push_back('x')
-        .push_back(true)
-        .push_back(3)
-        .push_back(true)
-        .push_back(55)
-        .push_back('y')
-        .push_back(4);
+        .push(2)
+        .push('x')
+        .push(true)
+        .push(3)
+        .push(true)
+        .push(55)
+        .push('y')
+        .push(4);
 }
 
 #[test]
@@ -430,58 +380,49 @@ fn with_lt_and_gens() {
     let _: Q0<'_, usize, char, bool> = Em::new();
 
     type Q1<'a, T, U, V> = qof!(usize);
-    let _: Q1<'_, usize, char, bool> = Em::new().push_back(2);
+    let _: Q1<'_, usize, char, bool> = Em::new().push(2);
 
     type Q2<'a, T, U, V> = qof!(usize, char);
-    let _: Q2<'_, usize, char, bool> = Em::new().push_back(2).push_back('x');
+    let _: Q2<'_, usize, char, bool> = Em::new().push(2).push('x');
 
     type Q3<'a, T, U, V> = qof!(usize, char, bool);
-    let _: Q3<'_, usize, char, bool> = Em::new().push_back(2).push_back('x').push_back(true);
+    let _: Q3<'_, usize, char, bool> = Em::new().push(2).push('x').push(true);
 
     type Q4<'a, T, U, V> = qof!(usize, char, bool, i32);
-    let _: Q4<'_, usize, char, bool> = Em::new()
-        .push_back(2)
-        .push_back('x')
-        .push_back(true)
-        .push_back(3);
+    let _: Q4<'_, usize, char, bool> = Em::new().push(2).push('x').push(true).push(3);
 
     type Q5<'a, T, U, V> = qof!(usize, char, bool, i32, bool);
-    let _: Q5<'_, usize, char, bool> = Em::new()
-        .push_back(2)
-        .push_back('x')
-        .push_back(true)
-        .push_back(3)
-        .push_back(true);
+    let _: Q5<'_, usize, char, bool> = Em::new().push(2).push('x').push(true).push(3).push(true);
 
     type Q6<'a, T, U, V> = qof!(usize, char, bool, i32, bool, u64);
     let _: Q6<'_, usize, char, bool> = Em::new()
-        .push_back(2)
-        .push_back('x')
-        .push_back(true)
-        .push_back(3)
-        .push_back(true)
-        .push_back(55);
+        .push(2)
+        .push('x')
+        .push(true)
+        .push(3)
+        .push(true)
+        .push(55);
 
     type Q7<'a, T, U, V> = qof!(usize, char, bool, i32, bool, u64, char);
     let _: Q7<'_, usize, char, bool> = Em::new()
-        .push_back(2)
-        .push_back('x')
-        .push_back(true)
-        .push_back(3)
-        .push_back(true)
-        .push_back(55)
-        .push_back('y');
+        .push(2)
+        .push('x')
+        .push(true)
+        .push(3)
+        .push(true)
+        .push(55)
+        .push('y');
 
     type Q8<'a, T, U, V> = qof!(usize, char, bool, i32, bool, u64, char, u8);
     let _: Q8<'_, usize, char, bool> = Em::new()
-        .push_back(2)
-        .push_back('x')
-        .push_back(true)
-        .push_back(3)
-        .push_back(true)
-        .push_back(55)
-        .push_back('y')
-        .push_back(4);
+        .push(2)
+        .push('x')
+        .push(true)
+        .push(3)
+        .push(true)
+        .push(55)
+        .push('y')
+        .push(4);
 }
 
 #[test]
@@ -536,56 +477,47 @@ fn with_all() {
     let _: Q0<'_, '_, char> = Em::new();
 
     type Q1<'a, 'b, T> = qof!(usize);
-    let _: Q1<'_, '_, char> = Em::new().push_back(2);
+    let _: Q1<'_, '_, char> = Em::new().push(2);
 
     type Q2<'a, 'b, T> = qof!(usize, char);
-    let _: Q2<'_, '_, char> = Em::new().push_back(2).push_back('x');
+    let _: Q2<'_, '_, char> = Em::new().push(2).push('x');
 
     type Q3<'a, 'b, T> = qof!(usize, char, bool);
-    let _: Q3<'_, '_, char> = Em::new().push_back(2).push_back('x').push_back(true);
+    let _: Q3<'_, '_, char> = Em::new().push(2).push('x').push(true);
 
     type Q4<'a, 'b, T> = qof!(usize, char, bool, i32);
-    let _: Q4<'_, '_, char> = Em::new()
-        .push_back(2)
-        .push_back('x')
-        .push_back(true)
-        .push_back(3);
+    let _: Q4<'_, '_, char> = Em::new().push(2).push('x').push(true).push(3);
 
     type Q5<'a, 'b, T> = qof!(usize, char, bool, i32, bool);
-    let _: Q5<'_, '_, char> = Em::new()
-        .push_back(2)
-        .push_back('x')
-        .push_back(true)
-        .push_back(3)
-        .push_back(true);
+    let _: Q5<'_, '_, char> = Em::new().push(2).push('x').push(true).push(3).push(true);
 
     type Q6<'a, 'b, T> = qof!(usize, char, bool, i32, bool, u64);
     let _: Q6<'_, '_, char> = Em::new()
-        .push_back(2)
-        .push_back('x')
-        .push_back(true)
-        .push_back(3)
-        .push_back(true)
-        .push_back(55);
+        .push(2)
+        .push('x')
+        .push(true)
+        .push(3)
+        .push(true)
+        .push(55);
 
     type Q7<'a, 'b, T> = qof!(usize, char, bool, i32, bool, u64, char);
     let _: Q7<'_, '_, char> = Em::new()
-        .push_back(2)
-        .push_back('x')
-        .push_back(true)
-        .push_back(3)
-        .push_back(true)
-        .push_back(55)
-        .push_back('y');
+        .push(2)
+        .push('x')
+        .push(true)
+        .push(3)
+        .push(true)
+        .push(55)
+        .push('y');
 
     type Q8<'a, 'b, T> = qof!(usize, char, bool, i32, bool, u64, char, u8);
     let _: Q8<'_, '_, char> = Em::new()
-        .push_back(2)
-        .push_back('x')
-        .push_back(true)
-        .push_back(3)
-        .push_back(true)
-        .push_back(55)
-        .push_back('y')
-        .push_back(4);
+        .push(2)
+        .push('x')
+        .push(true)
+        .push(3)
+        .push(true)
+        .push(55)
+        .push('y')
+        .push(4);
 }

@@ -10,7 +10,7 @@ trait Queue {
 
     type Elevated: Queue;
 
-    fn push_back<X>(self, x: impl Into<Single<X>>) -> Self::PushBack<X>;
+    fn push<X>(self, x: impl Into<Single<X>>) -> Self::PushBack<X>;
 
     fn len(&self) -> usize;
 
@@ -46,7 +46,7 @@ impl Queue for EmptyQueue {
 
     type Elevated = EmptyQueue;
 
-    fn push_back<X>(self, x: impl Into<Single<X>>) -> Self::PushBack<X> {
+    fn push<X>(self, x: impl Into<Single<X>>) -> Self::PushBack<X> {
         x.into()
     }
 
@@ -69,7 +69,7 @@ impl<F> Queue for Single<F> {
 
     type Elevated = Single<Single<F>>;
 
-    fn push_back<X>(self, x: impl Into<Single<X>>) -> Self::PushBack<X> {
+    fn push<X>(self, x: impl Into<Single<X>>) -> Self::PushBack<X> {
         Pair(self.0, x.into())
     }
 
@@ -110,8 +110,8 @@ impl<F, B: Queue> Queue for Pair<F, B> {
 
     type Elevated = Pair<Single<F>, B::Elevated>;
 
-    fn push_back<X>(self, x: impl Into<Single<X>>) -> Self::PushBack<X> {
-        Pair(self.0, self.1.push_back(x))
+    fn push<X>(self, x: impl Into<Single<X>>) -> Self::PushBack<X> {
+        Pair(self.0, self.1.push(x))
     }
 
     fn len(&self) -> usize {
@@ -151,7 +151,7 @@ impl QueueComposition {
     }
 
     fn compose<C: Queue, X>(q: C, x: X) -> C::PushBack<X> {
-        q.push_back(x)
+        q.push(x)
     }
 }
 
@@ -176,8 +176,8 @@ where
     Rem: Queue,
     Cur: Queue,
 {
-    fn push_back(self, x: Rem::Front) -> Builder<Rem::Back, Cur::PushBack<Rem::Front>> {
-        let current = self.0.push_back(x);
+    fn push(self, x: Rem::Front) -> Builder<Rem::Back, Cur::PushBack<Rem::Front>> {
+        let current = self.0.push(x);
         Builder(current, core::marker::PhantomData)
     }
 
@@ -213,7 +213,7 @@ impl<X1, X2> Pair<X1, Single<X2>> {
 
 impl<X1, X2> From<(X1, X2)> for Pair<X1, Single<X2>> {
     fn from(x: (X1, X2)) -> Self {
-        Single::from(x.0).push_back(x.1)
+        Single::from(x.0).push(x.1)
     }
 }
 
@@ -227,7 +227,7 @@ impl<X1, X2, X3> Pair<X1, Pair<X2, Single<X3>>> {
 
 impl<X1, X2, X3> From<(X1, X2, X3)> for Pair<X1, Pair<X2, Single<X3>>> {
     fn from(x: (X1, X2, X3)) -> Self {
-        Single::from(x.0).push_back(x.1).push_back(x.2)
+        Single::from(x.0).push(x.1).push(x.2)
     }
 }
 
@@ -242,9 +242,9 @@ impl<X1, X2, X3, X4> Pair<X1, Pair<X2, Pair<X3, Single<X4>>>> {
 impl<X1, X2, X3, X4> From<(X1, X2, X3, X4)> for Pair<X1, Pair<X2, Pair<X3, Single<X4>>>> {
     fn from(x: (X1, X2, X3, X4)) -> Self {
         Single::from(x.0)
-            .push_back(x.1)
-            .push_back(x.2)
-            .push_back(x.3)
+            .push(x.1)
+            .push(x.2)
+            .push(x.3)
     }
 }
 
@@ -261,10 +261,10 @@ impl<X1, X2, X3, X4, X5> From<(X1, X2, X3, X4, X5)>
 {
     fn from(x: (X1, X2, X3, X4, X5)) -> Self {
         Single::from(x.0)
-            .push_back(x.1)
-            .push_back(x.2)
-            .push_back(x.3)
-            .push_back(x.4)
+            .push(x.1)
+            .push(x.2)
+            .push(x.3)
+            .push(x.4)
     }
 }
 
@@ -288,11 +288,11 @@ impl<X1, X2, X3, X4, X5, X6> From<(X1, X2, X3, X4, X5, X6)>
 {
     fn from(x: (X1, X2, X3, X4, X5, X6)) -> Self {
         Single::from(x.0)
-            .push_back(x.1)
-            .push_back(x.2)
-            .push_back(x.3)
-            .push_back(x.4)
-            .push_back(x.5)
+            .push(x.1)
+            .push(x.2)
+            .push(x.3)
+            .push(x.4)
+            .push(x.5)
     }
 }
 
@@ -319,12 +319,12 @@ impl<X1, X2, X3, X4, X5, X6, X7> From<(X1, X2, X3, X4, X5, X6, X7)>
 {
     fn from(x: (X1, X2, X3, X4, X5, X6, X7)) -> Self {
         Single::from(x.0)
-            .push_back(x.1)
-            .push_back(x.2)
-            .push_back(x.3)
-            .push_back(x.4)
-            .push_back(x.5)
-            .push_back(x.6)
+            .push(x.1)
+            .push(x.2)
+            .push(x.3)
+            .push(x.4)
+            .push(x.5)
+            .push(x.6)
     }
 }
 
@@ -352,13 +352,13 @@ impl<X1, X2, X3, X4, X5, X6, X7, X8> From<(X1, X2, X3, X4, X5, X6, X7, X8)>
 {
     fn from(x: (X1, X2, X3, X4, X5, X6, X7, X8)) -> Self {
         Single::from(x.0)
-            .push_back(x.1)
-            .push_back(x.2)
-            .push_back(x.3)
-            .push_back(x.4)
-            .push_back(x.5)
-            .push_back(x.6)
-            .push_back(x.7)
+            .push(x.1)
+            .push(x.2)
+            .push(x.3)
+            .push(x.4)
+            .push(x.5)
+            .push(x.6)
+            .push(x.7)
     }
 }
 
@@ -367,7 +367,7 @@ impl<X1, X2, X3, X4, X5, X6, X7, X8> From<(X1, X2, X3, X4, X5, X6, X7, X8)>
 #[test]
 fn one() {
     let x = EmptyQueue;
-    let x = x.push_back('x');
+    let x = x.push('x');
 
     assert_eq!(x.front(), &'x');
     let (f, x) = x.pop_front();
@@ -379,8 +379,8 @@ fn one() {
 #[test]
 fn two() {
     let x = EmptyQueue;
-    let x = x.push_back('x');
-    let x = x.push_back(32);
+    let x = x.push('x');
+    let x = x.push(32);
 
     assert_eq!(x.front(), &'x');
     let (f, x) = x.pop_front();
@@ -396,9 +396,9 @@ fn two() {
 #[test]
 fn three() {
     let x = EmptyQueue;
-    let x = x.push_back('x');
-    let x = x.push_back(32);
-    let x = x.push_back(String::from("xyz"));
+    let x = x.push('x');
+    let x = x.push(32);
+    let x = x.push(String::from("xyz"));
 
     assert_eq!(x.front(), &'x');
     let (f, x) = x.pop_front();
@@ -418,10 +418,10 @@ fn three() {
 #[test]
 fn four() {
     let x = EmptyQueue;
-    let x = x.push_back('x');
-    let x = x.push_back(32);
-    let x = x.push_back(String::from("xyz"));
-    let x = x.push_back(true);
+    let x = x.push('x');
+    let x = x.push(32);
+    let x = x.push(String::from("xyz"));
+    let x = x.push(true);
 
     assert_eq!(x.front(), &'x');
     let (f, x) = x.pop_front();
@@ -501,15 +501,15 @@ fn builder() {
     let builder = Builder::<Target, _>::new();
 
     let builder: Builder<Pair<i32, Pair<String, Single<bool>>>, Single<char>> =
-        builder.push_back('x');
+        builder.push('x');
 
     let builder: Builder<Pair<String, Single<bool>>, Pair<char, Single<i32>>> =
-        builder.push_back(32);
+        builder.push(32);
 
     let builder: Builder<Single<bool>, Pair<char, Pair<i32, Single<String>>>> =
-        builder.push_back("xyz".to_string());
+        builder.push("xyz".to_string());
 
-    let builder: Builder<EmptyQueue, Target> = builder.push_back(true);
+    let builder: Builder<EmptyQueue, Target> = builder.push(true);
 
     let x = builder.finish();
     assert_eq!(x.len(), 4);
@@ -521,10 +521,10 @@ fn builder() {
     type Target2 = QueueOf<char, i32, String, bool>;
 
     let x = Builder::<Target2, _>::new()
-        .push_back('x')
-        .push_back(32)
-        .push_back("xyz".to_string())
-        .push_back(true)
+        .push('x')
+        .push(32)
+        .push("xyz".to_string())
+        .push(true)
         .finish();
     assert_eq!(x.front(), &'x');
     let (f, x) = x.pop_front();

@@ -47,9 +47,9 @@ macro_rules! define_queue_builder {
             Current:  $q<$($g_lt ,)* $($g ,)*>,
             $( $g: $( $( $g_bnd $( < $( $g_bnd_g ),* > )? + )* )? ), *
         {
-            pub fn push_back(self, x: Remaining::Front) -> $builder<$($g_lt ,)* $($g ,)* Remaining::Back, Current::PushBack<Remaining::Front>> {
+            pub fn push(self, x: Remaining::Front) -> $builder<$($g_lt ,)* $($g ,)* Remaining::Back, Current::PushBack<Remaining::Front>> {
                 $builder {
-                    cur: self.cur.push_back(x),
+                    cur: self.cur.push(x),
                     rem: Default::default(),
                     phantom: Default::default(),
                 }

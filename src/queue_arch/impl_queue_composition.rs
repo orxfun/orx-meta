@@ -93,7 +93,7 @@ macro_rules! define_queue_composition {
                 Elem: $( $el_bnd $( < $( $el_bnd_g ),* > )? + ) *,
                 Que: $q<$($g_lt ,)* $($g ,)*>,
             {
-                q.push_back(x)
+                q.push(x)
             }
         }
     };

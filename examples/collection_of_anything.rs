@@ -16,14 +16,14 @@ fn main() {
     assert!(queue.is_empty());
 
     // push elements to the back
-    let queue = queue.push_back(42);
+    let queue = queue.push(42);
     assert_eq!(queue.len(), 1);
     assert_eq!(queue.front(), &42);
 
     let queue = queue
-        .push_back('x')
-        .push_back(true)
-        .push_back(String::from("xyz"));
+        .push('x')
+        .push(true)
+        .push(String::from("xyz"));
     assert_eq!(queue.len(), 4);
     assert_eq!(queue.front(), &42);
 
@@ -44,10 +44,10 @@ fn main() {
 
     // as & into tuple
     let queue = Empty::new()
-        .push_back(42)
-        .push_back('x')
-        .push_back(true)
-        .push_back(String::from("xyz"));
+        .push(42)
+        .push('x')
+        .push(true)
+        .push(String::from("xyz"));
 
     let (a, b, c, d) = queue.as_tuple();
     assert_eq!(a, &42);

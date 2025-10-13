@@ -45,7 +45,7 @@ impl Screen<Empty> {
 
 impl<Q: DrawQueue> Screen<Q> {
     fn push<D: Draw>(self, shape: D) -> Screen<Q::PushBack<D>> {
-        Screen(self.0.push_back(shape))
+        Screen(self.0.push(shape))
     }
 
     fn pop(self) -> (Screen<Q::Back>, Q::Front)

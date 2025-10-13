@@ -376,7 +376,7 @@ fn adhoc_analyses() {
 
     // single analyses
     let analyses = AnalysesEmpty.compose(AvgOfHeroAttack);
-    let input = InEmpty::new().push_back(heroes.as_slice());
+    let input = InEmpty::new().push(heroes.as_slice());
     let output = analyses.analyze(&input);
     print_results(&analyses, &input, &output);
 
@@ -386,9 +386,9 @@ fn adhoc_analyses() {
         .compose(CreatureHpRange)
         .compose(NumRangeCreatures);
     let input = InEmpty::new()
-        .push_back(heroes.as_slice())
-        .push_back(creatures.as_slice())
-        .push_back(creatures.as_slice());
+        .push(heroes.as_slice())
+        .push(creatures.as_slice())
+        .push(creatures.as_slice());
     let output = analyses.analyze(&input);
     print_results(&analyses, &input, &output);
 }

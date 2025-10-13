@@ -56,13 +56,13 @@ fn main() {
     let q = NoNum::new();
     assert_eq!(0i64, q.into());
 
-    let q = q.push_back(12i32);
+    let q = q.push(12i32);
     assert_eq!(12i64, q.into());
 
-    let q = q.push_back(7u32);
+    let q = q.push(7u32);
     assert_eq!(12i64 + 7, q.into());
 
-    let q = q.push_back(MyFloat(20.0));
+    let q = q.push(MyFloat(20.0));
     assert_eq!(12i64 + 7 + 20, q.into());
 
     // shrink
@@ -82,9 +82,9 @@ fn main() {
     // chain
 
     let sum: i64 = NoNum::new()
-        .push_back(12i32)
-        .push_back(7u32)
-        .push_back(MyFloat(20.0))
+        .push(12i32)
+        .push(7u32)
+        .push(MyFloat(20.0))
         .into();
     assert_eq!(sum, 12 + 7 + 20);
 }

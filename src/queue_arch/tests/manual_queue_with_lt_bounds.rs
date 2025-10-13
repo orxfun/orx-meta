@@ -21,7 +21,7 @@ trait Queue<'i> {
 
     type Back: Queue<'i>;
 
-    fn push_back<X: Req<'i>>(self, x: X) -> Self::PushBack<X>;
+    fn push<X: Req<'i>>(self, x: X) -> Self::PushBack<X>;
 
     fn len(&self) -> usize;
 
@@ -56,7 +56,7 @@ impl<'i> Queue<'i> for EmptyQueue {
 
     type Back = Self;
 
-    fn push_back<X: Req<'i>>(self, x: X) -> Self::PushBack<X> {
+    fn push<X: Req<'i>>(self, x: X) -> Self::PushBack<X> {
         Single(x, PhantomData)
     }
 
@@ -77,7 +77,7 @@ impl<'i, F: Req<'i>> Queue<'i> for Single<'i, F> {
 
     type Back = EmptyQueue;
 
-    fn push_back<X: Req<'i>>(self, x: X) -> Self::PushBack<X> {
+    fn push<X: Req<'i>>(self, x: X) -> Self::PushBack<X> {
         Pair(self.0, Single(x, PhantomData), PhantomData)
     }
 
@@ -116,8 +116,8 @@ impl<'i, F: Req<'i>, B: Queue<'i>> Queue<'i> for Pair<'i, F, B> {
 
     type Back = B;
 
-    fn push_back<X: Req<'i>>(self, x: X) -> Self::PushBack<X> {
-        Pair(self.0, self.1.push_back(x), PhantomData)
+    fn push<X: Req<'i>>(self, x: X) -> Self::PushBack<X> {
+        Pair(self.0, self.1.push(x), PhantomData)
     }
 
     fn len(&self) -> usize {
@@ -158,7 +158,7 @@ impl QueueComposition {
     }
 
     fn compose<'i, C: Queue<'i>, X: Req<'i>>(q: C, x: X) -> C::PushBack<X> {
-        q.push_back(x)
+        q.push(x)
     }
 }
 
@@ -183,8 +183,8 @@ where
     Rem: Queue<'i>,
     Cur: Queue<'i>,
 {
-    fn push_back(self, x: Rem::Front) -> Builder<'i, Rem::Back, Cur::PushBack<Rem::Front>> {
-        let current = self.0.push_back(x);
+    fn push(self, x: Rem::Front) -> Builder<'i, Rem::Back, Cur::PushBack<Rem::Front>> {
+        let current = self.0.push(x);
         Builder(current, core::marker::PhantomData)
     }
 
@@ -234,7 +234,7 @@ where
     X2: Req<'i>,
 {
     fn from(x: (X1, X2)) -> Self {
-        Single::from(x.0).push_back(x.1)
+        Single::from(x.0).push(x.1)
     }
 }
 
@@ -258,7 +258,7 @@ where
     X3: Req<'i>,
 {
     fn from(x: (X1, X2, X3)) -> Self {
-        Single::from(x.0).push_back(x.1).push_back(x.2)
+        Single::from(x.0).push(x.1).push(x.2)
     }
 }
 
@@ -286,9 +286,9 @@ where
 {
     fn from(x: (X1, X2, X3, X4)) -> Self {
         Single::from(x.0)
-            .push_back(x.1)
-            .push_back(x.2)
-            .push_back(x.3)
+            .push(x.1)
+            .push(x.2)
+            .push(x.3)
     }
 }
 
@@ -318,10 +318,10 @@ where
 {
     fn from(x: (X1, X2, X3, X4, X5)) -> Self {
         Single::from(x.0)
-            .push_back(x.1)
-            .push_back(x.2)
-            .push_back(x.3)
-            .push_back(x.4)
+            .push(x.1)
+            .push(x.2)
+            .push(x.3)
+            .push(x.4)
     }
 }
 
@@ -361,11 +361,11 @@ where
 {
     fn from(x: (X1, X2, X3, X4, X5, X6)) -> Self {
         Single::from(x.0)
-            .push_back(x.1)
-            .push_back(x.2)
-            .push_back(x.3)
-            .push_back(x.4)
-            .push_back(x.5)
+            .push(x.1)
+            .push(x.2)
+            .push(x.3)
+            .push(x.4)
+            .push(x.5)
     }
 }
 
@@ -416,12 +416,12 @@ where
 {
     fn from(x: (X1, X2, X3, X4, X5, X6, X7)) -> Self {
         Single::from(x.0)
-            .push_back(x.1)
-            .push_back(x.2)
-            .push_back(x.3)
-            .push_back(x.4)
-            .push_back(x.5)
-            .push_back(x.6)
+            .push(x.1)
+            .push(x.2)
+            .push(x.3)
+            .push(x.4)
+            .push(x.5)
+            .push(x.6)
     }
 }
 
@@ -483,13 +483,13 @@ where
 {
     fn from(x: (X1, X2, X3, X4, X5, X6, X7, X8)) -> Self {
         Single::from(x.0)
-            .push_back(x.1)
-            .push_back(x.2)
-            .push_back(x.3)
-            .push_back(x.4)
-            .push_back(x.5)
-            .push_back(x.6)
-            .push_back(x.7)
+            .push(x.1)
+            .push(x.2)
+            .push(x.3)
+            .push(x.4)
+            .push(x.5)
+            .push(x.6)
+            .push(x.7)
     }
 }
 
@@ -503,7 +503,7 @@ impl<'i> Sth<'i> for bool {}
 #[test]
 fn one() {
     let x = EmptyQueue;
-    let x = x.push_back('x');
+    let x = x.push('x');
 
     assert_eq!(x.front(), &'x');
     let (f, x) = x.pop_front();
@@ -515,8 +515,8 @@ fn one() {
 #[test]
 fn two() {
     let x = EmptyQueue;
-    let x = x.push_back('x');
-    let x = x.push_back(32);
+    let x = x.push('x');
+    let x = x.push(32);
 
     assert_eq!(x.front(), &'x');
     let (f, x) = x.pop_front();
@@ -532,9 +532,9 @@ fn two() {
 #[test]
 fn three() {
     let x = EmptyQueue;
-    let x = x.push_back('x');
-    let x = x.push_back(32);
-    let x = x.push_back(String::from("xyz"));
+    let x = x.push('x');
+    let x = x.push(32);
+    let x = x.push(String::from("xyz"));
 
     assert_eq!(x.front(), &'x');
     let (f, x) = x.pop_front();
@@ -554,10 +554,10 @@ fn three() {
 #[test]
 fn four() {
     let x = EmptyQueue;
-    let x = x.push_back('x');
-    let x = x.push_back(32);
-    let x = x.push_back(String::from("xyz"));
-    let x = x.push_back(true);
+    let x = x.push('x');
+    let x = x.push(32);
+    let x = x.push(String::from("xyz"));
+    let x = x.push(true);
 
     assert_eq!(x.front(), &'x');
     let (f, x) = x.pop_front();
@@ -637,15 +637,15 @@ fn builder() {
     let builder = Builder::<Target, _>::new();
 
     let builder: Builder<Pair<i32, Pair<String, Single<bool>>>, Single<char>> =
-        builder.push_back('x');
+        builder.push('x');
 
     let builder: Builder<Pair<String, Single<bool>>, Pair<char, Single<i32>>> =
-        builder.push_back(32);
+        builder.push(32);
 
     let builder: Builder<Single<bool>, Pair<char, Pair<i32, Single<String>>>> =
-        builder.push_back("xyz".to_string());
+        builder.push("xyz".to_string());
 
-    let builder: Builder<EmptyQueue, Target> = builder.push_back(true);
+    let builder: Builder<EmptyQueue, Target> = builder.push(true);
 
     let x = builder.finish();
 

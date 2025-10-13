@@ -112,7 +112,7 @@ macro_rules! define_queue_core_zzz {
 
             type Back: $q<$($g_lt ,)* $($g ,)*>;
 
-            fn push_back<Elem>(self, x: Elem) -> Self::PushBack<Elem>
+            fn push<Elem>(self, x: Elem) -> Self::PushBack<Elem>
             where
                 Elem: $( $el_bnd $( < $( $el_bnd_g ),* > )? + ) *;
 
@@ -189,7 +189,7 @@ macro_rules! define_queue_core_zzz {
 
             type Back = Self;
 
-            fn push_back<Elem>(self, x: Elem) -> Self::PushBack<Elem>
+            fn push<Elem>(self, x: Elem) -> Self::PushBack<Elem>
             where
                 Elem: $( $el_bnd $( < $( $el_bnd_g ),* > )? + ) *
             {
@@ -262,7 +262,7 @@ macro_rules! define_queue_core_zzz {
 
             type Back = $empty<$($g_lt ,)* $($g ,)*>;
 
-            fn push_back<Elem>(self, x: Elem) -> Self::PushBack<Elem>
+            fn push<Elem>(self, x: Elem) -> Self::PushBack<Elem>
             where
                 Elem: $( $el_bnd $( < $( $el_bnd_g ),* > )? + ) *
             {
@@ -372,11 +372,11 @@ macro_rules! define_queue_core_zzz {
 
             type Back = B;
 
-            fn push_back<Elem>(self, x: Elem) -> Self::PushBack<Elem>
+            fn push<Elem>(self, x: Elem) -> Self::PushBack<Elem>
             where
                 Elem: $( $el_bnd $( < $( $el_bnd_g ),* > )? + ) *
             {
-                $pair::new(self.f, self.b.push_back(x))
+                $pair::new(self.f, self.b.push(x))
             }
 
             fn len(&self) -> usize {
