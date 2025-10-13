@@ -294,6 +294,8 @@ pub trait NonEmptyQueue: Queue {
 
 /// An empty queue.
 ///
+/// Implements [`Queue`] but not [`NonEmptyQueue`].
+///
 /// # Examples
 ///
 /// ```
@@ -318,6 +320,7 @@ pub struct Empty {
 }
 
 impl Empty {
+    /// Creates a new empty queue.
     pub fn new() -> Self {
         Self {
             phantom: Default::default(),
@@ -349,6 +352,32 @@ impl Queue for Empty {
     }
 }
 
+/// A queue with a single element of type `Front`.
+///
+/// Implements both [`Queue`] and [`NonEmptyQueue`].
+///
+/// It can be created using [`Single::new`] or calling [`push`] on an [`Empty`] queue.
+///
+/// [`push`]: Queue::push
+///
+/// # Examples
+///
+/// ```
+/// use orx_meta::queue::*;
+///
+/// let queue: Single<u32> = Empty::new().push(42);
+/// let queue: Single<u32> = Single::new(42);
+///
+/// let queue = Empty::new().push(42).push(true).push('x');
+///
+/// let (num, queue_pair) = queue.pop();
+/// assert_eq!(num, 42);
+///
+/// let (flag, queue_single) = queue_pair.pop();
+/// assert_eq!(flag, true);
+///
+/// assert_eq!(queue_single, Single::new('x'));
+/// ```
 #[derive(Clone, Copy, PartialEq, Eq, Debug)]
 pub struct Single<Front> {
     phantom: core::marker::PhantomData<()>,
