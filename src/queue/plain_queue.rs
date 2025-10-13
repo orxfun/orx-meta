@@ -190,7 +190,36 @@ pub trait NonEmptyQueue: Queue {
     /// assert_eq!(queue.back(), &Single::new(true).push('x'));
     /// ```
     fn back(&self) -> &Self::Back;
+
+    /// Returns a tuple of references to the front and back of the queue:
+    /// * front: element at the front of the queue,
+    /// * back: queue containing all elements except for the front element.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use orx_meta::queue::*;
+    ///
+    /// // front: 42; back: []
+    /// let queue = Empty::new().push(42);
+    /// let (front, back) = queue.front_back();
+    /// assert_eq!(front, &42);
+    /// assert_eq!(back, &Empty::new());
+    ///
+    /// // front: 42; back: [true]
+    /// let queue = Empty::new().push(42).push(true);
+    /// let (front, back) = queue.front_back();
+    /// assert_eq!(front, &42);
+    /// assert_eq!(back, &Single::new(true));
+    ///
+    /// // front: 42; back: [true, 'x']
+    /// let queue = Empty::new().push(42).push(true).push('x');
+    /// let (front, back) = queue.front_back();
+    /// assert_eq!(front, &42);
+    /// assert_eq!(back, &Single::new(true).push('x'));
+    /// ```
     fn front_back(&self) -> (&Self::Front, &Self::Back);
+
     fn front_mut(&mut self) -> &mut Self::Front;
     fn back_mut(&mut self) -> &mut Self::Back;
     fn front_back_mut(&mut self) -> (&mut Self::Front, &mut Self::Back);
