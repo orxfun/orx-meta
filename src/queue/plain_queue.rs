@@ -32,6 +32,18 @@ pub trait Queue {
     /// ```
     fn push_back<Elem>(self, x: Elem) -> Self::PushBack<Elem>;
 
+    /// Number of elements in the queue.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use orx_meta::queue::*;
+    ///
+    /// let queue = Empty::new();
+    /// assert_eq!(queue.len(), 1);
+    ///
+    /// let queue = queue.push_back()
+    /// ```
     fn len(&self) -> usize;
 
     fn is_empty(&self) -> bool {
