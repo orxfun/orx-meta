@@ -1,18 +1,22 @@
-use crate::queue::{EmptyQueue, queue_push::QueuePush};
+use crate::queue::{EmptyQueue, meta::QueueMeta};
 
 pub struct Queue<F, B>
 where
-    B: QueuePush,
+    B: QueueMeta,
 {
     front: F,
     back: B,
 }
 
-impl<F, B> QueuePush for Queue<F, B>
+impl<F, B> QueueMeta for Queue<F, B>
 where
-    B: QueuePush,
+    B: QueueMeta,
 {
     type PushBack<T> = Queue<F, B::PushBack<T>>;
+
+    type Front = F;
+
+    type Back = B;
 
     fn push<T>(self, element: T) -> Self::PushBack<T> {
         Queue::new(self.front, self.back.push(element))
@@ -30,7 +34,7 @@ impl<F> Queue<F, EmptyQueue> {
 
 impl<F, B> Queue<F, B>
 where
-    B: QueuePush,
+    B: QueueMeta,
 {
     fn new(front: F, back: B) -> Self {
         Self { front, back }
