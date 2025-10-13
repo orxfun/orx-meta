@@ -6,6 +6,52 @@ macro_rules! define_queue_of {
         queue => [$q:ident, $q_ne:ident ; $empty:ident, $single:ident, $pair:ident];
         queue_of => $queue_of:ident;
     ) => {
+        /// Note that queues of any sequence of types can be represented with three [`Queue`] implementations:
+        /// * `Empty`: empty queue
+        /// * `Single<F>`: a queue of a single element of type `F`
+        /// * `Multi<F, B>`: a queue of multiple elements where the front element is of type `F`, and remaining elements form a queue of type `B`.
+        ///
+        /// Notice the recursive definition enabled with the back of the `Multi` queue.
+        ///
+        /// With these types, we can represent queues of elements
+        /// * of type `A` with `Single<A>`
+        /// * of types `A` and `B` with `Multi<A, Single<B>>`
+        /// * of types `A`, `B` and `C` with `Multi<A, Multi<B, Single<C>>>`
+        /// * of types `A`, `B`, `C` and `D` with `Multi<A, Multi<B, Multi<C, Single<S>>>>`
+        /// * ...
+        ///
+        /// However, hand-writing recursive type definitions of larger queues get more and more complex.
+        ///
+        /// `queue_of` macro allows to generate these type definitions with a flat macro call.
+        ///
+        /// Also see [`QueueBuilder`] which is often used together with `queue_of` macro to build complex types.
+        ///
+        /// # Examples
+        ///
+        /// ```
+        /// use orx_meta::queue::*;
+        /// use orx_meta::queue_of;
+        ///
+        /// // 0
+        /// let q: Empty = Empty::new();
+        /// let q: queue_of!() = Empty::new();
+        ///
+        /// // 1
+        /// let q: Single<u32> = Empty::new().push(42);
+        /// let q: queue_of!(u32) = Empty::new().push(42);
+        ///
+        /// // 2
+        /// let q: Multi<u32, Single<bool>> = Empty::new().push(42).push(true);
+        /// let q: queue_of!(u32, bool) = Empty::new().push(42).push(true);
+        ///
+        /// // 3
+        /// let q: Multi<u32, Multi<bool, Single<char>>> = Empty::new().push(42).push(true).push('x');
+        /// let q: queue_of!(u32, bool, char) = Empty::new().push(42).push(true).push('x');
+        ///
+        /// // 4
+        /// let q: Multi<u32, Multi<bool, Multi<char, Single<&'static str>>>> = Empty::new().push(42).push(true).push('x').push("foo");
+        /// let q: queue_of!(u32, bool, char, &'static str) = Empty::new().push(42).push(true).push('x').push("foo");
+        /// ```
         macro_rules! $queue_of {
             () => {
                 $empty<$($g_lt ,)* $($g ,)*>
