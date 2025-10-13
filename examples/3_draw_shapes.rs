@@ -144,11 +144,11 @@ fn static_dispatch() {
     );
 
     impl Draw for Empty {
-        // describe what to do when there is no component to draw
+        // describe what to do when there is no component to draw (identity)
         fn draw(&self) {}
     }
     impl<F: Draw> Draw for Single<F> {
-        // describe what to do when there is one element to draw
+        // describe what to do when there is one element to draw (trivial)
         fn draw(&self) {
             self.f.draw();
         }
