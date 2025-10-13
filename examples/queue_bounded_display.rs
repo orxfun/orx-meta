@@ -38,13 +38,13 @@ fn main() {
     let q = Empty::new();
     assert_eq!(q.to_string(), "");
 
-    let q = q.push_back('x');
+    let q = q.push('x');
     assert_eq!(q.to_string(), "x");
 
-    let q = q.push_back(12);
+    let q = q.push(12);
     assert_eq!(q.to_string(), "x-12");
 
-    let q = q.push_back(true);
+    let q = q.push(true);
     assert_eq!(q.to_string(), "x-12-true");
 
     // shrink
@@ -64,9 +64,9 @@ fn main() {
     // chain
 
     let str = Empty::new()
-        .push_back('x')
-        .push_back(12)
-        .push_back(true)
+        .push('x')
+        .push(12)
+        .push(true)
         .to_string();
     assert_eq!(str, "x-12-true");
 }

@@ -1,53 +1,37 @@
 #![allow(dead_code)]
-use crate::define_queue_core_zzz;
+use crate::define_queue;
 
 // inputs
 
 pub trait Input {}
 
-define_queue_core_zzz!(
-    elements => [Input];
-    names => {
-        traits: { queue: InQueue, non_empty_queue: InNonEmptyQueue },
-        structs: { empty: InEmpty, single: InSingle, pair: InPair }
-    };
+define_queue!(
+    lt => [];
+    generics => [];
+    elements => [];
+    queue => [ InQ, InNeQ ; InEmpty, InSingle, InPair ];
+    queue_of => in_of;
+    builder => InBuilder;
 );
 impl Input for InEmpty {}
 impl<F: Input> Input for InSingle<F> {}
-impl<F: Input, B: InQueue> Input for InPair<F, B> {}
-
-macro_rules! queue_of {
-    () => {
-        InEmpty
-    };
-
-    ($t1:ty) => {
-        InSingle<$t1>
-    };
-
-    ($t1:ty, $t2:ty) => {
-        InPair<$t1, InSingle<$t2>>
-    };
-
-    ($t1:ty, $t2:ty, $t3:ty) => {
-        InPair<$t1, InPair<$t2, InSingle<$t3>>>
-    };
-}
+impl<F: Input, B: InQ> Input for InPair<F, B> {}
 
 // outputs
 
 pub trait Output {}
 
-define_queue_core_zzz!(
-    elements => [Output];
-    names => {
-        traits: { queue: OutQueue, non_empty_queue: OutNonEmptyQueue },
-        structs: { empty: OutEmpty, single: OutSingle, pair: OutPair }
-    };
+define_queue!(
+    lt => [];
+    generics => [];
+    elements => [];
+    queue => [ OutQ, OutNeQ ; OutEmpty, OutSingle, OutPair ];
+    queue_of => out_of;
+    builder => OutBuilder;
 );
 impl Output for OutEmpty {}
 impl<F: Output> Output for OutSingle<F> {}
-impl<F: Output, B: OutQueue> Output for OutPair<F, B> {}
+impl<F: Output, B: OutQ> Output for OutPair<F, B> {}
 
 // computation
 
@@ -60,27 +44,47 @@ pub trait Computation {
 // computation queue
 
 pub trait Computations {
-    type Input: InQueue;
-    type Output: OutQueue;
+    type Input: InQ;
+    type Output: OutQ;
     fn run(&self, input: Self::Input) -> Self::Output;
 }
 
-define_queue_core_zzz!(
-    elements => [Computations];
-    names => {
-        traits: { queue: CompQueue, non_empty_queue: CompNonEmptyQueue },
-        structs: { empty: CompEmpty, single: CompSingle, pair: CompPair }
-    };
-);
+impl<C: Computation> Computations for C {
+    type Input = InSingle<C::Input>;
 
+    type Output = OutSingle<C::Output>;
+
+    fn run(&self, input: Self::Input) -> Self::Output {
+        OutSingle::new(C::run(self, input.into_front()))
+    }
+}
+macro_rules! impl_computations_from_computation {
+    ($comp:ty) => {
+        impl Computations for $comp {
+            type Input = InSingle<<Self as Computation>::Input>;
+            type Output = OutSingle<<Self as Computation>::Output>;
+            fn run(&self, input: Self::Input) -> Self::Output {
+                OutSingle::new(<Self as Computation>::run(self, input.into_front()))
+            }
+        }
+    };
+}
+
+define_queue!(
+    lt => [];
+    generics => [];
+    elements => [Computations];
+    queue => [ CompQ, CompNeQ ; CompEmpty, CompSingle, CompPair ];
+    queue_of => out_of;
+    builder => CompBuilder;
+);
 impl Computations for CompEmpty {
     type Input = InEmpty;
     type Output = OutEmpty;
     fn run(&self, _: Self::Input) -> Self::Output {
-        OutEmpty::new()
+        Default::default()
     }
 }
-
 impl<F: Computations> Computations for CompSingle<F> {
     type Input = InSingle<F::Input>;
     type Output = OutSingle<F::Output>;
@@ -88,8 +92,7 @@ impl<F: Computations> Computations for CompSingle<F> {
         OutSingle::new(self.f.run(input.into_front()))
     }
 }
-
-impl<F: Computations, B: CompQueue> Computations for CompPair<F, B> {
+impl<F: Computations, B: CompQ> Computations for CompPair<F, B> {
     type Input = InPair<F::Input, B::Input>;
     type Output = OutPair<F::Output, B::Output>;
     fn run(&self, input: Self::Input) -> Self::Output {
@@ -123,13 +126,7 @@ mod example {
             input
         }
     }
-    impl Computations for AddNumToSeries {
-        type Input = InSingle<<Self as Computation>::Input>;
-        type Output = OutSingle<<Self as Computation>::Output>;
-        fn run(&self, input: Self::Input) -> Self::Output {
-            OutSingle::new(<Self as Computation>::run(self, input.into_front()))
-        }
-    }
+    // impl_computations_from_computation!(AddNumToSeries);
 
     struct LenOfString;
     impl Computation for LenOfString {
@@ -139,13 +136,7 @@ mod example {
             input.len()
         }
     }
-    impl Computations for LenOfString {
-        type Input = InSingle<<Self as Computation>::Input>;
-        type Output = OutSingle<<Self as Computation>::Output>;
-        fn run(&self, input: Self::Input) -> Self::Output {
-            OutSingle::new(<Self as Computation>::run(self, input.into_front()))
-        }
-    }
+    // impl_computations_from_computation!(LenOfString);
 
     struct FirstLetter;
     impl Computation for FirstLetter {
@@ -155,35 +146,29 @@ mod example {
             input.chars().next()
         }
     }
-    impl Computations for FirstLetter {
-        type Input = InSingle<<Self as Computation>::Input>;
-        type Output = OutSingle<<Self as Computation>::Output>;
-        fn run(&self, input: Self::Input) -> Self::Output {
-            OutSingle::new(<Self as Computation>::run(self, input.into_front()))
-        }
-    }
+    // impl_computations_from_computation!(FirstLetter);
 
-    // #[test]
+    #[test]
     fn adhoc_computations() {
         let comp = CompEmpty::new()
-            .push_back(AddNumToSeries(42))
-            .push_back(LenOfString)
-            .push_back(FirstLetter);
-
-        let input = InEmpty::new()
-            .push_back(vec![1, 2, 3])
-            .push_back("xyz".to_string())
-            .push_back("hello".to_string());
+            .push(AddNumToSeries(42))
+            .push(LenOfString)
+            .push(FirstLetter)
+            .push(AddNumToSeries(33))
+            .push(AddNumToSeries(12));
 
         let output = comp.run(
             InEmpty::new()
-                .push_back(InSingle::from(vec![1, 2, 3]))
-                .push_back(InSingle::from("xyz".to_string()))
-                .push_back(InSingle::from("hello".to_string())),
+                .push(vec![1, 2, 3])
+                .push("xyz".to_string())
+                .push("hello".to_string())
+                .push(vec![1, 2])
+                .push(vec![1])
+                .raise(),
         );
 
         dbg!(output);
 
-        assert_eq!(comp.len(), 33);
+        // assert_eq!(comp.len(), 33);
     }
 }

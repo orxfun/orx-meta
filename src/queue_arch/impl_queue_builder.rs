@@ -77,9 +77,9 @@ macro_rules! define_queue_builder_zzz {
             Cur:  $q<$($g_lt ,)* $($g ,)*>,
             $( $g: $( $g_bnd $(<$( $g_bnd_g ),*> )? + ) * , )*
         {
-            pub fn push_back(self, x: Rem::Front) -> $builder<$($g_lt ,)* $($g ,)* Rem::Back, Cur::PushBack<Rem::Front>> {
+            pub fn push(self, x: Rem::Front) -> $builder<$($g_lt ,)* $($g ,)* Rem::Back, Cur::PushBack<Rem::Front>> {
                 $builder {
-                    cur: self.cur.push_back(x),
+                    cur: self.cur.push(x),
                     rem: Default::default(),
                     phantom: Default::default(),
                 }

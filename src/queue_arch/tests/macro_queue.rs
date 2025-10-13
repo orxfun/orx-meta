@@ -17,7 +17,7 @@ define_queue_core_zzz!(
 #[test]
 fn one() {
     let x = EmptyQueue::new();
-    let x = x.push_back('x');
+    let x = x.push('x');
 
     assert_eq!(x.front(), &'x');
     let (f, x) = x.pop();
@@ -29,8 +29,8 @@ fn one() {
 #[test]
 fn two() {
     let x = EmptyQueue::new();
-    let x = x.push_back('x');
-    let x = x.push_back(32);
+    let x = x.push('x');
+    let x = x.push(32);
 
     assert_eq!(x.front(), &'x');
     let (f, x) = x.pop();
@@ -46,9 +46,9 @@ fn two() {
 #[test]
 fn three() {
     let x = EmptyQueue::new();
-    let x = x.push_back('x');
-    let x = x.push_back(32);
-    let x = x.push_back(String::from("xyz"));
+    let x = x.push('x');
+    let x = x.push(32);
+    let x = x.push(String::from("xyz"));
 
     assert_eq!(x.front(), &'x');
     let (f, x) = x.pop();
@@ -68,10 +68,10 @@ fn three() {
 #[test]
 fn four() {
     let x = EmptyQueue::new();
-    let x = x.push_back('x');
-    let x = x.push_back(32);
-    let x = x.push_back(String::from("xyz"));
-    let x = x.push_back(true);
+    let x = x.push('x');
+    let x = x.push(32);
+    let x = x.push(String::from("xyz"));
+    let x = x.push(true);
 
     assert_eq!(x.front(), &'x');
     let (f, x) = x.pop();
@@ -162,15 +162,15 @@ fn builder() {
     let builder = Builder::<Target, _>::new();
 
     let builder: Builder<Pair<i32, Pair<String, Single<bool>>>, Single<char>> =
-        builder.push_back('x');
+        builder.push('x');
 
     let builder: Builder<Pair<String, Single<bool>>, Pair<char, Single<i32>>> =
-        builder.push_back(32);
+        builder.push(32);
 
     let builder: Builder<Single<bool>, Pair<char, Pair<i32, Single<String>>>> =
-        builder.push_back("xyz".to_string());
+        builder.push("xyz".to_string());
 
-    let builder: Builder<EmptyQueue, Target> = builder.push_back(true);
+    let builder: Builder<EmptyQueue, Target> = builder.push(true);
 
     let x = builder.finish();
     assert_eq!(x.len(), 4);
@@ -178,10 +178,10 @@ fn builder() {
     // or briefly
 
     let x = Builder::<Target, _>::new()
-        .push_back('x')
-        .push_back(32)
-        .push_back("xyz".to_string())
-        .push_back(true)
+        .push('x')
+        .push(32)
+        .push("xyz".to_string())
+        .push(true)
         .finish();
 
     assert_eq!(x.front(), &'x');
@@ -211,10 +211,10 @@ define_queue_tuple_transformation_zzz!(
 fn tuple() {
     // into tuple
     let x = EmptyQueue::new()
-        .push_back('x')
-        .push_back(32)
-        .push_back(String::from("xyz"))
-        .push_back(true);
+        .push('x')
+        .push(32)
+        .push(String::from("xyz"))
+        .push(true);
     let tuple = x.clone().into_tuple();
     assert_eq!(tuple, ('x', 32, String::from("xyz"), true));
 
