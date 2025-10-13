@@ -43,9 +43,26 @@ pub trait Queue {
     /// assert_eq!(queue.len(), 0);
     ///
     /// let queue = queue.push(42);
+    /// assert_eq!(queue.len(), 1);
+    ///
+    /// let queue = queue.push(true).push('x');
+    /// assert_eq!(queue.len(), 3);
+    ///
+    /// let (num, queue) = queue.pop();
+    /// assert_eq!(num, 42);
+    /// assert_eq!(queue.len(), 2);
+    ///
+    /// let (flag, queue) = queue.pop();
+    /// assert_eq!(flag, true);
+    /// assert_eq!(queue.len(), 1);
+    ///
+    /// let (char, queue) = queue.pop();
+    /// assert_eq!(char, 'x');
+    /// assert_eq!(queue.len(), 0);
     /// ```
     fn len(&self) -> usize;
 
+    /// Returns true if the queue is empty; equivalent to `queue.len() == 0`.
     fn is_empty(&self) -> bool {
         self.len() == 0
     }
