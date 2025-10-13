@@ -884,6 +884,26 @@ impl<X1> Single<X1> {
     pub fn into_tuple(self) -> X1 {
         self.f
     }
+
+    /// Returns a representation of the queue as a tuple of references of its elements.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use orx_meta::queue::*;
+    ///
+    /// let queue = Empty::new().push(42);
+    /// assert_eq!(queue.as_tuple(), (&42));
+    ///
+    /// let queue = Empty::new().push(42).push(true);
+    /// assert_eq!(queue.as_tuple(), (&42, &true));
+    ///
+    /// let queue = Empty::new().push(42).push(true).push('x');
+    /// assert_eq!(queue.as_tuple(), (&42, &true, &'x'));
+    ///
+    /// let queue = Empty::new().push(42).push(true).push('x').push("foo");
+    /// assert_eq!(queue.as_tuple(), (&42, &true, &'x', &"foo"));
+    /// ```
     pub fn as_tuple(&self) -> &X1 {
         &self.f
     }
@@ -920,6 +940,26 @@ impl<X1, X2> Multi<X1, Single<X2>> {
     pub fn into_tuple(self) -> (X1, X2) {
         (self.f, self.b.f)
     }
+
+    /// Returns a representation of the queue as a tuple of references of its elements.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use orx_meta::queue::*;
+    ///
+    /// let queue = Empty::new().push(42);
+    /// assert_eq!(queue.as_tuple(), (&42));
+    ///
+    /// let queue = Empty::new().push(42).push(true);
+    /// assert_eq!(queue.as_tuple(), (&42, &true));
+    ///
+    /// let queue = Empty::new().push(42).push(true).push('x');
+    /// assert_eq!(queue.as_tuple(), (&42, &true, &'x'));
+    ///
+    /// let queue = Empty::new().push(42).push(true).push('x').push("foo");
+    /// assert_eq!(queue.as_tuple(), (&42, &true, &'x', &"foo"));
+    /// ```
     pub fn as_tuple(&self) -> (&X1, &X2) {
         (&self.f, &self.b.f)
     }
@@ -956,6 +996,26 @@ impl<X1, X2, X3> Multi<X1, Multi<X2, Single<X3>>> {
     pub fn into_tuple(self) -> (X1, X2, X3) {
         (self.f, self.b.f, self.b.b.f)
     }
+
+    /// Returns a representation of the queue as a tuple of references of its elements.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use orx_meta::queue::*;
+    ///
+    /// let queue = Empty::new().push(42);
+    /// assert_eq!(queue.as_tuple(), (&42));
+    ///
+    /// let queue = Empty::new().push(42).push(true);
+    /// assert_eq!(queue.as_tuple(), (&42, &true));
+    ///
+    /// let queue = Empty::new().push(42).push(true).push('x');
+    /// assert_eq!(queue.as_tuple(), (&42, &true, &'x'));
+    ///
+    /// let queue = Empty::new().push(42).push(true).push('x').push("foo");
+    /// assert_eq!(queue.as_tuple(), (&42, &true, &'x', &"foo"));
+    /// ```
     pub fn as_tuple(&self) -> (&X1, &X2, &X3) {
         (&self.f, &self.b.f, &self.b.b.f)
     }
@@ -992,6 +1052,26 @@ impl<X1, X2, X3, X4> Multi<X1, Multi<X2, Multi<X3, Single<X4>>>> {
     pub fn into_tuple(self) -> (X1, X2, X3, X4) {
         (self.f, self.b.f, self.b.b.f, self.b.b.b.f)
     }
+
+    /// Returns a representation of the queue as a tuple of references of its elements.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use orx_meta::queue::*;
+    ///
+    /// let queue = Empty::new().push(42);
+    /// assert_eq!(queue.as_tuple(), (&42));
+    ///
+    /// let queue = Empty::new().push(42).push(true);
+    /// assert_eq!(queue.as_tuple(), (&42, &true));
+    ///
+    /// let queue = Empty::new().push(42).push(true).push('x');
+    /// assert_eq!(queue.as_tuple(), (&42, &true, &'x'));
+    ///
+    /// let queue = Empty::new().push(42).push(true).push('x').push("foo");
+    /// assert_eq!(queue.as_tuple(), (&42, &true, &'x', &"foo"));
+    /// ```
     pub fn as_tuple(&self) -> (&X1, &X2, &X3, &X4) {
         (&self.f, &self.b.f, &self.b.b.f, &self.b.b.b.f)
     }
@@ -1033,6 +1113,26 @@ impl<X1, X2, X3, X4, X5> Multi<X1, Multi<X2, Multi<X3, Multi<X4, Single<X5>>>>> 
     pub fn into_tuple(self) -> (X1, X2, X3, X4, X5) {
         (self.f, self.b.f, self.b.b.f, self.b.b.b.f, self.b.b.b.b.f)
     }
+
+    /// Returns a representation of the queue as a tuple of references of its elements.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use orx_meta::queue::*;
+    ///
+    /// let queue = Empty::new().push(42);
+    /// assert_eq!(queue.as_tuple(), (&42));
+    ///
+    /// let queue = Empty::new().push(42).push(true);
+    /// assert_eq!(queue.as_tuple(), (&42, &true));
+    ///
+    /// let queue = Empty::new().push(42).push(true).push('x');
+    /// assert_eq!(queue.as_tuple(), (&42, &true, &'x'));
+    ///
+    /// let queue = Empty::new().push(42).push(true).push('x').push("foo");
+    /// assert_eq!(queue.as_tuple(), (&42, &true, &'x', &"foo"));
+    /// ```
     pub fn as_tuple(&self) -> (&X1, &X2, &X3, &X4, &X5) {
         (
             &self.f,
@@ -1093,6 +1193,26 @@ impl<X1, X2, X3, X4, X5, X6> Multi<X1, Multi<X2, Multi<X3, Multi<X4, Multi<X5, S
             self.b.b.b.b.b.f,
         )
     }
+
+    /// Returns a representation of the queue as a tuple of references of its elements.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use orx_meta::queue::*;
+    ///
+    /// let queue = Empty::new().push(42);
+    /// assert_eq!(queue.as_tuple(), (&42));
+    ///
+    /// let queue = Empty::new().push(42).push(true);
+    /// assert_eq!(queue.as_tuple(), (&42, &true));
+    ///
+    /// let queue = Empty::new().push(42).push(true).push('x');
+    /// assert_eq!(queue.as_tuple(), (&42, &true, &'x'));
+    ///
+    /// let queue = Empty::new().push(42).push(true).push('x').push("foo");
+    /// assert_eq!(queue.as_tuple(), (&42, &true, &'x', &"foo"));
+    /// ```
     pub fn as_tuple(&self) -> (&X1, &X2, &X3, &X4, &X5, &X6) {
         (
             &self.f,
@@ -1161,6 +1281,26 @@ impl<X1, X2, X3, X4, X5, X6, X7>
             self.b.b.b.b.b.b.f,
         )
     }
+
+    /// Returns a representation of the queue as a tuple of references of its elements.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use orx_meta::queue::*;
+    ///
+    /// let queue = Empty::new().push(42);
+    /// assert_eq!(queue.as_tuple(), (&42));
+    ///
+    /// let queue = Empty::new().push(42).push(true);
+    /// assert_eq!(queue.as_tuple(), (&42, &true));
+    ///
+    /// let queue = Empty::new().push(42).push(true).push('x');
+    /// assert_eq!(queue.as_tuple(), (&42, &true, &'x'));
+    ///
+    /// let queue = Empty::new().push(42).push(true).push('x').push("foo");
+    /// assert_eq!(queue.as_tuple(), (&42, &true, &'x', &"foo"));
+    /// ```
     pub fn as_tuple(&self) -> (&X1, &X2, &X3, &X4, &X5, &X6, &X7) {
         (
             &self.f,
@@ -1245,6 +1385,26 @@ impl<X1, X2, X3, X4, X5, X6, X7, X8>
             self.b.b.b.b.b.b.b.f,
         )
     }
+
+    /// Returns a representation of the queue as a tuple of references of its elements.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use orx_meta::queue::*;
+    ///
+    /// let queue = Empty::new().push(42);
+    /// assert_eq!(queue.as_tuple(), (&42));
+    ///
+    /// let queue = Empty::new().push(42).push(true);
+    /// assert_eq!(queue.as_tuple(), (&42, &true));
+    ///
+    /// let queue = Empty::new().push(42).push(true).push('x');
+    /// assert_eq!(queue.as_tuple(), (&42, &true, &'x'));
+    ///
+    /// let queue = Empty::new().push(42).push(true).push('x').push("foo");
+    /// assert_eq!(queue.as_tuple(), (&42, &true, &'x', &"foo"));
+    /// ```
     pub fn as_tuple(&self) -> (&X1, &X2, &X3, &X4, &X5, &X6, &X7, &X8) {
         (
             &self.f,
