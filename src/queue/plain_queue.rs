@@ -1,15 +1,46 @@
+/// A strongly typed queue of arbitrary elements.
 pub trait Queue {
+    /// Type of the queue obtained by pushing an element of type `Elem` to the back of the queue.
     type PushBack<Elem>: NonEmptyQueue;
+
+    /// Type of the element at the front of the queue.
     type Front;
+
+    /// Type of the queue that would be obtained by popping the `Front` element of the queue.
     type Back: Queue;
+
     type Raised: Queue;
+
+    /// Pushes the element `x` to the back of the queue.
+    ///
+    /// Resulting queue implements [`NonEmptyQueue`].
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use orx_meta::queue::*;
+    ///
+    /// let queue = Empty::new();
+    ///
+    /// let queue = queue.push_back(42);
+    /// assert_eq!(queue.len(), 1);
+    ///
+    /// let queue = queue.push_back(true).push_back('x');
+    /// assert_eq!(queue.len(), 3);
+    ///
+    /// assert_eq!(queue.as_tuple(), (&42, &true, &'x'));
+    /// ```
     fn push_back<Elem>(self, x: Elem) -> Self::PushBack<Elem>;
-    fn raise(self) -> Self::Raised;
-    fn from_raised(raised: Self::Raised) -> Self;
+
     fn len(&self) -> usize;
+
     fn is_empty(&self) -> bool {
         self.len() == 0
     }
+
+    fn raise(self) -> Self::Raised;
+
+    fn from_raised(raised: Self::Raised) -> Self;
 }
 
 pub trait NonEmptyQueue: Queue {
