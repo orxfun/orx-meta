@@ -613,14 +613,14 @@ where
 ///
 /// In the following example, we want to build a queue of four elements of types `u32`, `bool`, `char` and `&str` respectively.
 ///
-/// For this, we can create a builder with `QueueBuilder::<MyQueue, _>::new()` where `MyQueue` is the target type to instantiate.
+/// For this, we can create a builder with `QueueBuilder::<MyQueue>::new()` where `MyQueue` is the target type to instantiate.
 ///
 /// ```
 /// use orx_meta::queue::*;
 ///
 /// type MyQueue = Multi<u32, Multi<bool, Multi<char, Single<&'static str>>>>;
 ///
-/// let instance = QueueBuilder::<MyQueue, _>::new()
+/// let instance = QueueBuilder::<MyQueue>::new()
 ///     .push(42)
 ///     .push(true)
 ///     .push('x')
@@ -640,7 +640,7 @@ where
 ///
 /// type MyQueue = queue_of!(u32, bool, char, &'static str);
 ///
-/// let instance = QueueBuilder::<MyQueue, _>::new()
+/// let instance = QueueBuilder::<MyQueue>::new()
 ///     .push(42)
 ///     .push(true)
 ///     .push('x')
@@ -661,7 +661,7 @@ where
 ///
 /// type MyQueue = queue_of!(u32, bool, char, &'static str);
 ///
-/// let instance = QueueBuilder::<MyQueue, _>::new()
+/// let instance = QueueBuilder::<MyQueue>::new()
 ///     .push(true) // wrong order!
 ///     .push(42)
 ///     .push('x')
@@ -678,14 +678,14 @@ where
 ///
 /// type MyQueue = queue_of!(u32, bool, char, &'static str);
 ///
-/// let instance = QueueBuilder::<MyQueue, _>::new()
+/// let instance = QueueBuilder::<MyQueue>::new()
 ///     .push(42)
 ///     .push(true)
 ///     .push('x')
 ///     .finish(); // forgot to push &str
 /// assert_eq!(instance.as_tuple(), (&42, &true, &'x', &"foo"));
 /// ```
-pub struct QueueBuilder<Remaining, Current>
+pub struct QueueBuilder<Remaining, Current = Empty>
 where
     Remaining: Queue,
     Current: Queue,
@@ -699,6 +699,39 @@ impl<Remaining> QueueBuilder<Remaining, Empty>
 where
     Remaining: Queue,
 {
+    /// Creates a new builder for a target queue.
+    ///
+    /// The type parameter used when constructing the builder defines the target
+    /// type to be constructed.
+    ///
+    /// The builder makes sure that `finish` can be called only after all elements
+    /// required by the target type are pushed.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use orx_meta::queue::*;
+    /// use orx_meta::queue_of;
+    ///
+    /// let builder = QueueBuilder::<Empty>::new();
+    /// let instance = builder.finish();
+    /// assert!(instance.is_empty());
+    ///
+    /// let builder = QueueBuilder::<Single<u32>>::new(); // or
+    /// let builder = QueueBuilder::<queue_of!(u32)>::new();
+    /// let instance = builder.push(42).finish();
+    /// assert_eq!(instance.as_tuple(), (&42));
+    ///
+    /// let builder = QueueBuilder::<Multi<u32, Single<bool>>>::new(); // or
+    /// let builder = QueueBuilder::<queue_of!(u32, bool)>::new();
+    /// let instance = builder.push(42).push(true).finish();
+    /// assert_eq!(instance.as_tuple(), (&42, &true));
+    ///
+    /// let builder = QueueBuilder::<Multi<u32, Multi<bool, Multi<char, Single<&'static str>>>>>::new(); // or
+    /// let builder = QueueBuilder::<queue_of!(u32, bool, char, &'static str)>::new();
+    /// let instance = builder.push(42).push(true).push('x').push("foo").finish();
+    /// assert_eq!(instance.as_tuple(), (&42, &true, &'x', &"foo"));
+    /// ```
     pub fn new() -> Self {
         Self {
             cur: Empty::new(),
