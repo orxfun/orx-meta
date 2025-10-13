@@ -243,6 +243,26 @@ pub trait NonEmptyQueue: Queue {
     /// assert_eq!(queue.front(), &43);
     /// ```
     fn front_mut(&mut self) -> &mut Self::Front;
+
+    /// Returns a reference to the queue containing elements of this queue except for the
+    /// element at the front.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use orx_meta::queue::*;
+    ///
+    /// // front: 42; back: [true]
+    /// let mut queue = Empty::new().push(42).push(true);
+    /// *queue.back_mut().front_mut() = false;
+    /// assert_eq!(queue.as_tuple(), (&42, &false));
+    ///
+    /// // front: 42; back: [true, 'x']
+    /// let mut queue = Empty::new().push(42).push(true).push('x');
+    /// *queue.back_mut().front_mut() = false;
+    /// *queue.back_mut().back_mut().front_mut() = 'y';
+    /// assert_eq!(queue.as_tuple(), (&42, &false, &'y'));
+    /// ```
     fn back_mut(&mut self) -> &mut Self::Back;
     fn front_back_mut(&mut self) -> (&mut Self::Front, &mut Self::Back);
 }
