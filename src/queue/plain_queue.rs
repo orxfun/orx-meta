@@ -147,6 +147,26 @@ pub trait NonEmptyQueue: Queue {
     /// assert_eq!(back, Single::new(true).push('x'));
     /// ```
     fn pop(self) -> (Self::Front, Self::Back);
+
+    /// Returns a reference to the element at the front of the queue.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use orx_meta::queue::*;
+    ///
+    /// // front: 42; back: []
+    /// let queue = Empty::new().push(42);
+    /// assert_eq!(queue.front(), &42);
+    ///
+    /// // front: 42; back: [true]
+    /// let queue = Empty::new().push(42).push(true);
+    /// assert_eq!(queue.front(), &42);
+    ///
+    /// // front: 42; back: [true, 'x']
+    /// let queue = Empty::new().push(42).push(true).push('x');
+    /// assert_eq!(queue.front(), &42);
+    /// ```
     fn front(&self) -> &Self::Front;
     fn back(&self) -> &Self::Back;
     fn front_back(&self) -> (&Self::Front, &Self::Back);
