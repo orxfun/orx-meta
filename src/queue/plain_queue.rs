@@ -387,6 +387,19 @@ pub struct Single<Front> {
 
 impl<F> Single<F> {
     /// Creates a with a single element `f` of type `F`.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use orx_meta::queue::*;
+    ///
+    /// let queue = Single::new(42);
+    ///
+    /// // equivalent to
+    /// let queue2 = Empty::new().push(42);
+    ///
+    /// assert_eq!(queue, queue2);
+    /// ```
     pub fn new(f: F) -> Self {
         Self {
             phantom: Default::default(),
