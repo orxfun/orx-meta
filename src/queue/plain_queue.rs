@@ -1,4 +1,10 @@
 /// A strongly typed queue of arbitrary elements.
+///
+/// There exist three queue implementations:
+/// * `Empty`: empty queue
+/// * `Single<F>`: a queue with a single element of type `F`
+/// * `Multi<F, B>`: a queue with multiple (>1) elements where the front element is of type `F`
+///   and the remaining elements is a queue of type `B`.
 pub trait Queue {
     /// Type of the queue obtained by pushing an element of type `Elem` to the back of the queue.
     type PushBack<Elem>: NonEmptyQueue;
@@ -72,7 +78,24 @@ pub trait Queue {
     fn from_raised(raised: Self::Raised) -> Self;
 }
 
+/// A strongly typed [`Queue`] that is guaranteed to contain at least one element.
+///
+/// Among the three queue implementations, [`Single`] and [`Multi`] implements non-empty queue,
+/// while [`Empty`] does not.
 pub trait NonEmptyQueue: Queue {
+    /// Consumes the queue and returns the front element.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use orx_meta::queue::*;
+    ///
+    /// let queue = Empty::new().push(42);
+    /// assert_eq!(queue.into_front(), 42);
+    ///
+    /// let queue = Empty::new().push(42).push(true).push('x');
+    /// assert_eq!(queue.into_front(), 42);
+    /// ```
     fn into_front(self) -> Self::Front;
     fn into_back(self) -> Self::Back;
     fn pop(self) -> (Self::Front, Self::Back);
