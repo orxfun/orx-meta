@@ -386,6 +386,7 @@ pub struct Single<Front> {
 }
 
 impl<F> Single<F> {
+    /// Creates a with a single element `f` of type `F`.
     pub fn new(f: F) -> Self {
         Self {
             phantom: Default::default(),
