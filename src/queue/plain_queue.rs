@@ -292,6 +292,26 @@ pub trait NonEmptyQueue: Queue {
     fn front_back_mut(&mut self) -> (&mut Self::Front, &mut Self::Back);
 }
 
+/// An empty queue.
+///
+/// # Examples
+///
+/// ```
+/// use orx_meta::queue::*;
+///
+/// let queue = Empty::new();
+/// assert!(queue.is_empty());
+///
+/// let queue = Single::new(42);
+/// let (num, queue) = queue.pop();
+/// assert_eq!(num, 42);
+/// assert!(queue.is_empty());
+///
+/// let queue = Single::new(42).push(true);
+/// let (num, queue) = queue.pop();
+/// let (flag, queue) = queue.pop();
+/// assert!(queue.is_empty());
+/// ```
 #[derive(Clone, Copy, PartialEq, Eq, Debug)]
 pub struct Empty {
     phantom: core::marker::PhantomData<()>,
