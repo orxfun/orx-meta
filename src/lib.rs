@@ -17,6 +17,3 @@ pub mod queue_arch;
 
 /// Module including macros to create type-safe queues.
 pub mod queue;
-
-mod trythis;
-mod trythis_manual;
