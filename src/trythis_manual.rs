@@ -2,8 +2,6 @@
 
 // inputs
 
-use crate::trythis::InQ;
-
 trait Input {}
 
 trait InQueue
