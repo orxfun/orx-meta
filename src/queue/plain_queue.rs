@@ -602,6 +602,89 @@ where
 
 // builder
 
+/// A type-safe builder for queues such that:
+///
+/// * `push` can only be called correct number of times with the correct types,
+/// * `finish` can only be called after all elements are pushed.
+///
+/// It can also be used as a generic builder for any tuple type.
+///
+/// # Example
+///
+/// In the following example, we want to build a queue of four elements of types `u32`, `bool`, `char` and `&str` respectively.
+///
+/// For this, we can create a builder with `QueueBuilder::<MyQueue, _>::new()` where `MyQueue` is the target type to instantiate.
+///
+/// ```
+/// use orx_meta::queue::*;
+///
+/// type MyQueue = Multi<u32, Multi<bool, Multi<char, Single<&'static str>>>>;
+///
+/// let instance = QueueBuilder::<MyQueue, _>::new()
+///     .push(42)
+///     .push(true)
+///     .push('x')
+///     .push("foo")
+///     .finish();
+/// assert_eq!(instance.as_tuple(), (&42, &true, &'x', &"foo"));
+/// ```
+///
+/// This provides a convenient way to build complex types without errors and with compiler support.
+/// However, it is not easy to hand-write the type alias for the complex recursive queue type.
+/// Therefore, this builder pattern is most useful when used together with the [`queue_of`] macro.
+/// The above example could be re-written as follows with the `queue_of` macro.
+///
+/// ```
+/// use orx_meta::queue::*;
+/// use orx_meta::queue_of;
+///
+/// type MyQueue = queue_of!(u32, bool, char, &'static str);
+///
+/// let instance = QueueBuilder::<MyQueue, _>::new()
+///     .push(42)
+///     .push(true)
+///     .push('x')
+///     .push("foo")
+///     .finish();
+/// assert_eq!(instance.as_tuple(), (&42, &true, &'x', &"foo"));
+/// ```
+///
+/// ## Examples - Type Safety
+///
+/// Note that this builder pattern is type safe in the sense that neither of the following wrong implementations compiles.
+///
+/// Here the elements are pushed in the wrong order:
+///
+/// ```compile_fail
+/// use orx_meta::queue::*;
+/// use orx_meta::queue_of;
+///
+/// type MyQueue = queue_of!(u32, bool, char, &'static str);
+///
+/// let instance = QueueBuilder::<MyQueue, _>::new()
+///     .push(true) // wrong order!
+///     .push(42)
+///     .push('x')
+///     .push("foo")
+///     .finish();
+/// assert_eq!(instance.as_tuple(), (&42, &true, &'x', &"foo"));
+/// ```
+///
+/// And here, not all elements are pushed:
+///
+/// ```compile_fail
+/// use orx_meta::queue::*;
+/// use orx_meta::queue_of;
+///
+/// type MyQueue = queue_of!(u32, bool, char, &'static str);
+///
+/// let instance = QueueBuilder::<MyQueue, _>::new()
+///     .push(42)
+///     .push(true)
+///     .push('x')
+///     .finish(); // forgot to push &str
+/// assert_eq!(instance.as_tuple(), (&42, &true, &'x', &"foo"));
+/// ```
 pub struct QueueBuilder<Remaining, Current>
 where
     Remaining: Queue,
@@ -611,6 +694,7 @@ where
     rem: core::marker::PhantomData<Remaining>,
     phantom: core::marker::PhantomData<()>,
 }
+
 impl<Remaining> QueueBuilder<Remaining, Empty>
 where
     Remaining: Queue,
@@ -957,76 +1041,76 @@ macro_rules! queue_of {
     };
 
     ($t1:ty, $t2:ty) => {
-        Multi<$t1, $t2>
+        Multi<$t1, Single<$t2>>
     };
 
     ($t1:ty, $t2:ty, $t3:ty) => {
-        Multi<$t1, Multi<$t2, $t3>>
+        Multi<$t1, Multi<$t2, Single<$t3>>>
     };
 
     ($t1:ty, $t2:ty, $t3:ty, $t4:ty) => {
-        Multi<$t1, Multi<$t2, Multi<$t3, $t4>>>
+        Multi<$t1, Multi<$t2, Multi<$t3, Single<$t4>>>>
     };
 
     ($t1:ty, $t2:ty, $t3:ty, $t4:ty, $t5:ty) => {
-        Multi<$t1, Multi<$t2, Multi<$t3, Multi<$t4, $t5>>>>
+        Multi<$t1, Multi<$t2, Multi<$t3, Multi<$t4, Single<$t5>>>>>
     };
 
     ($t1:ty, $t2:ty, $t3:ty, $t4:ty, $t5:ty, $t6:ty) => {
-        Multi<$t1, Multi<$t2, Multi<$t3, Multi<$t4, Multi<$t5, $t6>>>>>
+        Multi<$t1, Multi<$t2, Multi<$t3, Multi<$t4, Multi<$t5, Single<$t6>>>>>>
     };
 
     ($t1:ty, $t2:ty, $t3:ty, $t4:ty, $t5:ty, $t6:ty, $t7:ty) => {
-        Multi<$t1, Multi<$t2, Multi<$t3, Multi<$t4, Multi<$t5, Multi<$t6, $t7>>>>>>
+        Multi<$t1, Multi<$t2, Multi<$t3, Multi<$t4, Multi<$t5, Multi<$t6, Single<$t7>>>>>>>
     };
 
     ($t1:ty, $t2:ty, $t3:ty, $t4:ty, $t5:ty, $t6:ty, $t7:ty, $t8:ty) => {
-        Multi<$t1, Multi<$t2, Multi<$t3, Multi<$t4, Multi<$t5, Multi<$t6, Multi<$t7, $t8>>>>>>>
+        Multi<$t1, Multi<$t2, Multi<$t3, Multi<$t4, Multi<$t5, Multi<$t6, Multi<$t7, Single<$t8>>>>>>>>
     };
 
     ($t1:ty, $t2:ty, $t3:ty, $t4:ty, $t5:ty, $t6:ty, $t7:ty, $t8:ty, $t9:ty) => {
-        Multi<$t1, Multi<$t2, Multi<$t3, Multi<$t4, Multi<$t5, Multi<$t6, Multi<$t7, Multi<$t8, $t9>>>>>>>>
+        Multi<$t1, Multi<$t2, Multi<$t3, Multi<$t4, Multi<$t5, Multi<$t6, Multi<$t7, Multi<$t8, Single<$t9>>>>>>>>>
     };
 
     ($t1:ty, $t2:ty, $t3:ty, $t4:ty, $t5:ty, $t6:ty, $t7:ty, $t8:ty, $t9:ty, $t10:ty) => {
         Multi<$t1, Multi<$t2, Multi<$t3, Multi<$t4, Multi<$t5, Multi<$t6, Multi<$t7, Multi<$t8,
-            Multi<$t9, $t10>
+            Multi<$t9, Single<$t10>>
         >>>>>>>>
     };
 
     ($t1:ty, $t2:ty, $t3:ty, $t4:ty, $t5:ty, $t6:ty, $t7:ty, $t8:ty, $t9:ty, $t10:ty, $t11:ty) => {
         Multi<$t1, Multi<$t2, Multi<$t3, Multi<$t4, Multi<$t5, Multi<$t6, Multi<$t7, Multi<$t8,
-            Multi<$t9, Multi<$t10, $t11>>
+            Multi<$t9, Multi<$t10, Single<$t11>>>
         >>>>>>>>
     };
 
     ($t1:ty, $t2:ty, $t3:ty, $t4:ty, $t5:ty, $t6:ty, $t7:ty, $t8:ty, $t9:ty, $t10:ty, $t11:ty, $t12:ty) => {
         Multi<$t1, Multi<$t2, Multi<$t3, Multi<$t4, Multi<$t5, Multi<$t6, Multi<$t7, Multi<$t8,
-            Multi<$t9, Multi<$t10, Multi<$t11, $t12>>>
+            Multi<$t9, Multi<$t10, Multi<$t11, Single<$t12>>>>
         >>>>>>>>
     };
 
     ($t1:ty, $t2:ty, $t3:ty, $t4:ty, $t5:ty, $t6:ty, $t7:ty, $t8:ty, $t9:ty, $t10:ty, $t11:ty, $t12:ty, $t13:ty) => {
         Multi<$t1, Multi<$t2, Multi<$t3, Multi<$t4, Multi<$t5, Multi<$t6, Multi<$t7, Multi<$t8,
-            Multi<$t9, Multi<$t10, Multi<$t11, Multi<$t12, $t13>>>>
+            Multi<$t9, Multi<$t10, Multi<$t11, Multi<$t12, Single<$t13>>>>>
         >>>>>>>>
     };
 
     ($t1:ty, $t2:ty, $t3:ty, $t4:ty, $t5:ty, $t6:ty, $t7:ty, $t8:ty, $t9:ty, $t10:ty, $t11:ty, $t12:ty, $t13:ty, $t14:ty) => {
         Multi<$t1, Multi<$t2, Multi<$t3, Multi<$t4, Multi<$t5, Multi<$t6, Multi<$t7, Multi<$t8,
-            Multi<$t9, Multi<$t10, Multi<$t11, Multi<$t12, Multi<$t13, $t14>>>>>
+            Multi<$t9, Multi<$t10, Multi<$t11, Multi<$t12, Multi<$t13, Single<$t14>>>>>>
         >>>>>>>>
     };
 
     ($t1:ty, $t2:ty, $t3:ty, $t4:ty, $t5:ty, $t6:ty, $t7:ty, $t8:ty, $t9:ty, $t10:ty, $t11:ty, $t12:ty, $t13:ty, $t14:ty, $t15:ty) => {
         Multi<$t1, Multi<$t2, Multi<$t3, Multi<$t4, Multi<$t5, Multi<$t6, Multi<$t7, Multi<$t8,
-            Multi<$t9, Multi<$t10, Multi<$t11, Multi<$t12, Multi<$t13, Multi<$t14, $t15>>>>>>
+            Multi<$t9, Multi<$t10, Multi<$t11, Multi<$t12, Multi<$t13, Multi<$t14, Single<$t15>>>>>>>
         >>>>>>>>
     };
 
     ($t1:ty, $t2:ty, $t3:ty, $t4:ty, $t5:ty, $t6:ty, $t7:ty, $t8:ty, $t9:ty, $t10:ty, $t11:ty, $t12:ty, $t13:ty, $t14:ty, $t15:ty, $t16:ty) => {
         Multi<$t1, Multi<$t2, Multi<$t3, Multi<$t4, Multi<$t5, Multi<$t6, Multi<$t7, Multi<$t8,
-            Multi<$t9, Multi<$t10, Multi<$t11, Multi<$t12, Multi<$t13, Multi<$t14, Multi<$t15, $t16>>>>>>>
+            Multi<$t9, Multi<$t10, Multi<$t11, Multi<$t12, Multi<$t13, Multi<$t14, Multi<$t15, Single<$t16>>>>>>>>
         >>>>>>>>
     };
 }
