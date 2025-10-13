@@ -1511,6 +1511,40 @@ impl<X1, X2, X3, X4, X5, X6, X7>
             &self.b.b.b.b.b.b.f,
         )
     }
+
+    /// Returns a representation of the queue as a tuple of mutable references of its elements.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use orx_meta::queue::*;
+    ///
+    /// let mut queue = Empty::new().push(42);
+    /// let (a) = queue.as_tuple_mut();
+    /// *a += 1;
+    /// assert_eq!(queue.as_tuple(), (&43));
+    ///
+    /// let mut queue = Empty::new().push(42).push(true);
+    /// let (a, b) = queue.as_tuple_mut();
+    /// *a += 1;
+    /// *b = false;
+    /// assert_eq!(queue.as_tuple(), (&43, &false));
+    ///
+    /// let mut queue = Empty::new().push(42).push(true).push('x');
+    /// let (a, b, c) = queue.as_tuple_mut();
+    /// *a += 1;
+    /// *b = false;
+    /// *c = 'y';
+    /// assert_eq!(queue.as_tuple(), (&43, &false, &'y'));
+    ///
+    /// let mut queue = Empty::new().push(42).push(true).push('x').push("foo");
+    /// let (a, b, c, d) = queue.as_tuple_mut();
+    /// *a += 1;
+    /// *b = false;
+    /// *c = 'y';
+    /// *d = "bar";
+    /// assert_eq!(queue.as_tuple(), (&43, &false, &'y', &"bar"));
+    /// ```
     pub fn as_tuple_mut(
         &mut self,
     ) -> (
@@ -1616,6 +1650,40 @@ impl<X1, X2, X3, X4, X5, X6, X7, X8>
             &self.b.b.b.b.b.b.b.f,
         )
     }
+
+    /// Returns a representation of the queue as a tuple of mutable references of its elements.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use orx_meta::queue::*;
+    ///
+    /// let mut queue = Empty::new().push(42);
+    /// let (a) = queue.as_tuple_mut();
+    /// *a += 1;
+    /// assert_eq!(queue.as_tuple(), (&43));
+    ///
+    /// let mut queue = Empty::new().push(42).push(true);
+    /// let (a, b) = queue.as_tuple_mut();
+    /// *a += 1;
+    /// *b = false;
+    /// assert_eq!(queue.as_tuple(), (&43, &false));
+    ///
+    /// let mut queue = Empty::new().push(42).push(true).push('x');
+    /// let (a, b, c) = queue.as_tuple_mut();
+    /// *a += 1;
+    /// *b = false;
+    /// *c = 'y';
+    /// assert_eq!(queue.as_tuple(), (&43, &false, &'y'));
+    ///
+    /// let mut queue = Empty::new().push(42).push(true).push('x').push("foo");
+    /// let (a, b, c, d) = queue.as_tuple_mut();
+    /// *a += 1;
+    /// *b = false;
+    /// *c = 'y';
+    /// *d = "bar";
+    /// assert_eq!(queue.as_tuple(), (&43, &false, &'y', &"bar"));
+    /// ```
     pub fn as_tuple_mut(
         &mut self,
     ) -> (

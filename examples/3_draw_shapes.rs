@@ -74,6 +74,7 @@ impl Draw for Button {
 }
 
 #[derive(Debug)]
+#[allow(dead_code)]
 struct SelectBox {
     pub width: u32,
     pub height: u32,
