@@ -1,3 +1,5 @@
+use crate::queue::{non_empty::Queue, queue_push::QueuePush};
+
 /// An empty queue.
 ///
 /// # Examples
@@ -21,13 +23,19 @@
 #[derive(Clone, Copy, PartialEq, Eq, Debug, Default)]
 pub struct EmptyQueue;
 
+impl QueuePush for EmptyQueue {
+    type PushBack<T> = Queue<T, EmptyQueue>;
+
+    fn push<T>(self, element: T) -> Self::PushBack<T> {
+        Queue::single(element)
+    }
+}
+
 impl EmptyQueue {
     /// Creates a new empty queue.
     pub fn new() -> Self {
         Self
     }
-
-    // pub fn push<T>(self, x: T);
 
     /// Number of elements in the queue.
     ///
