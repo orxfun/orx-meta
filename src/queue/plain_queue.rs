@@ -462,6 +462,38 @@ impl<F> NonEmptyQueue for Single<F> {
     }
 }
 
+/// A queue with multiple, at least two, elements such that:
+/// * type of the element at the front of the queue is `Front`, and
+/// * remaining elements form a queue of type `Back`.
+///
+/// Implements both [`Queue`] and [`NonEmptyQueue`].
+///
+/// It can be created using [`Multi::new`] or calling [`push`] multiple times on an [`Empty`] queue.
+///
+/// Note that the back of the multiple elements queue can be any of the other queues including `Multi`.
+/// This gives the recursive composition ability of the queues.
+///
+/// [`push`]: Queue::push
+///
+/// # Examples
+///
+/// ```
+/// use orx_meta::queue::*;
+///
+/// let pair = Multi::new(42, Single::new(true));
+/// assert_eq!(pair.as_tuple(), (&42, &true));
+///
+/// let triple = Multi::new(42, Multi::new(true, Single::new('x')));
+/// assert_eq!(triple.as_tuple(), (&42, &true, &'x'));
+///
+/// let quad = Multi::new(42, Multi::new(true, Multi::new('x', Single::new("foo"))));
+/// assert_eq!(quad.as_tuple(), (&42, &true, &'x', &"foo"));
+///
+/// // more convenient to build using push though
+///
+/// let quad = Empty::new().push(42).push(true).push('x').push("foo");
+/// assert_eq!(quad.as_tuple(), (&42, &true, &'x', &"foo"));
+/// ```
 #[derive(Clone, Copy, PartialEq, Eq, Debug)]
 pub struct Multi<Front, Back>
 where
