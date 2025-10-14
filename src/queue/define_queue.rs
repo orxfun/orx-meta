@@ -19,6 +19,366 @@
 //     assert_eq!(a, 13);
 // }
 
+// # 0. define queue
+
+#[macro_export]
+macro_rules! define_queue {
+    (
+        lt => [$($g_lt:tt), *];
+        generics => [ $( $g:tt $( : $( $g_bnd:ident $( < $( $g_bnd_g:tt ),* > )? )| * )? ), * ];
+        elements => [ $( $el_bnd:ident $( < $( $el_bnd_g:tt ),* > )? )| * ];
+        queue => [$q:ident, $q_ne:ident ; $empty:ident, $single:ident, $pair:ident];
+
+        queue_of => $queue_of:ident;
+        builder => $builder:ident;
+    ) => {
+        define_queue_core!(
+            lt => [$($g_lt), *];
+            generics => [ $( $g $( : $( $g_bnd $( < $( $g_bnd_g ),* > )? )| * )? ), * ];
+            elements => [ $( $el_bnd $( < $( $el_bnd_g ),* > )? )| * ];
+            queue => [$q, $q_ne ; $empty, $single, $pair];
+        );
+        define_queue_of!(
+            lt => [$($g_lt), *];
+            generics => [ $( $g $( : $( $g_bnd $( < $( $g_bnd_g ),* > )? )| * )? ), * ];
+            queue => [$q, $q_ne ; $empty, $single, $pair];
+            queue_of => $queue_of;
+        );
+
+        define_queue_builder!(
+            lt => [$($g_lt), *];
+            generics => [ $( $g $( : $( $g_bnd $( < $( $g_bnd_g ),* > )? )| * )? ), * ];
+            queue => [$q, $q_ne ; $empty, $single, $pair];
+            builder => $builder;
+        );
+
+        define_queue_tuple_transformation!(
+            lt => [$($g_lt), *];
+            generics => [ $( $g $( : $( $g_bnd $( < $( $g_bnd_g ),* > )? )| * )? ), * ];
+            elements => [ $( $el_bnd $( < $( $el_bnd_g ),* > )? )| * ];
+            queue => [$q, $q_ne ; $empty, $single, $pair];
+        );
+    };
+
+    // core
+    (
+        queue => [$q:ident, $q_ne:ident ; $empty:ident, $single:ident, $pair:ident];
+    ) => {
+        define_queue_core!(
+            lt => [];
+            generics => [];
+            elements => [];
+            queue => [$q, $q_ne ; $empty, $single, $pair];
+        );
+        define_queue_tuple_transformation!(
+            lt => [];
+            generics => [];
+            elements => [];
+            queue => [$q, $q_ne ; $empty, $single, $pair];
+        );
+    };
+
+    // core - elements
+    (
+        elements => [ $( $el_bnd:ident $( < $( $el_bnd_g:tt ),* > )? )| * ];
+        queue => [$q:ident, $q_ne:ident ; $empty:ident, $single:ident, $pair:ident];
+    ) => {
+        define_queue_core!(
+            lt => [];
+            generics => [];
+            elements => [ $( $el_bnd $( < $( $el_bnd_g ),* > )? )| * ];
+            queue => [$q, $q_ne ; $empty, $single, $pair];
+        );
+        define_queue_tuple_transformation!(
+            lt => [];
+            generics => [];
+            elements => [ $( $el_bnd $( < $( $el_bnd_g ),* > )? )| * ];
+            queue => [$q, $q_ne ; $empty, $single, $pair];
+        );
+    };
+
+    // core - lifetime elements
+    (
+        lt => [$($g_lt:tt), *];
+        elements => [ $( $el_bnd:ident $( < $( $el_bnd_g:tt ),* > )? )| * ];
+        queue => [$q:ident, $q_ne:ident ; $empty:ident, $single:ident, $pair:ident];
+    ) => {
+        define_queue_core!(
+            lt => [$($g_lt), *];
+            generics => [];
+            elements => [ $( $el_bnd $( < $( $el_bnd_g ),* > )? )| * ];
+            queue => [$q, $q_ne ; $empty, $single, $pair];
+        );
+        define_queue_tuple_transformation!(
+            lt => [$($g_lt), *];
+            generics => [];
+            elements => [ $( $el_bnd $( < $( $el_bnd_g ),* > )? )| * ];
+            queue => [$q, $q_ne ; $empty, $single, $pair];
+        );
+    };
+
+    // # queue_of
+
+    // core
+    (
+        queue => [$q:ident, $q_ne:ident ; $empty:ident, $single:ident, $pair:ident];
+        queue_of => $queue_of:ident;
+    ) => {
+        define_queue_core!(
+            lt => [];
+            generics => [];
+            elements => [];
+            queue => [$q, $q_ne ; $empty, $single, $pair];
+        );
+        define_queue_tuple_transformation!(
+            lt => [];
+            generics => [];
+            elements => [];
+            queue => [$q, $q_ne ; $empty, $single, $pair];
+        );
+        define_queue_of!(
+            lt => [];
+            generics => [];
+            queue => [$q, $q_ne ; $empty, $single, $pair];
+            queue_of => $queue_of;
+        );
+    };
+
+    // core - elements
+    (
+        elements => [ $( $el_bnd:ident $( < $( $el_bnd_g:tt ),* > )? )| * ];
+        queue => [$q:ident, $q_ne:ident ; $empty:ident, $single:ident, $pair:ident];
+        queue_of => $queue_of:ident;
+    ) => {
+        define_queue_core!(
+            lt => [];
+            generics => [];
+            elements => [ $( $el_bnd $( < $( $el_bnd_g ),* > )? )| * ];
+            queue => [$q, $q_ne ; $empty, $single, $pair];
+        );
+        define_queue_tuple_transformation!(
+            lt => [];
+            generics => [ ];
+            elements => [ $( $el_bnd $( < $( $el_bnd_g ),* > )? )| * ];
+            queue => [$q, $q_ne ; $empty, $single, $pair];
+        );
+        define_queue_of!(
+            lt => [];
+            generics => [];
+            queue => [$q, $q_ne ; $empty, $single, $pair];
+            queue_of => $queue_of;
+        );
+    };
+
+    // core - lifetime elements
+    (
+        lt => [$($g_lt:tt), *];
+        elements => [ $( $el_bnd:ident $( < $( $el_bnd_g:tt ),* > )? )| * ];
+        queue => [$q:ident, $q_ne:ident ; $empty:ident, $single:ident, $pair:ident];
+        queue_of => $queue_of:ident;
+    ) => {
+        define_queue_core!(
+            lt => [$($g_lt), *];
+            generics => [];
+            elements => [ $( $el_bnd $( < $( $el_bnd_g ),* > )? )| * ];
+            queue => [$q, $q_ne ; $empty, $single, $pair];
+        );
+        define_queue_tuple_transformation!(
+            lt => [$($g_lt), *];
+            generics => [];
+            elements => [ $( $el_bnd $( < $( $el_bnd_g ),* > )? )| * ];
+            queue => [$q, $q_ne ; $empty, $single, $pair];
+        );
+        define_queue_of!(
+            lt => [$($g_lt), *];
+            generics => [];
+            queue => [$q, $q_ne ; $empty, $single, $pair];
+            queue_of => $queue_of;
+        );
+    };
+
+    // # builder
+
+    // core
+    (
+        queue => [$q:ident, $q_ne:ident ; $empty:ident, $single:ident, $pair:ident];
+        builder => $builder:ident;
+    ) => {
+        define_queue_core!(
+            lt => [];
+            generics => [];
+            elements => [];
+            queue => [$q, $q_ne ; $empty, $single, $pair];
+        );
+        define_queue_tuple_transformation!(
+            lt => [];
+            generics => [];
+            elements => [];
+            queue => [$q, $q_ne ; $empty, $single, $pair];
+        );
+        define_queue_builder!(
+            lt => [];
+            generics => [];
+            queue => [$q, $q_ne ; $empty, $single, $pair];
+            builder => $builder;
+        );
+    };
+
+    // core - elements
+    (
+        elements => [ $( $el_bnd:ident $( < $( $el_bnd_g:tt ),* > )? )| * ];
+        queue => [$q:ident, $q_ne:ident ; $empty:ident, $single:ident, $pair:ident];
+        builder => $builder:ident;
+    ) => {
+        define_queue_core!(
+            lt => [];
+            generics => [];
+            elements => [ $( $el_bnd $( < $( $el_bnd_g ),* > )? )| * ];
+            queue => [$q, $q_ne ; $empty, $single, $pair];
+        );
+        define_queue_tuple_transformation!(
+            lt => [];
+            generics => [];
+            elements => [ $( $el_bnd $( < $( $el_bnd_g ),* > )? )| * ];
+            queue => [$q, $q_ne ; $empty, $single, $pair];
+        );
+        define_queue_builder!(
+            lt => [];
+            generics => [];
+            queue => [$q, $q_ne ; $empty, $single, $pair];
+            builder => $builder;
+        );
+    };
+
+    // core - lifetime elements
+    (
+        lt => [$($g_lt:tt), *];
+        elements => [ $( $el_bnd:ident $( < $( $el_bnd_g:tt ),* > )? )| * ];
+        queue => [$q:ident, $q_ne:ident ; $empty:ident, $single:ident, $pair:ident];
+        builder => $builder:ident;
+    ) => {
+        define_queue_core!(
+            lt => [$($g_lt), *];
+            generics => [];
+            elements => [ $( $el_bnd $( < $( $el_bnd_g ),* > )? )| * ];
+            queue => [$q, $q_ne ; $empty, $single, $pair];
+        );
+        define_queue_tuple_transformation!(
+            lt => [$($g_lt), *];
+            generics => [];
+            elements => [ $( $el_bnd $( < $( $el_bnd_g ),* > )? )| * ];
+            queue => [$q, $q_ne ; $empty, $single, $pair];
+        );
+        define_queue_builder!(
+            lt => [$($g_lt), *];
+            generics => [];
+            queue => [$q, $q_ne ; $empty, $single, $pair];
+            builder => $builder;
+        );
+    };
+
+    // # queue_of + builder
+
+    // core
+    (
+        queue => [$q:ident, $q_ne:ident ; $empty:ident, $single:ident, $pair:ident];
+        queue_of => $queue_of:ident;
+        builder => $builder:ident;
+    ) => {
+        define_queue_core!(
+            lt => [];
+            generics => [];
+            elements => [];
+            queue => [$q, $q_ne ; $empty, $single, $pair];
+        );
+        define_queue_tuple_transformation!(
+            lt => [];
+            generics => [];
+            elements => [];
+            queue => [$q, $q_ne ; $empty, $single, $pair];
+        );
+        define_queue_of!(
+            lt => [];
+            generics => [];
+            queue => [$q, $q_ne ; $empty, $single, $pair];
+            queue_of => $queue_of;
+        );
+        define_queue_builder!(
+            lt => [];
+            generics => [];
+            queue => [$q, $q_ne ; $empty, $single, $pair];
+            builder => $builder;
+        );
+    };
+
+    // core - elements
+    (
+        elements => [ $( $el_bnd:ident $( < $( $el_bnd_g:tt ),* > )? )| * ];
+        queue => [$q:ident, $q_ne:ident ; $empty:ident, $single:ident, $pair:ident];
+        queue_of => $queue_of:ident;
+        builder => $builder:ident;
+    ) => {
+        define_queue_core!(
+            lt => [];
+            generics => [];
+            elements => [ $( $el_bnd $( < $( $el_bnd_g ),* > )? )| * ];
+            queue => [$q, $q_ne ; $empty, $single, $pair];
+        );
+        define_queue_tuple_transformation!(
+            lt => [];
+            generics => [];
+            elements => [ $( $el_bnd $( < $( $el_bnd_g ),* > )? )| * ];
+            queue => [$q, $q_ne ; $empty, $single, $pair];
+        );
+        define_queue_of!(
+            lt => [];
+            generics => [];
+            queue => [$q, $q_ne ; $empty, $single, $pair];
+            queue_of => $queue_of;
+        );
+        define_queue_builder!(
+            lt => [];
+            generics => [];
+            queue => [$q, $q_ne ; $empty, $single, $pair];
+            builder => $builder;
+        );
+    };
+
+    // core - lifetime elements
+    (
+        lt => [$($g_lt:tt), *];
+        elements => [ $( $el_bnd:ident $( < $( $el_bnd_g:tt ),* > )? )| * ];
+        queue => [$q:ident, $q_ne:ident ; $empty:ident, $single:ident, $pair:ident];
+        queue_of => $queue_of:ident;
+        builder => $builder:ident;
+    ) => {
+        define_queue_core!(
+            lt => [$($g_lt), *];
+            generics => [];
+            elements => [ $( $el_bnd $( < $( $el_bnd_g ),* > )? )| * ];
+            queue => [$q, $q_ne ; $empty, $single, $pair];
+        );
+        define_queue_tuple_transformation!(
+            lt => [$($g_lt), *];
+            generics => [];
+            elements => [ $( $el_bnd $( < $( $el_bnd_g ),* > )? )| * ];
+            queue => [$q, $q_ne ; $empty, $single, $pair];
+        );
+        define_queue_of!(
+            lt => [$($g_lt), *];
+            generics => [];
+            queue => [$q, $q_ne ; $empty, $single, $pair];
+            queue_of => $queue_of;
+        );
+        define_queue_builder!(
+            lt => [$($g_lt), *];
+            generics => [];
+            queue => [$q, $q_ne ; $empty, $single, $pair];
+            builder => $builder;
+        );
+    };
+}
+
 // # 1. core
 
 macro_rules! define_queue_core {
@@ -726,6 +1086,297 @@ macro_rules! define_queue_tuple_transformation {
     };
 }
 
+// # 4. queue-of
+
+macro_rules! define_queue_of {
+    (
+        lt => [$($g_lt:tt), *];
+        generics => [ $( $g:tt $( : $( $g_bnd:ident $( < $( $g_bnd_g:tt ),* > )? )| * )? ), * ];
+        queue => [$q:ident ; $empty:ident, $pair:ident];
+        queue_of => $queue_of:ident;
+    ) => {
+        macro_rules! $queue_of {
+            () => {
+                $empty<$($g_lt ,)* $($g ,)*>
+            };
+
+            ($t1:ty) => {
+                $pair<$($g_lt ,)* $($g ,)* $t1, $empty<$($g_lt ,)* $($g ,)*>>
+            };
+
+            ($t1:ty, $t2:ty) => {
+                $pair<$($g_lt ,)* $($g ,)* $t1, $pair<$($g_lt ,)* $($g ,)* $t2, $empty<$($g_lt ,)* $($g ,)*>>>
+            };
+
+            ($t1:ty, $t2:ty, $t3:ty) => {
+                $pair<$($g_lt ,)* $($g ,)* $t1,
+                    $pair<$($g_lt ,)* $($g ,)* $t2, $pair<$($g_lt ,)* $($g ,)* $t3, $empty<$($g_lt ,)* $($g ,)*>>>
+                >
+            };
+
+            ($t1:ty, $t2:ty, $t3:ty, $t4:ty) => {
+                $pair<$($g_lt ,)* $($g ,)* $t1,
+                    $pair<$($g_lt ,)* $($g ,)* $t2,
+                        $pair<$($g_lt ,)* $($g ,)* $t3, $pair<$($g_lt ,)* $($g ,)* $t4, $empty<$($g_lt ,)* $($g ,)*>>>
+                    >
+                >
+            };
+
+            ($t1:ty, $t2:ty, $t3:ty, $t4:ty, $t5:ty) => {
+                $pair<$($g_lt ,)* $($g ,)* $t1,
+                    $pair<$($g_lt ,)* $($g ,)* $t2,
+                        $pair<$($g_lt ,)* $($g ,)* $t3,
+                            $pair<$($g_lt ,)* $($g ,)* $t4, $pair<$($g_lt ,)* $($g ,)* $t5, $empty<$($g_lt ,)* $($g ,)*>>>
+                        >
+                    >
+                >
+            };
+
+            ($t1:ty, $t2:ty, $t3:ty, $t4:ty, $t5:ty, $t6:ty) => {
+                $pair<$($g_lt ,)* $($g ,)* $t1,
+                    $pair<$($g_lt ,)* $($g ,)* $t2,
+                        $pair<$($g_lt ,)* $($g ,)* $t3,
+                            $pair<$($g_lt ,)* $($g ,)* $t4,
+                                $pair<$($g_lt ,)* $($g ,)* $t5, $pair<$($g_lt ,)* $($g ,)* $t6, $empty<$($g_lt ,)* $($g ,)*>>>
+                            >
+                        >
+                    >
+                >
+            };
+
+            ($t1:ty, $t2:ty, $t3:ty, $t4:ty, $t5:ty, $t6:ty, $t7:ty) => {
+                $pair<$($g_lt ,)* $($g ,)* $t1,
+                    $pair<$($g_lt ,)* $($g ,)* $t2,
+                        $pair<$($g_lt ,)* $($g ,)* $t3,
+                            $pair<$($g_lt ,)* $($g ,)* $t4,
+                                $pair<$($g_lt ,)* $($g ,)* $t5,
+                                    $pair<$($g_lt ,)* $($g ,)* $t6, $pair<$($g_lt ,)* $($g ,)* $t7, $empty<$($g_lt ,)* $($g ,)*>>>
+                                >
+                            >
+                        >
+                    >
+                >
+            };
+
+            ($t1:ty, $t2:ty, $t3:ty, $t4:ty, $t5:ty, $t6:ty, $t7:ty, $t8:ty) => {
+                $pair<$($g_lt ,)* $($g ,)* $t1,
+                    $pair<$($g_lt ,)* $($g ,)* $t2,
+                        $pair<$($g_lt ,)* $($g ,)* $t3,
+                            $pair<$($g_lt ,)* $($g ,)* $t4,
+                                $pair<$($g_lt ,)* $($g ,)* $t5,
+                                    $pair<$($g_lt ,)* $($g ,)* $t6,
+                                        $pair<$($g_lt ,)* $($g ,)* $t7, $pair<$($g_lt ,)* $($g ,)* $t8, $empty<$($g_lt ,)* $($g ,)*>>>
+                                    >
+                                >
+                            >
+                        >
+                    >
+                >
+            };
+
+            ($t1:ty, $t2:ty, $t3:ty, $t4:ty, $t5:ty, $t6:ty, $t7:ty, $t8:ty, $t9:ty) => {
+                $pair<$($g_lt ,)* $($g ,)* $t1,
+                    $pair<$($g_lt ,)* $($g ,)* $t2,
+                        $pair<$($g_lt ,)* $($g ,)* $t3,
+                            $pair<$($g_lt ,)* $($g ,)* $t4,
+                                $pair<$($g_lt ,)* $($g ,)* $t5,
+                                    $pair<$($g_lt ,)* $($g ,)* $t6,
+                                        $pair<$($g_lt ,)* $($g ,)* $t7,
+                                            $pair<$($g_lt ,)* $($g ,)* $t8, $pair<$($g_lt ,)* $($g ,)* $t9, $empty<$($g_lt ,)* $($g ,)*>>>
+                                        >
+                                    >
+                                >
+                            >
+                        >
+                    >
+                >
+            };
+
+            ($t1:ty, $t2:ty, $t3:ty, $t4:ty, $t5:ty, $t6:ty, $t7:ty, $t8:ty, $t9:ty, $t10:ty) => {
+                $pair<$($g_lt ,)* $($g ,)* $t1,
+                    $pair<$($g_lt ,)* $($g ,)* $t2,
+                        $pair<$($g_lt ,)* $($g ,)* $t3,
+                            $pair<$($g_lt ,)* $($g ,)* $t4,
+                                $pair<$($g_lt ,)* $($g ,)* $t5,
+                                    $pair<$($g_lt ,)* $($g ,)* $t6,
+                                        $pair<$($g_lt ,)* $($g ,)* $t7,
+                                            $pair<$($g_lt ,)* $($g ,)* $t8,
+                                                $pair<$($g_lt ,)* $($g ,)* $t9, $pair<$($g_lt ,)* $($g ,)* $t10, $empty<$($g_lt ,)* $($g ,)*>>>
+                                            >
+                                        >
+                                    >
+                                >
+                            >
+                        >
+                    >
+                >
+            };
+
+            ($t1:ty, $t2:ty, $t3:ty, $t4:ty, $t5:ty, $t6:ty, $t7:ty, $t8:ty, $t9:ty, $t10:ty, $t11:ty) => {
+                $pair<$($g_lt ,)* $($g ,)* $t1,
+                    $pair<$($g_lt ,)* $($g ,)* $t2,
+                        $pair<$($g_lt ,)* $($g ,)* $t3,
+                            $pair<$($g_lt ,)* $($g ,)* $t4,
+                                $pair<$($g_lt ,)* $($g ,)* $t5,
+                                    $pair<$($g_lt ,)* $($g ,)* $t6,
+                                        $pair<$($g_lt ,)* $($g ,)* $t7,
+                                            $pair<$($g_lt ,)* $($g ,)* $t8,
+                                                $pair<$($g_lt ,)* $($g ,)* $t9,
+                                                    $pair<$($g_lt ,)* $($g ,)* $t10, $pair<$($g_lt ,)* $($g ,)* $t11, $empty<$($g_lt ,)* $($g ,)*>>>
+                                                >
+                                            >
+                                        >
+                                    >
+                                >
+                            >
+                        >
+                    >
+                >
+            };
+
+            ($t1:ty, $t2:ty, $t3:ty, $t4:ty, $t5:ty, $t6:ty, $t7:ty, $t8:ty, $t9:ty, $t10:ty, $t11:ty, $t12:ty) => {
+                $pair<$($g_lt ,)* $($g ,)* $t1,
+                    $pair<$($g_lt ,)* $($g ,)* $t2,
+                        $pair<$($g_lt ,)* $($g ,)* $t3,
+                            $pair<$($g_lt ,)* $($g ,)* $t4,
+                                $pair<$($g_lt ,)* $($g ,)* $t5,
+                                    $pair<$($g_lt ,)* $($g ,)* $t6,
+                                        $pair<$($g_lt ,)* $($g ,)* $t7,
+                                            $pair<$($g_lt ,)* $($g ,)* $t8,
+                                                $pair<$($g_lt ,)* $($g ,)* $t9,
+                                                    $pair<$($g_lt ,)* $($g ,)* $t10,
+                                                        $pair<$($g_lt ,)* $($g ,)* $t11, $pair<$($g_lt ,)* $($g ,)* $t12, $empty<$($g_lt ,)* $($g ,)*>>>
+                                                    >
+                                                >
+                                            >
+                                        >
+                                    >
+                                >
+                            >
+                        >
+                    >
+                >
+            };
+
+            ($t1:ty, $t2:ty, $t3:ty, $t4:ty, $t5:ty, $t6:ty, $t7:ty, $t8:ty, $t9:ty, $t10:ty, $t11:ty, $t12:ty, $t13:ty) => {
+                $pair<$($g_lt ,)* $($g ,)* $t1,
+                    $pair<$($g_lt ,)* $($g ,)* $t2,
+                        $pair<$($g_lt ,)* $($g ,)* $t3,
+                            $pair<$($g_lt ,)* $($g ,)* $t4,
+                                $pair<$($g_lt ,)* $($g ,)* $t5,
+                                    $pair<$($g_lt ,)* $($g ,)* $t6,
+                                        $pair<$($g_lt ,)* $($g ,)* $t7,
+                                            $pair<$($g_lt ,)* $($g ,)* $t8,
+                                                $pair<$($g_lt ,)* $($g ,)* $t9,
+                                                    $pair<$($g_lt ,)* $($g ,)* $t10,
+                                                        $pair<$($g_lt ,)* $($g ,)* $t11,
+                                                            $pair<$($g_lt ,)* $($g ,)* $t12, $pair<$($g_lt ,)* $($g ,)* $t13, $empty<$($g_lt ,)* $($g ,)*>>>
+                                                        >
+                                                    >
+                                                >
+                                            >
+                                        >
+                                    >
+                                >
+                            >
+                        >
+                    >
+                >
+            };
+
+            ($t1:ty, $t2:ty, $t3:ty, $t4:ty, $t5:ty, $t6:ty, $t7:ty, $t8:ty, $t9:ty, $t10:ty, $t11:ty, $t12:ty, $t13:ty, $t14:ty) => {
+                $pair<$($g_lt ,)* $($g ,)* $t1,
+                    $pair<$($g_lt ,)* $($g ,)* $t2,
+                        $pair<$($g_lt ,)* $($g ,)* $t3,
+                            $pair<$($g_lt ,)* $($g ,)* $t4,
+                                $pair<$($g_lt ,)* $($g ,)* $t5,
+                                    $pair<$($g_lt ,)* $($g ,)* $t6,
+                                        $pair<$($g_lt ,)* $($g ,)* $t7,
+                                            $pair<$($g_lt ,)* $($g ,)* $t8,
+                                                $pair<$($g_lt ,)* $($g ,)* $t9,
+                                                    $pair<$($g_lt ,)* $($g ,)* $t10,
+                                                        $pair<$($g_lt ,)* $($g ,)* $t11,
+                                                            $pair<$($g_lt ,)* $($g ,)* $t12,
+                                                                $pair<$($g_lt ,)* $($g ,)* $t13, $pair<$($g_lt ,)* $($g ,)* $t14, $empty<$($g_lt ,)* $($g ,)*>>>
+                                                            >
+                                                        >
+                                                    >
+                                                >
+                                            >
+                                        >
+                                    >
+                                >
+                            >
+                        >
+                    >
+                >
+            };
+
+            ($t1:ty, $t2:ty, $t3:ty, $t4:ty, $t5:ty, $t6:ty, $t7:ty, $t8:ty, $t9:ty, $t10:ty, $t11:ty, $t12:ty, $t13:ty, $t14:ty, $t15:ty) => {
+                $pair<$($g_lt ,)* $($g ,)* $t1,
+                    $pair<$($g_lt ,)* $($g ,)* $t2,
+                        $pair<$($g_lt ,)* $($g ,)* $t3,
+                            $pair<$($g_lt ,)* $($g ,)* $t4,
+                                $pair<$($g_lt ,)* $($g ,)* $t5,
+                                    $pair<$($g_lt ,)* $($g ,)* $t6,
+                                        $pair<$($g_lt ,)* $($g ,)* $t7,
+                                            $pair<$($g_lt ,)* $($g ,)* $t8,
+                                                $pair<$($g_lt ,)* $($g ,)* $t9,
+                                                    $pair<$($g_lt ,)* $($g ,)* $t10,
+                                                        $pair<$($g_lt ,)* $($g ,)* $t11,
+                                                            $pair<$($g_lt ,)* $($g ,)* $t12,
+                                                                $pair<$($g_lt ,)* $($g ,)* $t13,
+                                                                    $pair<$($g_lt ,)* $($g ,)* $t14, $pair<$($g_lt ,)* $($g ,)* $t15, $empty<$($g_lt ,)* $($g ,)*>>>
+                                                                >
+                                                            >
+                                                        >
+                                                    >
+                                                >
+                                            >
+                                        >
+                                    >
+                                >
+                            >
+                        >
+                    >
+                >
+            };
+
+            ($t1:ty, $t2:ty, $t3:ty, $t4:ty, $t5:ty, $t6:ty, $t7:ty, $t8:ty, $t9:ty, $t10:ty, $t11:ty, $t12:ty, $t13:ty, $t14:ty, $t15:ty, $t16:ty) => {
+                $pair<$($g_lt ,)* $($g ,)* $t1,
+                    $pair<$($g_lt ,)* $($g ,)* $t2,
+                        $pair<$($g_lt ,)* $($g ,)* $t3,
+                            $pair<$($g_lt ,)* $($g ,)* $t4,
+                                $pair<$($g_lt ,)* $($g ,)* $t5,
+                                    $pair<$($g_lt ,)* $($g ,)* $t6,
+                                        $pair<$($g_lt ,)* $($g ,)* $t7,
+                                            $pair<$($g_lt ,)* $($g ,)* $t8,
+                                                $pair<$($g_lt ,)* $($g ,)* $t9,
+                                                    $pair<$($g_lt ,)* $($g ,)* $t10,
+                                                        $pair<$($g_lt ,)* $($g ,)* $t11,
+                                                            $pair<$($g_lt ,)* $($g ,)* $t12,
+                                                                $pair<$($g_lt ,)* $($g ,)* $t13,
+                                                                    $pair<$($g_lt ,)* $($g ,)* $t14,
+                                                                        $pair<$($g_lt ,)* $($g ,)* $t15, $pair<$($g_lt ,)* $($g ,)* $t16, $empty<$($g_lt ,)* $($g ,)*>>>
+                                                                    >
+                                                                >
+                                                            >
+                                                        >
+                                                    >
+                                                >
+                                            >
+                                        >
+                                    >
+                                >
+                            >
+                        >
+                    >
+                >
+            };
+        }
+    };
+}
+
 #[test]
 fn abc() {
     use super::*;
@@ -751,6 +1402,13 @@ fn abc() {
         queue => [M ; Qe, Q];
     );
 
+    define_queue_of!(
+        lt => [];
+        generics => [];
+        queue => [M ; Qe, Q];
+        queue_of => qof;
+    );
+
     let q = Qe::new();
     let q = Qe::new().push(1);
     let q = Qe::new().push(1).push(true);
@@ -764,5 +1422,7 @@ fn abc() {
         .finish();
 
     let t = val.into_tuple();
-    let q = MyQ::from(t);
+
+    type MyQ2 = qof!(u32, bool, char, &'static str);
+    let q = MyQ2::from(t);
 }
