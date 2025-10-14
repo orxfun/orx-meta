@@ -27,7 +27,7 @@ macro_rules! define_queue {
         lt => [$($g_lt:tt), *];
         generics => [ $( $g:tt $( : $( $g_bnd:ident $( < $( $g_bnd_g:tt ),* > )? )| * )? ), * ];
         elements => [ $( $el_bnd:ident $( < $( $el_bnd_g:tt ),* > )? )| * ];
-        queue => [$q:ident, $q_ne:ident ; $empty:ident, $single:ident, $pair:ident];
+        queue => [$q:ident ; $empty:ident, $pair:ident];
 
         queue_of => $queue_of:ident;
         builder => $builder:ident;
@@ -36,19 +36,19 @@ macro_rules! define_queue {
             lt => [$($g_lt), *];
             generics => [ $( $g $( : $( $g_bnd $( < $( $g_bnd_g ),* > )? )| * )? ), * ];
             elements => [ $( $el_bnd $( < $( $el_bnd_g ),* > )? )| * ];
-            queue => [$q, $q_ne ; $empty, $single, $pair];
+            queue => [$q ; $empty, $pair];
         );
         define_queue_of!(
             lt => [$($g_lt), *];
             generics => [ $( $g $( : $( $g_bnd $( < $( $g_bnd_g ),* > )? )| * )? ), * ];
-            queue => [$q, $q_ne ; $empty, $single, $pair];
+            queue => [$q ; $empty, $pair];
             queue_of => $queue_of;
         );
 
         define_queue_builder!(
             lt => [$($g_lt), *];
             generics => [ $( $g $( : $( $g_bnd $( < $( $g_bnd_g ),* > )? )| * )? ), * ];
-            queue => [$q, $q_ne ; $empty, $single, $pair];
+            queue => [$q ; $empty, $pair];
             builder => $builder;
         );
 
@@ -56,7 +56,7 @@ macro_rules! define_queue {
             lt => [$($g_lt), *];
             generics => [ $( $g $( : $( $g_bnd $( < $( $g_bnd_g ),* > )? )| * )? ), * ];
             elements => [ $( $el_bnd $( < $( $el_bnd_g ),* > )? )| * ];
-            queue => [$q, $q_ne ; $empty, $single, $pair];
+            queue => [$q ; $empty, $pair];
         );
     };
 
@@ -68,13 +68,13 @@ macro_rules! define_queue {
             lt => [];
             generics => [];
             elements => [];
-            queue => [$q, $q_ne ; $empty, $single, $pair];
+            queue => [$q ; $empty, $pair];
         );
         define_queue_tuple_transformation!(
             lt => [];
             generics => [];
             elements => [];
-            queue => [$q, $q_ne ; $empty, $single, $pair];
+            queue => [$q ; $empty, $pair];
         );
     };
 
@@ -87,13 +87,13 @@ macro_rules! define_queue {
             lt => [];
             generics => [];
             elements => [ $( $el_bnd $( < $( $el_bnd_g ),* > )? )| * ];
-            queue => [$q, $q_ne ; $empty, $single, $pair];
+            queue => [$q ; $empty, $pair];
         );
         define_queue_tuple_transformation!(
             lt => [];
             generics => [];
             elements => [ $( $el_bnd $( < $( $el_bnd_g ),* > )? )| * ];
-            queue => [$q, $q_ne ; $empty, $single, $pair];
+            queue => [$q ; $empty, $pair];
         );
     };
 
@@ -107,13 +107,13 @@ macro_rules! define_queue {
             lt => [$($g_lt), *];
             generics => [];
             elements => [ $( $el_bnd $( < $( $el_bnd_g ),* > )? )| * ];
-            queue => [$q, $q_ne ; $empty, $single, $pair];
+            queue => [$q ; $empty, $pair];
         );
         define_queue_tuple_transformation!(
             lt => [$($g_lt), *];
             generics => [];
             elements => [ $( $el_bnd $( < $( $el_bnd_g ),* > )? )| * ];
-            queue => [$q, $q_ne ; $empty, $single, $pair];
+            queue => [$q ; $empty, $pair];
         );
     };
 
@@ -128,18 +128,18 @@ macro_rules! define_queue {
             lt => [];
             generics => [];
             elements => [];
-            queue => [$q, $q_ne ; $empty, $single, $pair];
+            queue => [$q ; $empty, $pair];
         );
         define_queue_tuple_transformation!(
             lt => [];
             generics => [];
             elements => [];
-            queue => [$q, $q_ne ; $empty, $single, $pair];
+            queue => [$q ; $empty, $pair];
         );
         define_queue_of!(
             lt => [];
             generics => [];
-            queue => [$q, $q_ne ; $empty, $single, $pair];
+            queue => [$q ; $empty, $pair];
             queue_of => $queue_of;
         );
     };
@@ -154,18 +154,18 @@ macro_rules! define_queue {
             lt => [];
             generics => [];
             elements => [ $( $el_bnd $( < $( $el_bnd_g ),* > )? )| * ];
-            queue => [$q, $q_ne ; $empty, $single, $pair];
+            queue => [$q ; $empty, $pair];
         );
         define_queue_tuple_transformation!(
             lt => [];
             generics => [ ];
             elements => [ $( $el_bnd $( < $( $el_bnd_g ),* > )? )| * ];
-            queue => [$q, $q_ne ; $empty, $single, $pair];
+            queue => [$q ; $empty, $pair];
         );
         define_queue_of!(
             lt => [];
             generics => [];
-            queue => [$q, $q_ne ; $empty, $single, $pair];
+            queue => [$q ; $empty, $pair];
             queue_of => $queue_of;
         );
     };
@@ -181,18 +181,18 @@ macro_rules! define_queue {
             lt => [$($g_lt), *];
             generics => [];
             elements => [ $( $el_bnd $( < $( $el_bnd_g ),* > )? )| * ];
-            queue => [$q, $q_ne ; $empty, $single, $pair];
+            queue => [$q ; $empty, $pair];
         );
         define_queue_tuple_transformation!(
             lt => [$($g_lt), *];
             generics => [];
             elements => [ $( $el_bnd $( < $( $el_bnd_g ),* > )? )| * ];
-            queue => [$q, $q_ne ; $empty, $single, $pair];
+            queue => [$q ; $empty, $pair];
         );
         define_queue_of!(
             lt => [$($g_lt), *];
             generics => [];
-            queue => [$q, $q_ne ; $empty, $single, $pair];
+            queue => [$q ; $empty, $pair];
             queue_of => $queue_of;
         );
     };
@@ -208,18 +208,18 @@ macro_rules! define_queue {
             lt => [];
             generics => [];
             elements => [];
-            queue => [$q, $q_ne ; $empty, $single, $pair];
+            queue => [$q ; $empty, $pair];
         );
         define_queue_tuple_transformation!(
             lt => [];
             generics => [];
             elements => [];
-            queue => [$q, $q_ne ; $empty, $single, $pair];
+            queue => [$q ; $empty, $pair];
         );
         define_queue_builder!(
             lt => [];
             generics => [];
-            queue => [$q, $q_ne ; $empty, $single, $pair];
+            queue => [$q ; $empty, $pair];
             builder => $builder;
         );
     };
@@ -234,18 +234,18 @@ macro_rules! define_queue {
             lt => [];
             generics => [];
             elements => [ $( $el_bnd $( < $( $el_bnd_g ),* > )? )| * ];
-            queue => [$q, $q_ne ; $empty, $single, $pair];
+            queue => [$q ; $empty, $pair];
         );
         define_queue_tuple_transformation!(
             lt => [];
             generics => [];
             elements => [ $( $el_bnd $( < $( $el_bnd_g ),* > )? )| * ];
-            queue => [$q, $q_ne ; $empty, $single, $pair];
+            queue => [$q ; $empty, $pair];
         );
         define_queue_builder!(
             lt => [];
             generics => [];
-            queue => [$q, $q_ne ; $empty, $single, $pair];
+            queue => [$q ; $empty, $pair];
             builder => $builder;
         );
     };
@@ -261,18 +261,18 @@ macro_rules! define_queue {
             lt => [$($g_lt), *];
             generics => [];
             elements => [ $( $el_bnd $( < $( $el_bnd_g ),* > )? )| * ];
-            queue => [$q, $q_ne ; $empty, $single, $pair];
+            queue => [$q ; $empty, $pair];
         );
         define_queue_tuple_transformation!(
             lt => [$($g_lt), *];
             generics => [];
             elements => [ $( $el_bnd $( < $( $el_bnd_g ),* > )? )| * ];
-            queue => [$q, $q_ne ; $empty, $single, $pair];
+            queue => [$q ; $empty, $pair];
         );
         define_queue_builder!(
             lt => [$($g_lt), *];
             generics => [];
-            queue => [$q, $q_ne ; $empty, $single, $pair];
+            queue => [$q ; $empty, $pair];
             builder => $builder;
         );
     };
@@ -289,24 +289,24 @@ macro_rules! define_queue {
             lt => [];
             generics => [];
             elements => [];
-            queue => [$q, $q_ne ; $empty, $single, $pair];
+            queue => [$q ; $empty, $pair];
         );
         define_queue_tuple_transformation!(
             lt => [];
             generics => [];
             elements => [];
-            queue => [$q, $q_ne ; $empty, $single, $pair];
+            queue => [$q ; $empty, $pair];
         );
         define_queue_of!(
             lt => [];
             generics => [];
-            queue => [$q, $q_ne ; $empty, $single, $pair];
+            queue => [$q ; $empty, $pair];
             queue_of => $queue_of;
         );
         define_queue_builder!(
             lt => [];
             generics => [];
-            queue => [$q, $q_ne ; $empty, $single, $pair];
+            queue => [$q ; $empty, $pair];
             builder => $builder;
         );
     };
@@ -322,24 +322,24 @@ macro_rules! define_queue {
             lt => [];
             generics => [];
             elements => [ $( $el_bnd $( < $( $el_bnd_g ),* > )? )| * ];
-            queue => [$q, $q_ne ; $empty, $single, $pair];
+            queue => [$q ; $empty, $pair];
         );
         define_queue_tuple_transformation!(
             lt => [];
             generics => [];
             elements => [ $( $el_bnd $( < $( $el_bnd_g ),* > )? )| * ];
-            queue => [$q, $q_ne ; $empty, $single, $pair];
+            queue => [$q ; $empty, $pair];
         );
         define_queue_of!(
             lt => [];
             generics => [];
-            queue => [$q, $q_ne ; $empty, $single, $pair];
+            queue => [$q ; $empty, $pair];
             queue_of => $queue_of;
         );
         define_queue_builder!(
             lt => [];
             generics => [];
-            queue => [$q, $q_ne ; $empty, $single, $pair];
+            queue => [$q ; $empty, $pair];
             builder => $builder;
         );
     };
@@ -356,24 +356,24 @@ macro_rules! define_queue {
             lt => [$($g_lt), *];
             generics => [];
             elements => [ $( $el_bnd $( < $( $el_bnd_g ),* > )? )| * ];
-            queue => [$q, $q_ne ; $empty, $single, $pair];
+            queue => [$q ; $empty, $pair];
         );
         define_queue_tuple_transformation!(
             lt => [$($g_lt), *];
             generics => [];
             elements => [ $( $el_bnd $( < $( $el_bnd_g ),* > )? )| * ];
-            queue => [$q, $q_ne ; $empty, $single, $pair];
+            queue => [$q ; $empty, $pair];
         );
         define_queue_of!(
             lt => [$($g_lt), *];
             generics => [];
-            queue => [$q, $q_ne ; $empty, $single, $pair];
+            queue => [$q ; $empty, $pair];
             queue_of => $queue_of;
         );
         define_queue_builder!(
             lt => [$($g_lt), *];
             generics => [];
-            queue => [$q, $q_ne ; $empty, $single, $pair];
+            queue => [$q ; $empty, $pair];
             builder => $builder;
         );
     };
@@ -1382,31 +1382,40 @@ fn abc() {
     use super::*;
     use crate::*;
 
-    define_queue_core!(
+    // define_queue_core!(
+    //     lt => [];
+    //     generics => [];
+    //     elements => [];
+    //     queue => [M ; Qe, Q];
+    // );
+    // define_queue_builder!(
+    //     lt => [];
+    //     generics => [];
+    //     queue => [M ; Qe, Q];
+    //     builder => B;
+    // );
+
+    // define_queue_tuple_transformation!(
+    //     lt => [];
+    //     generics => [];
+    //     elements => [];
+    //     queue => [M ; Qe, Q];
+    // );
+
+    // define_queue_of!(
+    //     lt => [];
+    //     generics => [];
+    //     queue => [M ; Qe, Q];
+    //     queue_of => qof;
+    // );
+
+    define_queue!(
         lt => [];
         generics => [];
         elements => [];
-        queue => [M ; Qe, Q];
-    );
-    define_queue_builder!(
-        lt => [];
-        generics => [];
-        queue => [M ; Qe, Q];
-        builder => B;
-    );
-
-    define_queue_tuple_transformation!(
-        lt => [];
-        generics => [];
-        elements => [];
-        queue => [M ; Qe, Q];
-    );
-
-    define_queue_of!(
-        lt => [];
-        generics => [];
         queue => [M ; Qe, Q];
         queue_of => qof;
+        builder => B;
     );
 
     let q = Qe::new();
