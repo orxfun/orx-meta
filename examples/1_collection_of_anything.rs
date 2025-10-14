@@ -21,17 +21,17 @@ fn main() {
     assert!(queue.is_empty());
 
     // queue with a single element of i32
-    let queue = EmptyQueue::new().push(42); // or
+    let _queue = EmptyQueue::new().push(42); // or
     let queue = Queue::new(42);
     assert_eq!(queue.len(), 1);
     assert_eq!(queue.front(), &42);
 
     // queue with two elements: i32 and bool
-    let queue = EmptyQueue::new().push(42).push(true);
+    let queue = Queue::new(42).push(true);
     assert_eq!(queue.as_tuple(), (&42, &true));
 
     // queue with four elements: i32, bool, char and &str
-    let queue = EmptyQueue::new().push(42).push(true).push('x').push("foo");
+    let queue = Queue::new(42).push(true).push('x').push("foo");
     assert_eq!(queue.as_tuple(), (&42, &true, &'x', &"foo"));
 
     // # 2. underlying queue type
@@ -71,7 +71,7 @@ fn main() {
 
     // # 4. access elements via tuple representation
 
-    let mut queue = EmptyQueue::new().push(42).push(true).push('x').push("foo");
+    let mut queue = Queue::new(42).push(true).push('x').push("foo");
     let (a, b, c, d) = queue.as_tuple();
     assert_eq!(a, &42);
     assert_eq!(b, &true);
@@ -91,7 +91,7 @@ fn main() {
 
     // # 5. pop elements from the queue
 
-    let queue = EmptyQueue::new().push(42).push(true).push('x').push("foo");
+    let queue = Queue::new(42).push(true).push('x').push("foo");
 
     let (num, queue) = queue.pop();
     assert_eq!(num, 42);
