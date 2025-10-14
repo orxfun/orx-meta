@@ -1,24 +1,3 @@
-// #[macro_export]
-// macro_rules! abc {
-//     () => {
-//         def!()
-//     };
-// }
-
-// macro_rules! def {
-//     () => {
-//         12
-//     };
-// }
-
-// #[test]
-// fn xyz() {
-//     use crate::*;
-
-//     let a = abc!();
-//     assert_eq!(a, 13);
-// }
-
 // # 0. define queue
 
 #[macro_export]
@@ -32,27 +11,27 @@ macro_rules! define_queue {
         queue_of => $queue_of:ident;
         builder => $builder:ident;
     ) => {
-        define_queue_core!(
+        $crate::define_queue_core!(
             lt => [$($g_lt), *];
             generics => [ $( $g $( : $( $g_bnd $( < $( $g_bnd_g ),* > )? )| * )? ), * ];
             elements => [ $( $el_bnd $( < $( $el_bnd_g ),* > )? )| * ];
             queue => [$q ; $empty, $pair];
         );
-        define_queue_of!(
+        $crate::define_queue_of!(
             lt => [$($g_lt), *];
             generics => [ $( $g $( : $( $g_bnd $( < $( $g_bnd_g ),* > )? )| * )? ), * ];
             queue => [$q ; $empty, $pair];
             queue_of => $queue_of;
         );
 
-        define_queue_builder!(
+        $crate::define_queue_builder!(
             lt => [$($g_lt), *];
             generics => [ $( $g $( : $( $g_bnd $( < $( $g_bnd_g ),* > )? )| * )? ), * ];
             queue => [$q ; $empty, $pair];
             builder => $builder;
         );
 
-        define_queue_tuple_transformation!(
+        $crate::define_queue_tuple_transformation!(
             lt => [$($g_lt), *];
             generics => [ $( $g $( : $( $g_bnd $( < $( $g_bnd_g ),* > )? )| * )? ), * ];
             elements => [ $( $el_bnd $( < $( $el_bnd_g ),* > )? )| * ];
@@ -62,15 +41,15 @@ macro_rules! define_queue {
 
     // core
     (
-        queue => [$q:ident, $q_ne:ident ; $empty:ident, $single:ident, $pair:ident];
+        queue => [$q:ident ; $empty:ident, $pair:ident];
     ) => {
-        define_queue_core!(
+        $crate::define_queue_core!(
             lt => [];
             generics => [];
             elements => [];
             queue => [$q ; $empty, $pair];
         );
-        define_queue_tuple_transformation!(
+        $crate::define_queue_tuple_transformation!(
             lt => [];
             generics => [];
             elements => [];
@@ -81,15 +60,15 @@ macro_rules! define_queue {
     // core - elements
     (
         elements => [ $( $el_bnd:ident $( < $( $el_bnd_g:tt ),* > )? )| * ];
-        queue => [$q:ident, $q_ne:ident ; $empty:ident, $single:ident, $pair:ident];
+        queue => [$q:ident ; $empty:ident, $pair:ident];
     ) => {
-        define_queue_core!(
+        $crate::define_queue_core!(
             lt => [];
             generics => [];
             elements => [ $( $el_bnd $( < $( $el_bnd_g ),* > )? )| * ];
             queue => [$q ; $empty, $pair];
         );
-        define_queue_tuple_transformation!(
+        $crate::define_queue_tuple_transformation!(
             lt => [];
             generics => [];
             elements => [ $( $el_bnd $( < $( $el_bnd_g ),* > )? )| * ];
@@ -101,15 +80,15 @@ macro_rules! define_queue {
     (
         lt => [$($g_lt:tt), *];
         elements => [ $( $el_bnd:ident $( < $( $el_bnd_g:tt ),* > )? )| * ];
-        queue => [$q:ident, $q_ne:ident ; $empty:ident, $single:ident, $pair:ident];
+        queue => [$q:ident ; $empty:ident, $pair:ident];
     ) => {
-        define_queue_core!(
+        $crate::define_queue_core!(
             lt => [$($g_lt), *];
             generics => [];
             elements => [ $( $el_bnd $( < $( $el_bnd_g ),* > )? )| * ];
             queue => [$q ; $empty, $pair];
         );
-        define_queue_tuple_transformation!(
+        $crate::define_queue_tuple_transformation!(
             lt => [$($g_lt), *];
             generics => [];
             elements => [ $( $el_bnd $( < $( $el_bnd_g ),* > )? )| * ];
@@ -121,22 +100,22 @@ macro_rules! define_queue {
 
     // core
     (
-        queue => [$q:ident, $q_ne:ident ; $empty:ident, $single:ident, $pair:ident];
+        queue => [$q:ident ; $empty:ident, $pair:ident];
         queue_of => $queue_of:ident;
     ) => {
-        define_queue_core!(
+        $crate::define_queue_core!(
             lt => [];
             generics => [];
             elements => [];
             queue => [$q ; $empty, $pair];
         );
-        define_queue_tuple_transformation!(
+        $crate::define_queue_tuple_transformation!(
             lt => [];
             generics => [];
             elements => [];
             queue => [$q ; $empty, $pair];
         );
-        define_queue_of!(
+        $crate::define_queue_of!(
             lt => [];
             generics => [];
             queue => [$q ; $empty, $pair];
@@ -147,22 +126,22 @@ macro_rules! define_queue {
     // core - elements
     (
         elements => [ $( $el_bnd:ident $( < $( $el_bnd_g:tt ),* > )? )| * ];
-        queue => [$q:ident, $q_ne:ident ; $empty:ident, $single:ident, $pair:ident];
+        queue => [$q:ident ; $empty:ident, $pair:ident];
         queue_of => $queue_of:ident;
     ) => {
-        define_queue_core!(
+        $crate::define_queue_core!(
             lt => [];
             generics => [];
             elements => [ $( $el_bnd $( < $( $el_bnd_g ),* > )? )| * ];
             queue => [$q ; $empty, $pair];
         );
-        define_queue_tuple_transformation!(
+        $crate::define_queue_tuple_transformation!(
             lt => [];
             generics => [ ];
             elements => [ $( $el_bnd $( < $( $el_bnd_g ),* > )? )| * ];
             queue => [$q ; $empty, $pair];
         );
-        define_queue_of!(
+        $crate::define_queue_of!(
             lt => [];
             generics => [];
             queue => [$q ; $empty, $pair];
@@ -174,22 +153,22 @@ macro_rules! define_queue {
     (
         lt => [$($g_lt:tt), *];
         elements => [ $( $el_bnd:ident $( < $( $el_bnd_g:tt ),* > )? )| * ];
-        queue => [$q:ident, $q_ne:ident ; $empty:ident, $single:ident, $pair:ident];
+        queue => [$q:ident ; $empty:ident, $pair:ident];
         queue_of => $queue_of:ident;
     ) => {
-        define_queue_core!(
+        $crate::define_queue_core!(
             lt => [$($g_lt), *];
             generics => [];
             elements => [ $( $el_bnd $( < $( $el_bnd_g ),* > )? )| * ];
             queue => [$q ; $empty, $pair];
         );
-        define_queue_tuple_transformation!(
+        $crate::define_queue_tuple_transformation!(
             lt => [$($g_lt), *];
             generics => [];
             elements => [ $( $el_bnd $( < $( $el_bnd_g ),* > )? )| * ];
             queue => [$q ; $empty, $pair];
         );
-        define_queue_of!(
+        $crate::define_queue_of!(
             lt => [$($g_lt), *];
             generics => [];
             queue => [$q ; $empty, $pair];
@@ -201,22 +180,22 @@ macro_rules! define_queue {
 
     // core
     (
-        queue => [$q:ident, $q_ne:ident ; $empty:ident, $single:ident, $pair:ident];
+        queue => [$q:ident ; $empty:ident, $pair:ident];
         builder => $builder:ident;
     ) => {
-        define_queue_core!(
+        $crate::define_queue_core!(
             lt => [];
             generics => [];
             elements => [];
             queue => [$q ; $empty, $pair];
         );
-        define_queue_tuple_transformation!(
+        $crate::define_queue_tuple_transformation!(
             lt => [];
             generics => [];
             elements => [];
             queue => [$q ; $empty, $pair];
         );
-        define_queue_builder!(
+        $crate::define_queue_builder!(
             lt => [];
             generics => [];
             queue => [$q ; $empty, $pair];
@@ -227,22 +206,22 @@ macro_rules! define_queue {
     // core - elements
     (
         elements => [ $( $el_bnd:ident $( < $( $el_bnd_g:tt ),* > )? )| * ];
-        queue => [$q:ident, $q_ne:ident ; $empty:ident, $single:ident, $pair:ident];
+        queue => [$q:ident ; $empty:ident, $pair:ident];
         builder => $builder:ident;
     ) => {
-        define_queue_core!(
+        $crate::define_queue_core!(
             lt => [];
             generics => [];
             elements => [ $( $el_bnd $( < $( $el_bnd_g ),* > )? )| * ];
             queue => [$q ; $empty, $pair];
         );
-        define_queue_tuple_transformation!(
+        $crate::define_queue_tuple_transformation!(
             lt => [];
             generics => [];
             elements => [ $( $el_bnd $( < $( $el_bnd_g ),* > )? )| * ];
             queue => [$q ; $empty, $pair];
         );
-        define_queue_builder!(
+        $crate::define_queue_builder!(
             lt => [];
             generics => [];
             queue => [$q ; $empty, $pair];
@@ -254,22 +233,22 @@ macro_rules! define_queue {
     (
         lt => [$($g_lt:tt), *];
         elements => [ $( $el_bnd:ident $( < $( $el_bnd_g:tt ),* > )? )| * ];
-        queue => [$q:ident, $q_ne:ident ; $empty:ident, $single:ident, $pair:ident];
+        queue => [$q:ident ; $empty:ident, $pair:ident];
         builder => $builder:ident;
     ) => {
-        define_queue_core!(
+        $crate::define_queue_core!(
             lt => [$($g_lt), *];
             generics => [];
             elements => [ $( $el_bnd $( < $( $el_bnd_g ),* > )? )| * ];
             queue => [$q ; $empty, $pair];
         );
-        define_queue_tuple_transformation!(
+        $crate::define_queue_tuple_transformation!(
             lt => [$($g_lt), *];
             generics => [];
             elements => [ $( $el_bnd $( < $( $el_bnd_g ),* > )? )| * ];
             queue => [$q ; $empty, $pair];
         );
-        define_queue_builder!(
+        $crate::define_queue_builder!(
             lt => [$($g_lt), *];
             generics => [];
             queue => [$q ; $empty, $pair];
@@ -281,29 +260,29 @@ macro_rules! define_queue {
 
     // core
     (
-        queue => [$q:ident, $q_ne:ident ; $empty:ident, $single:ident, $pair:ident];
+        queue => [$q:ident ; $empty:ident, $pair:ident];
         queue_of => $queue_of:ident;
         builder => $builder:ident;
     ) => {
-        define_queue_core!(
+        $crate::define_queue_core!(
             lt => [];
             generics => [];
             elements => [];
             queue => [$q ; $empty, $pair];
         );
-        define_queue_tuple_transformation!(
+        $crate::define_queue_tuple_transformation!(
             lt => [];
             generics => [];
             elements => [];
             queue => [$q ; $empty, $pair];
         );
-        define_queue_of!(
+        $crate::define_queue_of!(
             lt => [];
             generics => [];
             queue => [$q ; $empty, $pair];
             queue_of => $queue_of;
         );
-        define_queue_builder!(
+        $crate::define_queue_builder!(
             lt => [];
             generics => [];
             queue => [$q ; $empty, $pair];
@@ -314,29 +293,29 @@ macro_rules! define_queue {
     // core - elements
     (
         elements => [ $( $el_bnd:ident $( < $( $el_bnd_g:tt ),* > )? )| * ];
-        queue => [$q:ident, $q_ne:ident ; $empty:ident, $single:ident, $pair:ident];
+        queue => [$q:ident ; $empty:ident, $pair:ident];
         queue_of => $queue_of:ident;
         builder => $builder:ident;
     ) => {
-        define_queue_core!(
+        $crate::define_queue_core!(
             lt => [];
             generics => [];
             elements => [ $( $el_bnd $( < $( $el_bnd_g ),* > )? )| * ];
             queue => [$q ; $empty, $pair];
         );
-        define_queue_tuple_transformation!(
+        $crate::define_queue_tuple_transformation!(
             lt => [];
             generics => [];
             elements => [ $( $el_bnd $( < $( $el_bnd_g ),* > )? )| * ];
             queue => [$q ; $empty, $pair];
         );
-        define_queue_of!(
+        $crate::define_queue_of!(
             lt => [];
             generics => [];
             queue => [$q ; $empty, $pair];
             queue_of => $queue_of;
         );
-        define_queue_builder!(
+        $crate::define_queue_builder!(
             lt => [];
             generics => [];
             queue => [$q ; $empty, $pair];
@@ -348,29 +327,29 @@ macro_rules! define_queue {
     (
         lt => [$($g_lt:tt), *];
         elements => [ $( $el_bnd:ident $( < $( $el_bnd_g:tt ),* > )? )| * ];
-        queue => [$q:ident, $q_ne:ident ; $empty:ident, $single:ident, $pair:ident];
+        queue => [$q:ident ; $empty:ident, $pair:ident];
         queue_of => $queue_of:ident;
         builder => $builder:ident;
     ) => {
-        define_queue_core!(
+        $crate::define_queue_core!(
             lt => [$($g_lt), *];
             generics => [];
             elements => [ $( $el_bnd $( < $( $el_bnd_g ),* > )? )| * ];
             queue => [$q ; $empty, $pair];
         );
-        define_queue_tuple_transformation!(
+        $crate::define_queue_tuple_transformation!(
             lt => [$($g_lt), *];
             generics => [];
             elements => [ $( $el_bnd $( < $( $el_bnd_g ),* > )? )| * ];
             queue => [$q ; $empty, $pair];
         );
-        define_queue_of!(
+        $crate::define_queue_of!(
             lt => [$($g_lt), *];
             generics => [];
             queue => [$q ; $empty, $pair];
             queue_of => $queue_of;
         );
-        define_queue_builder!(
+        $crate::define_queue_builder!(
             lt => [$($g_lt), *];
             generics => [];
             queue => [$q ; $empty, $pair];
@@ -381,6 +360,8 @@ macro_rules! define_queue {
 
 // # 1. core
 
+#[doc(hidden)]
+#[macro_export]
 macro_rules! define_queue_core {
     (
         lt => [$($g_lt:tt), *];
@@ -609,6 +590,8 @@ macro_rules! define_queue_core {
 
 // # 2. builder
 
+#[doc(hidden)]
+#[macro_export]
 macro_rules! define_queue_builder {
     (
         lt => [$($g_lt:tt), *];
@@ -677,6 +660,8 @@ macro_rules! define_queue_builder {
 
 // # 3. tuple
 
+#[doc(hidden)]
+#[macro_export]
 macro_rules! define_queue_tuple_transformation {
     (
         lt => [$($g_lt:tt), *];
@@ -1088,6 +1073,8 @@ macro_rules! define_queue_tuple_transformation {
 
 // # 4. queue-of
 
+#[doc(hidden)]
+#[macro_export]
 macro_rules! define_queue_of {
     (
         lt => [$($g_lt:tt), *];
@@ -1375,63 +1362,4 @@ macro_rules! define_queue_of {
             };
         }
     };
-}
-
-#[test]
-fn abc() {
-    use super::*;
-    use crate::*;
-
-    // define_queue_core!(
-    //     lt => [];
-    //     generics => [];
-    //     elements => [];
-    //     queue => [M ; Qe, Q];
-    // );
-    // define_queue_builder!(
-    //     lt => [];
-    //     generics => [];
-    //     queue => [M ; Qe, Q];
-    //     builder => B;
-    // );
-
-    // define_queue_tuple_transformation!(
-    //     lt => [];
-    //     generics => [];
-    //     elements => [];
-    //     queue => [M ; Qe, Q];
-    // );
-
-    // define_queue_of!(
-    //     lt => [];
-    //     generics => [];
-    //     queue => [M ; Qe, Q];
-    //     queue_of => qof;
-    // );
-
-    define_queue!(
-        lt => [];
-        generics => [];
-        elements => [];
-        queue => [M ; Qe, Q];
-        queue_of => qof;
-        builder => B;
-    );
-
-    let q = Qe::new();
-    let q = Qe::new().push(1);
-    let q = Qe::new().push(1).push(true);
-
-    type MyQ = Q<u32, Q<bool, Q<char, Q<&'static str, Qe>>>>;
-    let val = B::<MyQ>::new()
-        .push(3)
-        .push(true)
-        .push('x')
-        .push("foo")
-        .finish();
-
-    let t = val.into_tuple();
-
-    type MyQ2 = qof!(u32, bool, char, &'static str);
-    let q = MyQ2::from(t);
 }
