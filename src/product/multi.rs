@@ -1,4 +1,4 @@
-use crate::product::traits::{Pop, Push};
+use crate::product::{pop::Pop, push::Push};
 
 pub struct Multi<F, M, B>
 where

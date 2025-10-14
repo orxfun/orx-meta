@@ -1,4 +1,4 @@
-use crate::product::{single::Single, traits::Push};
+use crate::product::{push::Push, single::Single};
 
 #[derive(Clone, Copy, PartialEq, Eq, Debug, Default)]
 pub struct Empty;

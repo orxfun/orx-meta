@@ -1,8 +1,4 @@
-use crate::product::{
-    empty::Empty,
-    multi::Multi,
-    traits::{Pop, Push},
-};
+use crate::product::{empty::Empty, multi::Multi, pop::Pop, push::Push};
 
 pub struct Single<T> {
     element: T,
