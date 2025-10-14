@@ -14,3 +14,5 @@
 
 /// Module including macros to create type-safe queues.
 pub mod queue;
+
+pub mod product;
