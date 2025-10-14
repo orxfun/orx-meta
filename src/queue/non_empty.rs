@@ -18,6 +18,10 @@ where
 
     type Back = B;
 
+    fn len(&self) -> usize {
+        1 + self.back.len()
+    }
+
     fn push<T>(self, element: T) -> Self::PushBack<T> {
         Queue::new(self.front, self.back.push(element))
     }
