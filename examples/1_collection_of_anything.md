@@ -159,4 +159,6 @@ You might be thinking:
 * or even better, as a double-ended queue so that we could go in both directions,
 * or we could've just worked on extending capabilities of tuples with macros, which are already meant to represent ad-hoc structs.
 
-However, the main goal of the queue is not re-defining ad-hoc structs but establishing an approach to define adhoc composition. For the prior, please also see the super useful `HList` in the [frunk](https://crates.io/crates/frunk) crate.
+However, the main goal here is establishing an approach to define adhoc composition, rather than re-defining ad-hoc structs. The queue is a choice to achieve this conveniently.
+
+For the latter, please also see the super useful `HList` macro of the [frunk](https://crates.io/crates/frunk#hlist) crate.
