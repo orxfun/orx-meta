@@ -28,6 +28,8 @@ impl QueueMeta for EmptyQueue {
 
     type Front = Self;
 
+    type MostBack = Self;
+
     type Back = Self;
 
     fn len(&self) -> usize {

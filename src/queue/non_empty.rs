@@ -16,6 +16,8 @@ where
 
     type Front = F;
 
+    type MostBack = B::MostBack;
+
     type Back = B;
 
     fn len(&self) -> usize {
@@ -81,6 +83,10 @@ where
 
     pub fn pop(self) -> (F, B) {
         (self.front, self.back)
+    }
+
+    pub fn pop_back(self) {
+        todo!()
     }
 }
 
