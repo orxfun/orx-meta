@@ -1,4 +1,4 @@
-use crate::queue::{EmptyQueue, meta::QueueMeta};
+use crate::queue_arch3::{EmptyQueue, meta::QueueMeta};
 
 pub struct Queue<F, B>
 where

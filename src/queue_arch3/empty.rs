@@ -1,4 +1,4 @@
-use crate::queue::{meta::QueueMeta, non_empty::Queue};
+use crate::queue_arch3::{meta::QueueMeta, non_empty::Queue};
 
 /// An empty queue.
 ///
