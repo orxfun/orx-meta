@@ -12,7 +12,5 @@
 )]
 #![cfg_attr(not(test), no_std)]
 
-/// Module including macros to create type-safe queues.
-pub mod queue;
-
+/// Ad-hoc product (and) types.
 pub mod product;
