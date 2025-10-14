@@ -1,4 +1,4 @@
-use crate::product::{pop::Pop, push::Push};
+use crate::product::{empty::Empty, pop::Pop, push::Push, single::Single};
 
 pub struct Multi<F, M, B>
 where
@@ -89,8 +89,58 @@ where
     fn front_mut(&mut self) -> &mut F {
         &mut self.front
     }
+}
 
-    pub fn middle_mut(&mut self) -> &mut M {
-        &mut self.middle
+impl<F, B> Multi<F, Empty, B> {
+    pub fn into_tuple(self) -> (F, B) {
+        (self.front, self.back)
+    }
+
+    pub fn as_tuple(&self) -> (&F, &B) {
+        (&self.front, &self.back)
+    }
+}
+
+impl<F, B, X3> Multi<F, Single<X3>, B> {
+    pub fn into_tuple(self) -> (F, X3, B) {
+        (self.front, self.middle.pop_back().0, self.back)
+    }
+
+    pub fn as_tuple(&self) -> (&F, &X3, &B) {
+        (&self.front, self.middle.front(), &self.back)
+    }
+}
+
+impl<F, B, X3, X4> Multi<F, Multi<X3, Empty, X4>, B> {
+    pub fn into_tuple(self) -> (F, X3, X4, B) {
+        let (x3, x4) = self.middle.pop_front();
+        let x4 = x4.pop_back().0;
+        (self.front, x3, x4, self.back)
+    }
+
+    pub fn as_tuple(&self) -> (&F, &X3, &X4, &B) {
+        (
+            &self.front,
+            self.middle.front(),
+            self.middle.back(),
+            &self.back,
+        )
+    }
+}
+
+impl<F, B, X3, X4, X5> Multi<F, Multi<X3, Single<X5>, X4>, B> {
+    pub fn into_tuple(self) -> (F, X3, X4, B) {
+        let (x3, x4) = self.middle.pop_front();
+        let x4 = x4.pop_back().0;
+        (self.front, x3, x4, self.back)
+    }
+
+    pub fn as_tuple(&self) -> (&F, &X3, &X4, &B) {
+        (
+            &self.front,
+            self.middle.front(),
+            self.middle.back(),
+            &self.back,
+        )
     }
 }

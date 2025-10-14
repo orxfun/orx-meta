@@ -1,4 +1,4 @@
-use crate::queue_arch3::{EmptyQueue, Queue};
+use crate::queue::{EmptyQueue, Queue};
 
 #[macro_export]
 macro_rules! queue_of {

@@ -11,21 +11,21 @@ impl<T> Single<T> {
 
     // ref
 
-    fn back(&self) -> &T {
+    pub fn back(&self) -> &T {
         &self.element
     }
 
-    fn front(&self) -> &T {
+    pub fn front(&self) -> &T {
         &self.element
     }
 
     // mut
 
-    fn back_mut(&mut self) -> &mut T {
+    pub fn back_mut(&mut self) -> &mut T {
         &mut self.element
     }
 
-    fn front_mut(&mut self) -> &mut T {
+    pub fn front_mut(&mut self) -> &mut T {
         &mut self.element
     }
 }

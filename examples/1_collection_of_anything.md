@@ -4,7 +4,7 @@
 
 How do we have a collection of arbitrary types in rust?
 
-> *And why would we ever want that? We park this question for a while. Hopefully, things will get more useful as we move forward.*
+> *And why would we ever want that? We park this question for a while. Hopefully, things will get more useful as we proceed.*
 
 Can we have a collection of anything?
 
@@ -24,9 +24,7 @@ any_vec.push(Box::new("foo"));
 
 Our vector contains four elements of types `i32`, `bool`, `char` and `&str`.
 
-We cannot anything do with elements of `Vec<Box<dyn Any>>` without dynamic casting.
-
-This is because `Any` does not have any abilities :)
+We cannot do much with elements of `Vec<Box<dyn Any>>` because `Any` does not have any abilities :)
 
 In the following, `element` can be anything. All we know is its type id. This might allow us to make it useful, but only with advanced dynamic techniques.
 
@@ -57,7 +55,7 @@ Now, this is quite different from the `any_vec`.
 
 It is statically typed in the sense that you may observe the types of its elements from its signature. The type of the `queue` is `Queue<i32, Queue<bool, Queue<char, Queue<&'static str, EmptyQueue>>>>`.
 
-You may keep pushing elements to the queue. Unlike the push to a vec requiring `&mut self`, `push` to the queues require `self`. This is nice in the sense that the method is pure, and it allow chaining push calls. But this is actually due to the fact that every time we push to the queue, its type changes. The following break down of the calls reveals the changes in the type.
+You may keep pushing elements to the queue. Unlike pushing to a vec that requires `&mut self`, pushing to the queue require `self`. This is nice, the function is pure and the signature allows chaining push calls. But also this is the only way because every time we push to the queue, its type changes. The following break down of the calls reveals the changes in the type.
 
 ```rust
 use orx_meta::queue::*;
@@ -72,11 +70,11 @@ let queue: Queue<i32, Queue<bool, Queue<char, Queue<&'static str, EmptyQueue>>>>
 
 > Notice the recursive type definition where empty queue is used as the stopping condition.
 
-Since we know the types of its elements, we can use them normally. For this, we need to define two parts of the queue:
-* `front`: this is the element in the front of the queue, that we would get if we popped.
+Since we know the types of its elements, we can use them with their natural properties. First, we need to represent the queue with two components:
+* `front`: this is the element in the front of the queue, the item to be popped.
 * `back`: this is the queue containing all elements except for the one in the front.
 
-You may then access to the third element of the queue with `queue.back().back().front()`.
+You may then access the third element of the queue with `queue.back().back().front()`.
 
 ```rust
 use orx_meta::queue::*;
@@ -122,7 +120,7 @@ To recap the queue:
 * it can hold elements of arbitrary types,
 * its type signature defines the types of all of its elements.
 
-This is nothing but an ad-hoc `struct`.
+This is nothing but a `struct`.
 
 Under the hood, `MyStruct` and `MyQueue` are equivalent. And `push` calls are equivalent to setting the fields of a struct.
 
@@ -153,3 +151,12 @@ let b: B = Queue::new(42).push(true).push('x').push("foo");
 let b: B = a.push("foo"); // B from A
 ```
 
+So far, this has been fun with types!
+
+You might be thinking:
+
+* we could've represented ad-hoc structs as a stack, rather than a queue so that we could go to `A from B`,
+* or even better, as a double-ended queue so that we could go in both directions,
+* or we could've just worked on extending capabilities of tuples with macros, which are already meant to represent ad-hoc structs.
+
+However, the main goal of the queue is not re-defining ad-hoc structs but establishing an approach to define adhoc composition. For the prior, please also see the super useful `HList` in the [frunk](https://crates.io/crates/frunk) crate.

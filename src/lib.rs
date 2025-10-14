@@ -14,3 +14,5 @@
 
 /// Ad-hoc product (and) types.
 pub mod product;
+
+pub mod queue;
