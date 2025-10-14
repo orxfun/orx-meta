@@ -35,7 +35,7 @@ impl QueueMeta for EmptyQueue {
     }
 
     fn push<T>(self, element: T) -> Self::PushBack<T> {
-        Queue::single(element)
+        Queue::new(element)
     }
 }
 

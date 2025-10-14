@@ -10,7 +10,7 @@
 //!
 //! Although the usage looks dynamic, the queue is strongly-typed.
 
-use orx_meta::queue::*;
+use orx_meta::queue::{EmptyQueue, Queue, QueueMeta};
 use orx_meta::queue_of;
 
 fn main() {
@@ -21,7 +21,8 @@ fn main() {
     assert!(queue.is_empty());
 
     // queue with a single element of i32
-    let queue = EmptyQueue::new().push(42);
+    let queue = EmptyQueue::new().push(42); // or
+    let queue = Queue::new(42);
     assert_eq!(queue.len(), 1);
     assert_eq!(queue.front(), &42);
 

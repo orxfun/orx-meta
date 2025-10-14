@@ -23,12 +23,12 @@ where
     }
 
     fn push<T>(self, element: T) -> Self::PushBack<T> {
-        Queue::new(self.front, self.back.push(element))
+        Queue::from((self.front, self.back.push(element)))
     }
 }
 
 impl<F> Queue<F, EmptyQueue> {
-    pub fn single(front: F) -> Self {
+    pub fn new(front: F) -> Self {
         Self {
             front,
             back: EmptyQueue,
@@ -36,14 +36,19 @@ impl<F> Queue<F, EmptyQueue> {
     }
 }
 
+impl<F, B> From<(F, B)> for Queue<F, B>
+where
+    B: QueueMeta,
+{
+    fn from((front, back): (F, B)) -> Self {
+        Self { front, back }
+    }
+}
+
 impl<F, B> Queue<F, B>
 where
     B: QueueMeta,
 {
-    fn new(front: F, back: B) -> Self {
-        Self { front, back }
-    }
-
     // ref
 
     pub fn front(&self) -> &F {
@@ -82,7 +87,6 @@ where
 // tuple
 
 type S<F> = Queue<F, EmptyQueue>;
-type P<F, B> = Queue<F, B>;
 
 impl<X1> S<X1> {
     pub fn into_tuple(self) -> X1 {
