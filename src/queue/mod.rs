@@ -1,4 +1,5 @@
 mod builder;
+mod define_queue;
 mod empty;
 mod meta;
 mod non_empty;
