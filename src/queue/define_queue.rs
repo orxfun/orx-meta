@@ -56,7 +56,7 @@ macro_rules! define_queue_core {
             }
         }
 
-        // empty
+        // # empty
 
         #[derive(Clone, Copy, PartialEq, Eq)]
         pub struct $empty<$($g_lt ,)* $($g ,)*>
@@ -118,7 +118,7 @@ macro_rules! define_queue_core {
             }
         }
 
-        // pair
+        // # pair
 
         #[derive(Clone, Copy, PartialEq, Eq)]
         pub struct $pair<$($g_lt ,)* $($g ,)* Front, Back>
@@ -144,6 +144,48 @@ macro_rules! define_queue_core {
                     f,
                     b,
                 }
+            }
+
+            // into
+
+            pub fn into_front(self) -> F {
+                self.f
+            }
+
+            pub fn into_back(self) -> B {
+                self.b
+            }
+
+            pub fn pop(self) -> (F, B) {
+                (self.f, self.b)
+            }
+
+            // ref
+
+            pub fn front(&self) -> &F {
+                &self.f
+            }
+
+            pub fn back(&self) -> &B {
+                &self.b
+            }
+
+            pub fn front_back(&self) -> (&F, &B) {
+                (&self.f, &self.b)
+            }
+
+            // mut
+
+            pub fn front_mut(&mut self) -> &mut F {
+                &mut self.f
+            }
+
+            pub fn back_mut(&mut self) -> &mut B {
+                &mut self.b
+            }
+
+            pub fn front_back_mut(&mut self) -> (&mut F, &mut B) {
+                (&mut self.f, &mut self.b)
             }
         }
 
