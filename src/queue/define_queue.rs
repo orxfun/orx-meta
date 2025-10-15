@@ -809,14 +809,60 @@ macro_rules! define_queue_core {
 
             // into
 
+            /// Consumes the queue and returns its front element.
+            ///
+            /// Equivalent to `queue.pop().0`.
             pub fn into_front(self) -> F {
                 self.f
             }
 
+            /// Consumes the queue and returns the queue including elements of this queue
+            /// except for the element in the front.
+            ///
+            /// Equivalent to `queue.pop().1`.
             pub fn into_back(self) -> B {
                 self.b
             }
 
+            /// Consumes the queue and returns the tuple of its front and back:
+            ///
+            /// * **front** is the element in the front of this queue.
+            /// * **back** is the queue including all elements of this queue except
+            ///   for the front element. In other words, it is the queue obtained by
+            ///   popping the front element. Note that back might be an empty queue.
+            ///
+            /// # Examples
+            ///
+            /// ```
+            /// use orx_meta::queue::*;
+            ///
+            /// let queue = Queue::new(42);
+            /// let (num, queue) = queue.pop();
+            /// assert_eq!(num, 42);
+            /// assert_eq!(queue, EmptyQueue::new());
+            ///
+            /// let queue = Queue::new(42).push(true).push('x').push("foo");
+            /// assert_eq!(queue.front(), &42);
+            ///
+            /// let (num, queue) = queue.pop();
+            /// assert_eq!(num, 42);
+            /// assert_eq!(queue, Queue::new(true).push('x').push("foo"));
+            ///
+            /// let (flag, queue) = queue.pop();
+            /// assert_eq!(flag, true);
+            /// assert_eq!(queue, Queue::new('x').push("foo"));
+            ///
+            /// let (c, queue) = queue.pop();
+            /// assert_eq!(c, 'x');
+            /// assert_eq!(queue, Queue::new("foo"));
+            ///
+            /// let (s, queue) = queue.pop();
+            /// assert_eq!(s, "foo");
+            /// assert_eq!(queue, EmptyQueue::new());
+            ///
+            /// // does not compile, EmptyQueue::pop does not exist ;)
+            /// // let (?, queue) = queue.pop();
+            /// ```
             pub fn pop(self) -> (F, B) {
                 (self.f, self.b)
             }
