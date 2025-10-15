@@ -1,3 +1,5 @@
+//! you may find the article [here](https://github.com/orxfun/orx-meta/blob/main/docs/1_collection_of_anything.md)
+
 #[allow(unused_variables, dead_code)]
 fn main() {
     // # Dynamic collection of Anything

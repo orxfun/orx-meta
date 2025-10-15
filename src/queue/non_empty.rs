@@ -16,8 +16,6 @@ where
 
     type Front = F;
 
-    type MostBack = B::MostBack;
-
     type Back = B;
 
     fn len(&self) -> usize {

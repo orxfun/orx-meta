@@ -9,8 +9,6 @@ pub trait QueueMeta {
 
     type Front;
 
-    type MostBack;
-
     type Back: QueueMeta;
 
     fn len(&self) -> usize;
