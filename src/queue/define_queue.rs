@@ -17,7 +17,7 @@
 /// It is not possible to day to represent this within the type system. Please see the discussion
 /// [here](https://github.com/orxfun/orx-meta/blob/main/docs/3_composition_idea.md).
 ///
-/// In order to achieve this without any boilerplate, [`define_queue`] macro can be used.
+/// In order to achieve this without any boilerplate, `define_queue` macro can be used.
 /// See the corresponding [documentation](https://github.com/orxfun/orx-meta/blob/main/docs/5_solution_with_macros.md)
 /// and corresponding [example](https://github.com/orxfun/orx-meta/blob/main/examples/5_solution_with_macros.rs).
 ///
