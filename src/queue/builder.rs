@@ -1,10 +1,10 @@
-use crate::queue::{EmptyQueue, meta::QueueMeta};
+use crate::queue::{EmptyQueue, meta::StQueue};
 use core::marker::PhantomData;
 
 pub struct QueueBuilder<Remaining, Current = EmptyQueue>
 where
-    Remaining: QueueMeta,
-    Current: QueueMeta,
+    Remaining: StQueue,
+    Current: StQueue,
 {
     current: Current,
     remaining: PhantomData<Remaining>,
@@ -12,7 +12,7 @@ where
 
 impl<Remaining> QueueBuilder<Remaining, EmptyQueue>
 where
-    Remaining: QueueMeta,
+    Remaining: StQueue,
 {
     pub fn new() -> Self {
         Self {
@@ -24,7 +24,7 @@ where
 
 impl<Remaining> Default for QueueBuilder<Remaining, EmptyQueue>
 where
-    Remaining: QueueMeta,
+    Remaining: StQueue,
 {
     fn default() -> Self {
         Self::new()
@@ -33,8 +33,8 @@ where
 
 impl<Remaining, Current> QueueBuilder<Remaining, Current>
 where
-    Remaining: QueueMeta,
-    Current: QueueMeta,
+    Remaining: StQueue,
+    Current: StQueue,
 {
     pub fn push(
         self,
@@ -48,7 +48,7 @@ where
 
     pub fn finish(self) -> Current
     where
-        Remaining: QueueMeta<Back = Remaining>,
+        Remaining: StQueue<Back = Remaining>,
     {
         self.current
     }

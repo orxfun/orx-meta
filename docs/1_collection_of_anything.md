@@ -37,7 +37,7 @@ println!("{:?}", element.type_id());
 
 The `queue` module of the [orx_meta](https://github.com/orxfun/orx-meta/) crate defines three types:
 
-* [`QueueMeta`](https://docs.rs/orx-meta/latest/orx_meta/queue/trait.QueueMeta.html) trait defines meta information and push operation of queues.
+* [`StQueue`](https://docs.rs/orx-meta/latest/orx_meta/queue/trait.StQueue.html) trait defines meta information and push operation of queues.
 * [`EmptyQueue`](https://docs.rs/orx-meta/latest/orx_meta/queue/struct.EmptyQueue.html) is the first queue implementation and its self-explanatory.
 * [`Queue`](https://docs.rs/orx-meta/latest/orx_meta/queue/struct.Queue.html), on the other hand, is a non-empty queue.
 
@@ -144,7 +144,7 @@ Now consider, a type `A` with three fields `i32, bool, char`; and another type `
 use orx_meta::queue::*;
 
 type A = Queue<i32, Queue<bool, Queue<char, EmptyQueue>>>;
-type B = <A as QueueMeta>::PushBack<&'static str>;
+type B = <A as StQueue>::PushBack<&'static str>;
 
 let a: A = Queue::new(42).push(true).push('x');
 let b: B = Queue::new(42).push(true).push('x').push("foo");

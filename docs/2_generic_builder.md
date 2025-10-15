@@ -1,5 +1,7 @@
 # Generic Builder
 
+> *you may find the example code [here](https://github.com/orxfun/orx-meta/blob/main/examples/2_generic_builder.rs)*
+
 ## Type Alias Helper
 
 Before moving on, we will introduce a helper macro to define queue types.

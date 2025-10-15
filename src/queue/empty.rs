@@ -1,4 +1,4 @@
-use crate::queue::{meta::QueueMeta, non_empty::Queue};
+use crate::queue::{meta::StQueue, non_empty::Queue};
 
 /// An empty queue.
 ///
@@ -23,7 +23,7 @@ use crate::queue::{meta::QueueMeta, non_empty::Queue};
 #[derive(Clone, Copy, PartialEq, Eq, Debug, Default)]
 pub struct EmptyQueue;
 
-impl QueueMeta for EmptyQueue {
+impl StQueue for EmptyQueue {
     type PushBack<T> = Queue<T, EmptyQueue>;
 
     type Front = Self;

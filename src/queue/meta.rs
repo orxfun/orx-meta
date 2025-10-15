@@ -4,12 +4,12 @@
 /// * `EmptyQueue`
 /// * `Queue<F, B>`: a non-empty queue where the front element is of type `F`
 ///   and the remaining elements is a queue of type `B`.
-pub trait QueueMeta {
-    type PushBack<T>: QueueMeta;
+pub trait StQueue {
+    type PushBack<T>: StQueue;
 
     type Front;
 
-    type Back: QueueMeta;
+    type Back: StQueue;
 
     fn len(&self) -> usize;
 

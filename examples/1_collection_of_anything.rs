@@ -69,7 +69,7 @@ fn main() {
     let my_queue = Queue::new(42).push(true).push('x').push("foo");
 
     type A = Queue<i32, Queue<bool, Queue<char, EmptyQueue>>>;
-    type B = <A as QueueMeta>::PushBack<&'static str>;
+    type B = <A as StQueue>::PushBack<&'static str>;
 
     let a: A = Queue::new(42).push(true).push('x');
     let b: B = Queue::new(42).push(true).push('x').push("foo");
