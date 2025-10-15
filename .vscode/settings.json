@@ -3,6 +3,7 @@
     "gitlens.codeLens.authors.enabled": false,
     "gitlens.codeLens.recentChange.enabled": false,
     "cSpell.words": [
-        "frunk"
+        "frunk",
+        "sbox"
     ]
 }

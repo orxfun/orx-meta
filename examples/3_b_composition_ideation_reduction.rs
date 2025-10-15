@@ -1,5 +1,3 @@
-use orx_meta::define_queue;
-
 pub trait Sum {
     fn sum(self) -> i64;
 }
@@ -22,7 +20,7 @@ impl Sum for i64 {
     }
 }
 
-define_queue!(
+orx_meta::define_queue!(
     elements => [ Sum ];
     queue => [ StQueue ; EmptyQueue, Queue ];
 );

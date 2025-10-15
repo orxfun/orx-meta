@@ -3,10 +3,11 @@ name = "orx-meta"
 version = "1.0.0"
 edition = "2024"
 authors = ["orxfun <orx.ugur.arikan@gmail.com>"]
-description = "Meta-programming utilities and data structures such as MetaQueue."
+readme = "README.md"
+description = "Meta structures such as statically typed queues of heterogeneous elements."
 license = "MIT OR Apache-2.0"
 repository = "https://github.com/orxfun/orx-meta/"
-keywords = ["queue", "meta", "metaprogramming", "type", "recursive"]
+keywords = ["queue", "meta", "polymorphism", "type", "recursive"]
 categories = ["data-structures", "rust-patterns", "no-std"]
 
 [dependencies]
