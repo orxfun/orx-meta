@@ -1869,6 +1869,45 @@ macro_rules! define_queue_of {
         queue => [$q:ident ; $empty:ident, $pair:ident];
         queue_of => $queue_of:ident;
     ) => {
+        /// Note that any statically-typed queue of heterogeneous elements can be represented with two [`StQueue`] implementations:
+        ///
+        /// * [`EmptyQueue`], and
+        /// * a non-empty [`Queue`].
+        ///
+        /// This is possible thanks to generic associated types and recursive type definition of the `Queue`.
+        ///
+        /// On the other hand, it might make it difficult to hand-write the specific queue types.
+        ///
+        /// Consider for instance the type of a queue containing four elements of types `i32`, `bool`, `char` and `String`.
+        ///
+        /// The type of this queue would be:
+        ///
+        /// ```
+        /// use orx_meta::queue::*;
+        ///
+        /// type MyQueue = Queue<i32, Queue<bool, Queue<char, Queue<String, EmptyQueue>>>>;
+        ///
+        /// let instance: MyQueue = Queue::new(42).push(true).push('x').push("foo".to_string());
+        /// assert_eq!(instance.as_tuple(), (&42, &true, &'x', &"foo".to_string()));
+        /// ```
+        ///
+        /// Notice that the nested type definition can get complicated as our queue contains more and more fields.
+        ///
+        /// `queue_of` macro is a helper macro to make such type aliasing convenient as follows:
+        ///
+        /// ```
+        /// use orx_meta::queue::*;
+        /// use orx_meta::queue_of;
+        ///
+        /// type MyQueue = queue_of!(i32, bool, char, String);
+        ///
+        /// let instance: MyQueue = Queue::new(42).push(true).push('x').push("foo".to_string());
+        /// assert_eq!(instance.as_tuple(), (&42, &true, &'x', &"foo".to_string()));
+        /// ```
+        ///
+        /// [`StQueue`]: crate::queue::StQueue
+        /// [`EmptyQueue`]: crate::queue::EmptyQueue
+        /// [`Queue`]: crate::queue::Queue
         macro_rules! $queue_of {
             () => {
                 $empty<$($g_lt ,)* $($g ,)*>
