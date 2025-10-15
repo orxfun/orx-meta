@@ -1,3 +1,143 @@
+/// The [orx_meta](https://crates.io/crates/orx-meta) crate defines the types for statically typed queues with
+/// heterogeneous elements, such as:
+/// * [`StQueue`] trait and its two implementations [`EmptyQueue`] and [`Queue`].
+/// * [`QueueBuilder`] as a generic builder for any queue, tuple or struct.
+/// * [`queue_of`] macro as a helper for creating aliases for complex queue types.
+///
+/// [`StQueue`]: crate::queue::StQueue
+/// [`EmptyQueue`]: crate::queue::EmptyQueue
+/// [`Queue`]: crate::queue::Queue
+/// [`QueueBuilder`]: crate::queue::QueueBuilder
+/// [`queue_of`]: crate::queue_of
+///
+/// However, the queues are particularly useful when they are used to define compositions of heterogeneous types
+/// that exhibit a common behavior; i.e., when all heterogeneous elements in the queue implement a common set of
+/// traits.
+///
+/// It is not possible to day to represent this within the type system. Please see the discussion
+/// [here](https://github.com/orxfun/orx-meta/blob/main/docs/3_composition_idea.md).
+///
+/// In order to achieve this without any boilerplate, [`define_queue`] macro can be used.
+/// See the corresponding [documentation](https://github.com/orxfun/orx-meta/blob/main/docs/5_solution_with_macros.md)
+/// and corresponding [example](https://github.com/orxfun/orx-meta/blob/main/examples/5_solution_with_macros.rs).
+///
+/// # Examples
+///
+/// ## Re-creating the entire queue module of the **orx_meta** crate.
+///
+/// You may recreate everything defined in the queue module of this crate with the following macro call.
+///
+/// ```
+/// orx_meta::define_queue!(
+///     queue => [ StQueue ; EmptyQueue, Queue ];
+///     queue_of => queue_of;
+///     builder => QueueBuilder;
+/// );
+/// ```
+///
+/// * **queue block**
+///
+/// This is where we give names to the trait, empty queue struct and non-empty queue struct.
+/// Above example uses the same names with the crate, but they can be anything.
+/// The following is also be a valid block:
+///
+/// ```rust ignore
+/// queue => [ Queue ; EmptyQueue, NonEmptyQueue ];
+/// ```
+///
+/// * **queue_of block**
+///
+/// Here we simply define the name of the [`queue_of`] macro. The following would also work.
+///
+/// ```rust ignore
+/// queue_of => qof;
+/// ```
+///
+/// * **builder block**
+///
+/// And similarly, we give a name to our queue builder; again any name would work.
+///
+/// ```rust ignore
+/// builder => MyBuilder;
+/// ```
+///
+/// Note that the `queue_of` and `builder` blocks are optional.
+/// If we do not need either of them, we can simply omit the block.
+/// The following would give us the most minimalistic implementation of the queue.
+///
+/// ```rust
+/// orx_meta::define_queue!(
+///     queue => [ StQueue ; EmptyQueue, Queue ];
+/// );
+/// ```
+///
+/// But of course, it would not make sense to re-create the module that already exists.
+/// The actual use case of this macro is explained in the following section.
+///
+/// ## Creating custom own queue module where elements share a common behavior
+///
+/// Consider the example define [here](https://github.com/orxfun/orx-meta/blob/main/docs/3_composition_idea.md).
+///
+/// We want a statically typed queue of heterogeneous elements all of which implement the `Draw` trait.
+///
+/// In this case, we can use the additional **elements** block where we define a comma-separated list of traits.
+///
+/// ```rust ignore
+/// elements => [Draw];
+/// ```
+///
+/// This ensures that we can only push elements of types implementing these traits to the queue.
+/// Further, our two queue implementations must implement these traits representing the identity and composition
+/// behavior.
+///
+/// The entire implementation of the queues, type helper macro and the builder specific to to the `Draw` behavior
+/// can be conveniently generated with the `define_queue` macro as follows:
+///
+/// ```
+/// pub trait Draw {
+///     fn draw(&self);
+/// }
+///
+/// pub struct Button;
+/// impl Draw for Button {
+///     fn draw(&self) {
+///         println!("Button")
+///     }
+/// }
+///
+/// pub struct SelectBox;
+/// impl Draw for SelectBox {
+///     fn draw(&self) {
+///         println!("SelectBox")
+///     }
+/// }
+///
+/// orx_meta::define_queue!(
+///     elements => [Draw];
+///     queue => [ StDrawQueue ; EmptyDrawQueue, DrawQueue ];
+///     queue_of => queue_of;
+///     builder => DrawQueueBuilder;
+/// );
+/// impl Draw for EmptyDrawQueue {
+///     // identity behavior: do nothing
+///     fn draw(&self) {}
+/// }
+/// impl<F: Draw, B: StDrawQueue> Draw for DrawQueue<F, B> {
+///     // composition behavior: draw them both
+///     fn draw(&self) {
+///         self.f.draw();
+///         self.b.draw();
+///     }
+/// }
+///
+/// let screen = EmptyDrawQueue::new()
+///     .push(Button)
+///     .push(Button)
+///     .push(SelectBox)
+///     .push(Button)
+///     .push(SelectBox);
+/// screen.draw(); // draw all components
+/// ```
 #[macro_export]
 macro_rules! define_queue {
     (
