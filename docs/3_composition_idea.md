@@ -1,4 +1,4 @@
-# Recap for Composition
+# Composition Idea
 
 > *you may find the example code [here](https://github.com/orxfun/orx-meta/blob/main/examples/3_composition_idea.rs)*
 

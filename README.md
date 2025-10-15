@@ -4,6 +4,14 @@ This crate defines meta structures that are useful in different situations.
 
 ## queue module
 
+For detailed documentation, please see the sections:
+1. [Collection of Anything](https://github.com/orxfun/orx-meta/blob/main/docs/1_collection_of_anything.md)
+2. [Generic Builder](https://github.com/orxfun/orx-meta/blob/main/docs/2_generic_builder.md)
+3. [Composition Idea](https://github.com/orxfun/orx-meta/blob/main/docs/3_composition_idea.md)
+4. [Problem with Type System](https://github.com/orxfun/orx-meta/blob/main/docs/4_problem_with_type_system.md)
+5. [Solution with Macros](https://github.com/orxfun/orx-meta/blob/main/docs/5_solution_with_macros.md)
+6. [Summary](https://github.com/orxfun/orx-meta/blob/main/docs/6_Summary.md)
+
 The queue module defines a statically typed queue of heterogeneous elements. Further, it provides a macro to define these queue types which are bounded by a specific set of traits; i.e., common behavior of the elements.
 
 These definitions are a bit confusing, it is better to see what we can achieve with some examples.
