@@ -12,11 +12,5 @@
 )]
 #![cfg_attr(not(test), no_std)]
 
-/// Module including macros to create type-safe queues.
-pub mod queue_arch;
-
-/// Module including macros to create type-safe queues.
+/// Module defining statically typed queue of heterogeneous elements.
 pub mod queue;
-
-mod trythis;
-mod trythis_manual;

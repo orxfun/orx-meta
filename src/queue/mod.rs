@@ -1,11 +1,11 @@
-#[cfg(test)]
-mod tests;
-
 mod builder;
-mod combined;
-mod core;
-mod plain_queue;
+mod define_queue;
+mod empty;
+mod st_queue;
+mod non_empty;
 mod queue_of;
-mod tuple;
 
-pub use plain_queue::{Empty, Multi, NonEmptyQueue, Queue, QueueBuilder, Single};
+pub use builder::QueueBuilder;
+pub use empty::EmptyQueue;
+pub use st_queue::StQueue;
+pub use non_empty::Queue;
