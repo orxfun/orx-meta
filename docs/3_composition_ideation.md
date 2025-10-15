@@ -158,6 +158,10 @@ Pretty dynamic look and feel!
 
 But strongly typed.
 
+No box and no virtual function calls, whenever it matters.
+
 > Recall the interpretation of the queue as an ad-hoc struct. The `screen` above is as if we'd hand-written a particular screen struct with two button fields and one select box field.
 
-No box and no virtual function calls, whenever it matters.
+This is a very strong pattern.
+
+But there is a problem. You might've noticed that we do not import the queues from the **orx_meta** crate in the [example file]((https://github.com/orxfun/orx-meta/blob/main/examples/3_composition_ideation.rs)). Instead, we re-implemented them. The problem is described in the next section, and then comes the solution.
