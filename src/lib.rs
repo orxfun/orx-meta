@@ -12,8 +12,5 @@
 )]
 #![cfg_attr(not(test), no_std)]
 
-/// Ad-hoc product (and) types.
-pub mod product;
-
 /// Module defining statically typed queue of heterogeneous elements.
 pub mod queue;
