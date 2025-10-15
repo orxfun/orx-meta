@@ -1,3 +1,5 @@
+#![allow(dead_code)]
+
 pub trait Draw {
     fn draw(&self);
 }
