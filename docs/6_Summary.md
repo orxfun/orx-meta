@@ -15,7 +15,7 @@ Having a queue of statically-typed heterogeneous elements has some advantages:
 
 These are available by the types defined in the queue module (`orx_meta::queue::*`).
 
-On the other hand, having a queue of statically-typed heterogeneous elements having a shared behavior is particularly strong.
+On the other hand, having a queue of statically-typed heterogeneous elements having a shared behavior is particularly strong. We can use [`orx_meta::define_queue`](https://docs.rs/orx-meta/latest/orx_meta/macro.define_queue.html) macro to achieve this without boilerplate.
 
 * We define the identity behavior (what is the common behavior in the absence of any element) and the composition (what is the common behavior when we have at least two elements).
 * Then the queue allows us to exhibit a common behavior on a collection of heterogeneous elements.
