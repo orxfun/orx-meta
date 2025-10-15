@@ -15,7 +15,11 @@ trait StQueue: Draw {
 
     type Back: StQueue;
 
-    fn len(&self) -> usize;
+    const LEN: usize;
+
+    fn len(&self) -> usize {
+        Self::LEN
+    }
 
     fn is_empty(&self) -> bool {
         self.len() == 0
@@ -40,9 +44,7 @@ impl StQueue for EmptyQueue {
 
     type Back = Self;
 
-    fn len(&self) -> usize {
-        0
-    }
+    const LEN: usize = 0;
 
     fn push<T>(self, element: T) -> Self::PushBack<T>
     where
@@ -88,9 +90,7 @@ where
 
     type Back = B;
 
-    fn len(&self) -> usize {
-        1 + self.back.len()
-    }
+    const LEN: usize = 1 + B::LEN;
 
     fn push<T>(self, element: T) -> Self::PushBack<T>
     where
