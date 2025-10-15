@@ -11,7 +11,11 @@ pub trait StQueue {
 
     type Back: StQueue;
 
-    fn len(&self) -> usize;
+    const LEN: usize;
+
+    fn len(&self) -> usize {
+        Self::LEN
+    }
 
     fn is_empty(&self) -> bool {
         self.len() == 0

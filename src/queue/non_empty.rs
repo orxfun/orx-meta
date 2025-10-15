@@ -1,4 +1,4 @@
-use crate::queue::{EmptyQueue, meta::StQueue};
+use crate::queue::{EmptyQueue, st_queue::StQueue};
 
 pub struct Queue<F, B>
 where
@@ -18,9 +18,7 @@ where
 
     type Back = B;
 
-    fn len(&self) -> usize {
-        1 + self.back.len()
-    }
+    const LEN: usize = 1 + B::LEN;
 
     fn push<T>(self, element: T) -> Self::PushBack<T> {
         Queue::from((self.front, self.back.push(element)))

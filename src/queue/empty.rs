@@ -1,4 +1,4 @@
-use crate::queue::{meta::StQueue, non_empty::Queue};
+use crate::queue::{non_empty::Queue, st_queue::StQueue};
 
 /// An empty queue.
 ///
@@ -30,9 +30,7 @@ impl StQueue for EmptyQueue {
 
     type Back = Self;
 
-    fn len(&self) -> usize {
-        0
-    }
+    const LEN: usize = 0;
 
     fn push<T>(self, element: T) -> Self::PushBack<T> {
         Queue::new(element)
