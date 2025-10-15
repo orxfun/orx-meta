@@ -174,6 +174,8 @@ impl<Q: StQueue> Screen<Q> {
     }
 }
 
+// hand written
+
 pub struct X1;
 impl Draw for X1 {
     fn draw(&self) {}
@@ -192,7 +194,8 @@ impl Draw for X4 {
 }
 
 impl Queue<X1, Queue<X2, Queue<X3, Queue<X4, EmptyQueue>>>> {
-    fn draw(&self) {
+    // this is identical to Queue::draw
+    fn draw_hand_written(&self) {
         self.front.draw(); // X1
         self.back.front.draw(); // X2
         self.back.back.front.draw(); // X3

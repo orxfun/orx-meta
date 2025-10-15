@@ -113,6 +113,49 @@ impl Queue<X1, Queue<X2, Queue<X3, Queue<X4, EmptyQueue>>>> {
 
 All calls are transparent to the compiler and luckily we do not need to write this:)
 
+## Defining Identity and Composition for Another Example
+
+Notice that composition for `draw` is just sequentially calling them on elements. To demonstrate the flexibility of the approach, it is helpful to look at another [example](https://github.com/orxfun/orx-meta/blob/main/examples/3_composition_ideation.rs). Let's say we have the following sum trait:
+
+```rust
+pub trait Sum {
+    fn sum(self) -> i64;
+}
+```
+
+Various types of numbers that can be turned into `i64` can implement this, since sum of a single number is itself. Then, we can implement the trait for empty and non-empty queues as follows:
+
+```rust
+impl Sum for EmptyQueue {
+    fn sum(self) -> i64 {
+        0 // identity
+    }
+}
+
+impl<F: Sum, B: StQueue> Sum for Queue<F, B> {
+    fn sum(self) -> i64 {
+        self.f.sum() + self.b.sum() // composition: +
+    }
+}
+```
+
+This would allow to write the following code:
+
+```rust
+let queue = EmptyQueue::new()
+    .push(1i16)
+    .push(2i32)
+    .push(3i32)
+    .push(4i64)
+    .push(5i32)
+    .push(6i64)
+    .push(7i16);
+let sum = queue.sum();
+assert_eq!(sum, 28);
+```
+
+where the `queue.sum()` call can be inlined as `1 + 2 + 3 + 4 + 5 + 6 + 7`.
+
 ## Defining Screen as a Statically Typed Queue
 
 It didn't take much to set up the `Draw` implementations of the queues, and now we are ready to define our screen as a statically typed queue.
