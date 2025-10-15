@@ -1,6 +1,6 @@
 # Recap for Composition
 
-> *you may find the example code [here](https://github.com/orxfun/orx-meta/blob/main/examples/3_composition_ideation.rs)*
+> *you may find the example code [here](https://github.com/orxfun/orx-meta/blob/main/examples/3_composition_idea.rs)*
 
 So far, with the queue types we have achieved:
 
@@ -115,7 +115,7 @@ All calls are transparent to the compiler and luckily we do not need to write th
 
 ## Defining Identity and Composition for Another Example
 
-Notice that composition for `draw` is just sequentially calling them on elements. To demonstrate the flexibility of the approach, it is helpful to look at another [example](https://github.com/orxfun/orx-meta/blob/main/examples/3_composition_ideation.rs). Let's say we have the following sum trait:
+Notice that composition for `draw` is just sequentially calling them on elements. To demonstrate the flexibility of the approach, it is helpful to look at another [example](https://github.com/orxfun/orx-meta/blob/main/examples/3_composition_idea.rs). Let's say we have the following sum trait:
 
 ```rust
 pub trait Sum {
@@ -246,4 +246,4 @@ No box and no virtual function calls, whenever it matters.
 
 This is a very strong pattern.
 
-But there is a problem. You might've noticed that we do not import the queues from the **orx_meta** crate in the [example file]((https://github.com/orxfun/orx-meta/blob/main/examples/3_composition_ideation.rs)). Instead, we re-implemented them. The problem is described in the next section, and then comes the solution.
+But there is a problem. You might've noticed that we do not import the queues from the **orx_meta** crate in the [example file]((https://github.com/orxfun/orx-meta/blob/main/examples/3_composition_idea.rs)). Instead, we re-implemented them. The problem is described in the next section, and then comes the solution.
