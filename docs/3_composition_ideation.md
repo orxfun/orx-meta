@@ -74,6 +74,45 @@ where
 }
 ```
 
+### A Note on Performance
+
+Notice that `self.front.draw()` is a direct method call.
+
+How about `self.back.draw()`?
+
+The **back** is a statically typed queue, so we know that this is not a virtual call.
+
+Is it recursion?
+
+Also no. Although, it feels recursive, there is no recursion involved. It can completely be inlined as calls to the concrete front elements.
+
+For instance, assume we have a queue of four elements of types `X1`, `X2`, `X3` and `X4`, all implementing `Draw`. Type of our queue is `Queue<X1, Queue<X2, Queue<X3, Queue<X4, EmptyQueue>>>>`.
+
+Now the `draw` implementation that we defined for the non-empty queue on this queue is identical to the `draw_hand_written` implementation below:
+
+```rust
+pub struct X1;
+impl Draw for X1 { fn draw(&self) {} }
+pub struct X2;
+impl Draw for X2 { fn draw(&self) {} }
+pub struct X3;
+impl Draw for X3 { fn draw(&self) {} }
+pub struct X4;
+impl Draw for X4 { fn draw(&self) {} }
+
+impl Queue<X1, Queue<X2, Queue<X3, Queue<X4, EmptyQueue>>>> {
+    fn draw_hand_written(&self) {
+        self.front.draw();                  // X1
+        self.back.front.draw();             // X2
+        self.back.back.front.draw();        // X3
+        self.back.back.back.front.draw();   // X4
+        self.back.back.back.back.draw();    // EmptyQueue
+    }
+}
+```
+
+All calls are transparent to the compiler and luckily we do not need to write this:)
+
 ## Defining Screen as a Statically Typed Queue
 
 It didn't take much to set up the `Draw` implementations of the queues, and now we are ready to define our screen as a statically typed queue.

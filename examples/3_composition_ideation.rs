@@ -172,6 +172,33 @@ impl<Q: StQueue> Screen<Q> {
     }
 }
 
+pub struct X1;
+impl Draw for X1 {
+    fn draw(&self) {}
+}
+pub struct X2;
+impl Draw for X2 {
+    fn draw(&self) {}
+}
+pub struct X3;
+impl Draw for X3 {
+    fn draw(&self) {}
+}
+pub struct X4;
+impl Draw for X4 {
+    fn draw(&self) {}
+}
+
+impl Queue<X1, Queue<X2, Queue<X3, Queue<X4, EmptyQueue>>>> {
+    fn draw(&self) {
+        self.front.draw(); // X1
+        self.back.front.draw(); // X2
+        self.back.back.front.draw(); // X3
+        self.back.back.back.front.draw(); // X4
+        self.back.back.back.back.draw(); // EmptyQueue
+    }
+}
+
 fn main() {
     let screen = Screen::new()
         .push(Button {
