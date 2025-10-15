@@ -1,5 +1,9 @@
 # orx-meta-queue
 
+[![orx-meta crate](https://img.shields.io/crates/v/orx-meta.svg)](https://crates.io/crates/orx-meta)
+[![orx-meta crate](https://img.shields.io/crates/d/orx-meta.svg)](https://crates.io/crates/orx-meta)
+[![orx-meta documentation](https://docs.rs/orx-meta/badge.svg)](https://docs.rs/orx-meta)
+
 This crate defines meta structures that are useful in different situations.
 
 ## queue module
