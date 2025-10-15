@@ -559,6 +559,28 @@ macro_rules! define_queue_core {
 
         // # pair
 
+        /// A queue containing at least one element.
+        ///
+        /// It is composed of two parts represented by its two generic parameters:
+        ///
+        /// * `front: F`: This is the element in the front of the queue.
+        /// * `back: B`: This is the queue that would be obtained if the front element
+        ///   is popped. Equivalently, it is the queue of all elements in this queue
+        ///   except for the front element. Note that it can be an [`EmptyQueue`], in
+        ///   which case length of this queue would be one.
+        ///
+        /// # Examples
+        ///
+        /// ```
+        /// use orx_meta::queue::*;
+        ///
+        /// let queue = Queue::new(42);
+        /// assert_eq!(queue.len(), 1);
+        ///
+        /// let queue = Queue::new(42).push(true).push('x').push("foo");
+        /// assert_eq!(queue.len(), 4);
+        /// assert_eq!(queue.as_tuple(), (&42, &true, &'x', &"foo"));
+        /// ```
         #[derive(Clone, Copy, PartialEq, Eq)]
         pub struct $pair<$($g_lt ,)* $($g ,)* Front, Back>
         where
@@ -602,6 +624,189 @@ macro_rules! define_queue_core {
             B: $q<$($g_lt ,)* $($g ,)*>,
             $( $g: $( $( $g_bnd $( < $( $g_bnd_g ),* > )? + )* )? ), *
         {
+
+            // ref
+
+            /// Returns a reference to the element in the front of the queue.
+            ///
+            /// # Examples
+            ///
+            /// ```
+            /// use orx_meta::queue::*;
+            ///
+            /// let queue = Queue::new(42);
+            /// assert_eq!(queue.front(), &42);
+            ///
+            /// let queue = Queue::new(42).push(true).push('x').push("foo");
+            /// assert_eq!(queue.front(), &42);
+            ///
+            /// let (num, queue) = queue.pop();
+            /// assert_eq!(num, 42);
+            /// assert_eq!(queue.front(), &true);
+            ///
+            /// let (flag, queue) = queue.pop();
+            /// assert_eq!(flag, true);
+            /// assert_eq!(queue.front(), &'x');
+            ///
+            /// let (c, queue) = queue.pop();
+            /// assert_eq!(c, 'x');
+            /// assert_eq!(queue.front(), &"foo");
+            ///
+            /// let (s, queue) = queue.pop();
+            /// assert_eq!(s, "foo");
+            ///
+            /// // does not compile, EmptyQueue::front does not exist ;)
+            /// // assert_eq!(queue.front(), ??);
+            /// ```
+            pub fn front(&self) -> &F {
+                &self.f
+            }
+
+            /// Returns a reference to the queue including elements of this queue
+            /// excluding the element in the front.
+            ///
+            /// Note that accessing elements of the queue is always by `front`, while
+            /// `back` allows to access elements in all positions of the queue.
+            ///
+            /// # Examples
+            ///
+            /// ```
+            /// use orx_meta::queue::*;
+            ///
+            /// let queue = Queue::new(42);
+            /// assert_eq!(queue.front(), &42);
+            /// assert_eq!(queue.back(), &EmptyQueue);
+            ///
+            /// let queue = Queue::new(42).push(true).push('x').push("foo");
+            /// assert_eq!(queue.back(), &Queue::new(true).push('x').push("foo"));
+            /// assert_eq!(queue.front(), &42);
+            /// assert_eq!(queue.back().front(), &true);
+            /// assert_eq!(queue.back().back().front(), &'x');
+            /// assert_eq!(queue.back().back().back().front(), &"foo");
+            ///
+            /// let (num, queue) = queue.pop();
+            /// assert_eq!(num, 42);
+            /// assert_eq!(queue.front(), &true);
+            /// assert_eq!(queue.back(), &Queue::new('x').push("foo"));
+            ///
+            /// let (flag, queue) = queue.pop();
+            /// assert_eq!(flag, true);
+            /// assert_eq!(queue.front(), &'x');
+            /// assert_eq!(queue.back(), &Queue::new("foo"));
+            ///
+            /// let (c, queue) = queue.pop();
+            /// assert_eq!(c, 'x');
+            /// assert_eq!(queue.front(), &"foo");
+            /// assert_eq!(queue.back(), &EmptyQueue);
+            ///
+            /// let (s, queue) = queue.pop();
+            /// assert_eq!(s, "foo");
+            ///
+            /// // does not compile, front & back do not exist for EmptyQueue ;)
+            /// // assert_eq!(queue.front(), ??);
+            /// // assert_eq!(queue.back(), ??);
+            /// ```
+            pub fn back(&self) -> &B {
+                &self.b
+            }
+
+            // mut
+
+            /// Returns a mutable reference to the element in the front of the queue.
+            ///
+            /// # Examples
+            ///
+            /// ```
+            /// use orx_meta::queue::*;
+            ///
+            /// let mut queue = Queue::new(42).push(true).push('x');
+            ///
+            /// *queue.front_mut() *= 2;
+            /// *queue.back_mut().front_mut() = false;
+            /// *queue.back_mut().back_mut().front_mut() = 'y';
+            ///
+            /// assert_eq!(queue.as_tuple(), (&84, &false, &'y'));
+            /// ```
+            pub fn front_mut(&mut self) -> &mut F {
+                &mut self.f
+            }
+
+            /// Returns a mutable reference to the queue including elements of this queue
+            /// excluding the element in the front.
+            ///
+            /// Note that mutating elements of the queue is always by `front_mut`, while
+            /// `back_mut` allows to access elements in all positions of the queue.
+            ///
+            /// # Examples
+            ///
+            /// ```
+            /// use orx_meta::queue::*;
+            ///
+            /// let mut queue = Queue::new(42).push(true).push('x');
+            ///
+            /// *queue.front_mut() *= 2;
+            /// *queue.back_mut().front_mut() = false;
+            /// *queue.back_mut().back_mut().front_mut() = 'y';
+            ///
+            /// assert_eq!(queue.as_tuple(), (&84, &false, &'y'));
+            /// ```
+            pub fn back_mut(&mut self) -> &mut B {
+                &mut self.b
+            }
+
+            /// Returns a pair of mutable references:
+            /// * first to the element in the front of the queue, and
+            /// * second to the back queue containing elements except for the front.
+            ///
+            /// # Safety
+            ///
+            /// Assume we have a queue of three elements and we want to mutate the first and
+            /// third elements as follows.
+            ///
+            /// However, the following code would not compile.
+            ///
+            /// ```compile_fail
+            /// use orx_meta::queue::*;
+            ///
+            /// let mut q = Queue::new(3).push(true).push('x');
+            ///
+            /// let first = q.front_mut();
+            /// let third = q.back_mut().back_mut().front_mut();
+            ///
+            /// // these calls can be made concurrently
+            /// *first *= 2;
+            /// *third = 'y';
+            /// ```
+            ///
+            /// It is perfectly safe to mutate the first and third elements at the same time.
+            /// Actually, we can mutate all of the elements concurrently.
+            ///
+            /// However, we need to help the compiler to figure this out, which is why we get
+            /// the mutable references to the front and back at the same time. With this, the
+            /// compiler understands that there is no overlap between them.
+            ///
+            /// # Examples
+            ///
+            /// So the following code would compile and work expectedly.
+            ///
+            /// ```
+            /// use orx_meta::queue::*;
+            ///
+            /// let mut q = Queue::new(3).push(true).push('x');
+            ///
+            /// let (first, q23) = q.front_back_mut();
+            /// let third = q23.back_mut().front_mut();
+            ///
+            /// // these calls can be made concurrently
+            /// *first *= 2;
+            /// *third = 'y';
+            ///
+            /// assert_eq!(q.as_tuple(), (&6, &true, &'y'));
+            /// ```
+            pub fn front_back_mut(&mut self) -> (&mut F, &mut B) {
+                (&mut self.f, &mut self.b)
+            }
+
             // into
 
             pub fn into_front(self) -> F {
@@ -614,34 +819,6 @@ macro_rules! define_queue_core {
 
             pub fn pop(self) -> (F, B) {
                 (self.f, self.b)
-            }
-
-            // ref
-
-            pub fn front(&self) -> &F {
-                &self.f
-            }
-
-            pub fn back(&self) -> &B {
-                &self.b
-            }
-
-            pub fn front_back(&self) -> (&F, &B) {
-                (&self.f, &self.b)
-            }
-
-            // mut
-
-            pub fn front_mut(&mut self) -> &mut F {
-                &mut self.f
-            }
-
-            pub fn back_mut(&mut self) -> &mut B {
-                &mut self.b
-            }
-
-            pub fn front_back_mut(&mut self) -> (&mut F, &mut B) {
-                (&mut self.f, &mut self.b)
             }
         }
 
