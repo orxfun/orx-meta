@@ -183,3 +183,11 @@ Note that each `struct` can be represented as a queue, type of which can be obta
 It is straightforward to implement `From` queue for the struct.
 
 Then, we can create a [`QueueBuilder`](https://docs.rs/orx-meta/latest/orx_meta/queue/struct.QueueBuilder.html) with this particular queue type as its generic argument, defining the target type to achieve. And we can safely build our complex type.
+
+## Contributing
+
+Contributions are welcome! If you notice an error, have a question or think something could be improved, please open an [issue](https://github.com/orxfun/orx-meta/issues/new) or create a PR.
+
+## License
+
+Dual-licensed under [Apache 2.0](LICENSE-APACHE) or [MIT](LICENSE-MIT).
