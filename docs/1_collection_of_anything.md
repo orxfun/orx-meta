@@ -161,4 +161,4 @@ However, the main goal here is establishing an approach to define adhoc composit
 
 > See also the super useful `HList` macro from the [frunk](https://crates.io/crates/frunk#hlist) crate.
 
-======[|>](https://github.com/orxfun/orx-meta/blob/main/docs/2_generic_builder.rs)
+======[|>](https://github.com/orxfun/orx-meta/blob/main/docs/2_generic_builder.md)

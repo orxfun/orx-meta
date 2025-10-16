@@ -244,4 +244,4 @@ This is a very useful pattern.
 
 But there is a problem. You might've noticed that we do not import the queues from the **orx_meta** crate in the [example file]((https://github.com/orxfun/orx-meta/blob/main/examples/3_composition_idea.rs)). Instead, we re-implemented them. The problem is described in the next section, and then comes the solution.
 
-[<|](https://github.com/orxfun/orx-meta/blob/main/docs/2_generic_builder.rs)======[|>](https://github.com/orxfun/orx-meta/blob/main/docs/4_problem_with_type_system.rs)
+[<|](https://github.com/orxfun/orx-meta/blob/main/docs/2_generic_builder.md)======[|>](https://github.com/orxfun/orx-meta/blob/main/docs/4_problem_with_type_system.md)

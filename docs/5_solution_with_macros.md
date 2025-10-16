@@ -90,4 +90,4 @@ screen.run();
 // SelectBox { width: 10, height: 6, options: ["This", "that"] }
 ```
 
-[<|](https://github.com/orxfun/orx-meta/blob/main/docs/4_problem_with_type_system.rs)======[|>](https://github.com/orxfun/orx-meta/blob/main/docs/6_summary.rs)
+[<|](https://github.com/orxfun/orx-meta/blob/main/docs/4_problem_with_type_system.md)======[|>](https://github.com/orxfun/orx-meta/blob/main/docs/6_summary.md)

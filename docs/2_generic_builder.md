@@ -99,4 +99,4 @@ assert_eq!(
 );
 ```
 
-[<|](https://github.com/orxfun/orx-meta/blob/main/docs/1_collection_of_anything.rs)======[|>](https://github.com/orxfun/orx-meta/blob/main/docs/3_composition_idea.rs)
+[<|](https://github.com/orxfun/orx-meta/blob/main/docs/1_collection_of_anything.md)======[|>](https://github.com/orxfun/orx-meta/blob/main/docs/3_composition_idea.md)
