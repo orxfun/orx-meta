@@ -4,7 +4,7 @@
 [![orx-meta crate](https://img.shields.io/crates/d/orx-meta.svg)](https://crates.io/crates/orx-meta)
 [![orx-meta documentation](https://docs.rs/orx-meta/badge.svg)](https://docs.rs/orx-meta)
 
-This crate defines meta structures that are useful in different situations.
+Meta structures such as statically typed queues of heterogeneous elements.
 
 ## queue module
 
@@ -22,7 +22,7 @@ These definitions are a bit confusing, it is better to see what we can achieve w
 
 ### A. Zero-Cost Composition
 
-Please see the [zero cost composition article](https://orxfun.github.io/orxfun-notes/#/zero-cost-composition-2025-10-15) for details.
+Please see the [zero-cost composition article](https://orxfun.github.io/orxfun-notes/#/zero-cost-composition-2025-10-15) for details.
 
 Consider the classical problem about polymorphism, which is also used in rust book's [trait objects chapter](https://doc.rust-lang.org/book/ch18-02-trait-objects.html).
 
@@ -111,20 +111,20 @@ screen.draw();
 The [`define_queue`](https://docs.rs/orx-meta/latest/orx_meta/macro.define_queue.html) macro contains two blocks:
 
 * The `queue` block is straightforward. We just provides the names of the three types. We name the statically typed queue trait as `StScreen`, the empty queue struct as `EmptyScreen` and the non-empty queue struct as `Screen`.
-* The `elements` block is central to the zero cost composition idea. We provide a comma-separated list of traits that each of the heterogeneous elements of the queue must implement. This prevents us from pushing an element without `Draw` implementation to the screen.
+* The `elements` block is central to the zero-cost composition idea. We provide a comma-separated list of traits that each of the heterogeneous elements of the queue must implement. This prevents us from pushing an element without `Draw` implementation to the screen.
 
 Furthermore, we require the empty queue and non-empty queue structs to implement the common behavior.
 
 * We implement `Draw for EmptyScreen` where we define the behavior in the absence of an element.
 * We implement `Draw for Screen` where we define how to compose the common behavior when there are multiple elements.
 
-And this is sufficient to achieve the following pros:
+And this is sufficient to achieve the following **<span style="color:green">pros</span>**:
 
 * It is open for extension. Another codebase can implement a new component and add it to the screen.
 * No heap allocation required. Memory layout of the `screen` above is identical to the `struct MyScreen(Button, Button, SelectBox, Button)`. Further, there is not even an allocation for the `Vec`.
 * No virtual method calls, all `draw` calls are statically dispatched. Further, there is no run-time branching. Final `screen.draw()` call can completely be inlined by the compiler as `btn1.draw(); btn2.draw(); sbox.draw(); btn3.draw();`.
 
-On the other hand, this approach has the following disadvantage compared to the alternatives:
+On the other hand, this approach has the following **<span style="color:red">con</span>** compared to the alternatives:
 
 * `Screen` is a new type specific to the `Draw` trait, has two generic parameters and it is more complex than the `Vec` wrappers used in the alternative approaches.
 
