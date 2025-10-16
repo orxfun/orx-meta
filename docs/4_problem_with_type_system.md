@@ -226,3 +226,5 @@ We want our `StQueue` trait to be generic over another trait `X`.
 Sadly, this is not possible today.
 
 But there is always a solution with rust.
+
+[<|](https://github.com/orxfun/orx-meta/blob/main/docs/3_composition_idea.rs)======[|>](https://github.com/orxfun/orx-meta/blob/main/docs/5_solution_with_macros.rs)

@@ -14,7 +14,7 @@ For detailed documentation, please see the sections:
 3. [Composition Idea](https://github.com/orxfun/orx-meta/blob/main/docs/3_composition_idea.md)
 4. [Problem with Type System](https://github.com/orxfun/orx-meta/blob/main/docs/4_problem_with_type_system.md)
 5. [Solution with Macros](https://github.com/orxfun/orx-meta/blob/main/docs/5_solution_with_macros.md)
-6. [Summary](https://github.com/orxfun/orx-meta/blob/main/docs/6_Summary.md)
+6. [Summary](https://github.com/orxfun/orx-meta/blob/main/docs/6_summary.md)
 
 The queue module defines a statically typed queue of heterogeneous elements. Further, it provides a macro to define these queue types which are bounded by a specific set of traits; i.e., common behavior of the elements.
 

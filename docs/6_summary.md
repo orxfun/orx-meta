@@ -25,3 +25,5 @@ On the other hand, having a queue of statically-typed heterogeneous elements hav
   * No virtual calls and no recursive calls.
 
 On the other hand, type of the statically typed queue is of course much more complex than using another collection, such as a vec of trait objects.
+
+[<|](https://github.com/orxfun/orx-meta/blob/main/docs/5_solution_with_macros.rs)======

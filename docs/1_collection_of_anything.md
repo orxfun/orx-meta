@@ -160,3 +160,5 @@ You might be thinking:
 However, the main goal here is establishing an approach to define adhoc composition. The queue is a choice to achieve this conveniently.
 
 > See also the super useful `HList` macro from the [frunk](https://crates.io/crates/frunk#hlist) crate.
+
+======[|>](https://github.com/orxfun/orx-meta/blob/main/docs/2_generic_builder.rs)
