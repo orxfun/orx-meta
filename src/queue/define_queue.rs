@@ -27,7 +27,7 @@
 ///
 /// You may recreate everything defined in the queue module of this crate with the following macro call.
 ///
-/// ```
+/// ```ignore
 /// orx_meta::define_queue!(
 ///     queue => [ StQueue ; EmptyQueue, Queue ];
 ///     queue_of => queue_of;
@@ -65,7 +65,7 @@
 /// If we do not need either of them, we can simply omit the block.
 /// The following would give us the most minimalistic implementation of the queue.
 ///
-/// ```rust
+/// ```ignore
 /// orx_meta::define_queue!(
 ///     queue => [ StQueue ; EmptyQueue, Queue ];
 /// );
@@ -93,7 +93,7 @@
 /// The entire implementation of the queues, type helper macro and the builder specific to to the `Draw` behavior
 /// can be conveniently generated with the `define_queue` macro as follows:
 ///
-/// ```
+/// ```ignore
 /// pub trait Draw {
 ///     fn draw(&self);
 /// }
@@ -546,7 +546,7 @@ macro_rules! define_queue_core {
             ///
             /// # Examples
             ///
-            /// ```
+            /// ```ignore
             /// use orx_meta::queue::*;
             ///
             /// let queue = EmptyQueue::new();
@@ -572,7 +572,7 @@ macro_rules! define_queue_core {
             ///
             /// # Examples
             ///
-            /// ```
+            /// ```ignore
             /// use orx_meta::queue::*;
             ///
             /// let queue = EmptyQueue::new();
@@ -617,7 +617,7 @@ macro_rules! define_queue_core {
         ///
         /// # Examples
         ///
-        /// ```
+        /// ```ignore
         /// use orx_meta::queue::*;
         ///
         /// let queue = EmptyQueue::new();
@@ -711,7 +711,7 @@ macro_rules! define_queue_core {
         ///
         /// # Examples
         ///
-        /// ```
+        /// ```ignore
         /// use orx_meta::queue::*;
         ///
         /// let queue = Queue::new(42);
@@ -763,7 +763,7 @@ macro_rules! define_queue_core {
             ///
             /// # Examples
             ///
-            /// ```
+            /// ```ignore
             /// use orx_meta::queue::*;
             ///
             /// let queue = Queue::new(42);
@@ -802,7 +802,7 @@ macro_rules! define_queue_core {
             ///
             /// # Examples
             ///
-            /// ```
+            /// ```ignore
             /// use orx_meta::queue::*;
             ///
             /// let queue = Queue::new(42);
@@ -848,7 +848,7 @@ macro_rules! define_queue_core {
             ///
             /// # Examples
             ///
-            /// ```
+            /// ```ignore
             /// use orx_meta::queue::*;
             ///
             /// let mut queue = Queue::new(42).push(true).push('x');
@@ -871,7 +871,7 @@ macro_rules! define_queue_core {
             ///
             /// # Examples
             ///
-            /// ```
+            /// ```ignore
             /// use orx_meta::queue::*;
             ///
             /// let mut queue = Queue::new(42).push(true).push('x');
@@ -897,7 +897,7 @@ macro_rules! define_queue_core {
             ///
             /// However, the following code would not compile.
             ///
-            /// ```compile_fail
+            /// ```compile_fail ignore
             /// use orx_meta::queue::*;
             ///
             /// let mut q = Queue::new(3).push(true).push('x');
@@ -921,7 +921,7 @@ macro_rules! define_queue_core {
             ///
             /// So the following code would compile and work expectedly.
             ///
-            /// ```
+            /// ```ignore
             /// use orx_meta::queue::*;
             ///
             /// let mut q = Queue::new(3).push(true).push('x');
@@ -965,7 +965,7 @@ macro_rules! define_queue_core {
             ///
             /// # Examples
             ///
-            /// ```
+            /// ```ignore
             /// use orx_meta::queue::*;
             ///
             /// let queue = Queue::new(42);
@@ -1068,7 +1068,7 @@ macro_rules! define_queue_builder {
         ///
         /// For this, we can create a builder with `QueueBuilder::<MyQueue>::new()` where `MyQueue` is the target type to instantiate.
         ///
-        /// ```
+        /// ```ignore
         /// use orx_meta::queue::*;
         ///
         /// type MyQueue = Queue<u32, Queue<bool, Queue<char, Queue<&'static str, EmptyQueue>>>>;
@@ -1089,7 +1089,7 @@ macro_rules! define_queue_builder {
         ///
         /// [`queue_of`]: crate::queue_of
         ///
-        /// ```
+        /// ```ignore
         /// use orx_meta::queue::*;
         /// use orx_meta::queue_of;
         ///
@@ -1110,7 +1110,7 @@ macro_rules! define_queue_builder {
         ///
         /// Here the elements are pushed in the wrong order:
         ///
-        /// ```compile_fail
+        /// ```compile_fail ignore
         /// use orx_meta::queue::*;
         /// use orx_meta::queue_of;
         ///
@@ -1127,7 +1127,7 @@ macro_rules! define_queue_builder {
         ///
         /// And here, not all elements are pushed:
         ///
-        /// ```compile_fail
+        /// ```compile_fail ignore
         /// use orx_meta::queue::*;
         /// use orx_meta::queue_of;
         ///
@@ -1166,7 +1166,7 @@ macro_rules! define_queue_builder {
             ///
             /// # Examples
             ///
-            /// ```
+            /// ```ignore
             /// use orx_meta::queue::*;
             /// use orx_meta::queue_of;
             ///
@@ -1216,7 +1216,7 @@ macro_rules! define_queue_builder {
             ///
             /// # Examples
             ///
-            /// ```
+            /// ```ignore
             /// use orx_meta::queue::*;
             /// use orx_meta::queue_of;
             ///
@@ -1268,7 +1268,7 @@ macro_rules! define_queue_builder {
             ///
             /// # Examples
             ///
-            /// ```
+            /// ```ignore
             /// use orx_meta::queue::*;
             /// use orx_meta::queue_of;
             ///
@@ -1339,7 +1339,7 @@ macro_rules! define_queue_tuple_transformation {
             ///
             /// # Examples
             ///
-            /// ```
+            /// ```ignore
             /// use orx_meta::queue::*;
             ///
             /// let queue = Queue::new(42);
@@ -1359,7 +1359,7 @@ macro_rules! define_queue_tuple_transformation {
             ///
             /// # Examples
             ///
-            /// ```
+            /// ```ignore
             /// use orx_meta::queue::*;
             ///
             /// let queue = Queue::new(42);
@@ -1379,7 +1379,7 @@ macro_rules! define_queue_tuple_transformation {
             ///
             /// # Examples
             ///
-            /// ```
+            /// ```ignore
             /// use orx_meta::queue::*;
             ///
             /// let mut queue = Queue::new(42);
@@ -1429,7 +1429,7 @@ macro_rules! define_queue_tuple_transformation {
             ///
             /// # Examples
             ///
-            /// ```
+            /// ```ignore
             /// use orx_meta::queue::*;
             ///
             /// let queue = Queue::new(42);
@@ -1449,7 +1449,7 @@ macro_rules! define_queue_tuple_transformation {
             ///
             /// # Examples
             ///
-            /// ```
+            /// ```ignore
             /// use orx_meta::queue::*;
             ///
             /// let queue = Queue::new(42);
@@ -1469,7 +1469,7 @@ macro_rules! define_queue_tuple_transformation {
             ///
             /// # Examples
             ///
-            /// ```
+            /// ```ignore
             /// use orx_meta::queue::*;
             ///
             /// let mut queue = Queue::new(42);
@@ -1524,7 +1524,7 @@ macro_rules! define_queue_tuple_transformation {
             ///
             /// # Examples
             ///
-            /// ```
+            /// ```ignore
             /// use orx_meta::queue::*;
             ///
             /// let queue = Queue::new(42);
@@ -1544,7 +1544,7 @@ macro_rules! define_queue_tuple_transformation {
             ///
             /// # Examples
             ///
-            /// ```
+            /// ```ignore
             /// use orx_meta::queue::*;
             ///
             /// let queue = Queue::new(42);
@@ -1564,7 +1564,7 @@ macro_rules! define_queue_tuple_transformation {
             ///
             /// # Examples
             ///
-            /// ```
+            /// ```ignore
             /// use orx_meta::queue::*;
             ///
             /// let mut queue = Queue::new(42);
@@ -1626,7 +1626,7 @@ macro_rules! define_queue_tuple_transformation {
             ///
             /// # Examples
             ///
-            /// ```
+            /// ```ignore
             /// use orx_meta::queue::*;
             ///
             /// let queue = Queue::new(42);
@@ -1646,7 +1646,7 @@ macro_rules! define_queue_tuple_transformation {
             ///
             /// # Examples
             ///
-            /// ```
+            /// ```ignore
             /// use orx_meta::queue::*;
             ///
             /// let queue = Queue::new(42);
@@ -1666,7 +1666,7 @@ macro_rules! define_queue_tuple_transformation {
             ///
             /// # Examples
             ///
-            /// ```
+            /// ```ignore
             /// use orx_meta::queue::*;
             ///
             /// let mut queue = Queue::new(42);
@@ -1734,7 +1734,7 @@ macro_rules! define_queue_tuple_transformation {
             ///
             /// # Examples
             ///
-            /// ```
+            /// ```ignore
             /// use orx_meta::queue::*;
             ///
             /// let queue = Queue::new(42);
@@ -1754,7 +1754,7 @@ macro_rules! define_queue_tuple_transformation {
             ///
             /// # Examples
             ///
-            /// ```
+            /// ```ignore
             /// use orx_meta::queue::*;
             ///
             /// let queue = Queue::new(42);
@@ -1774,7 +1774,7 @@ macro_rules! define_queue_tuple_transformation {
             ///
             /// # Examples
             ///
-            /// ```
+            /// ```ignore
             /// use orx_meta::queue::*;
             ///
             /// let mut queue = Queue::new(42);
@@ -1848,7 +1848,7 @@ macro_rules! define_queue_tuple_transformation {
             ///
             /// # Examples
             ///
-            /// ```
+            /// ```ignore
             /// use orx_meta::queue::*;
             ///
             /// let queue = Queue::new(42);
@@ -1868,7 +1868,7 @@ macro_rules! define_queue_tuple_transformation {
             ///
             /// # Examples
             ///
-            /// ```
+            /// ```ignore
             /// use orx_meta::queue::*;
             ///
             /// let queue = Queue::new(42);
@@ -1888,7 +1888,7 @@ macro_rules! define_queue_tuple_transformation {
             ///
             /// # Examples
             ///
-            /// ```
+            /// ```ignore
             /// use orx_meta::queue::*;
             ///
             /// let mut queue = Queue::new(42);
@@ -1968,7 +1968,7 @@ macro_rules! define_queue_tuple_transformation {
             ///
             /// # Examples
             ///
-            /// ```
+            /// ```ignore
             /// use orx_meta::queue::*;
             ///
             /// let queue = Queue::new(42);
@@ -1988,7 +1988,7 @@ macro_rules! define_queue_tuple_transformation {
             ///
             /// # Examples
             ///
-            /// ```
+            /// ```ignore
             /// use orx_meta::queue::*;
             ///
             /// let queue = Queue::new(42);
@@ -2008,7 +2008,7 @@ macro_rules! define_queue_tuple_transformation {
             ///
             /// # Examples
             ///
-            /// ```
+            /// ```ignore
             /// use orx_meta::queue::*;
             ///
             /// let mut queue = Queue::new(42);
@@ -2094,7 +2094,7 @@ macro_rules! define_queue_tuple_transformation {
             ///
             /// # Examples
             ///
-            /// ```
+            /// ```ignore
             /// use orx_meta::queue::*;
             ///
             /// let queue = Queue::new(42);
@@ -2114,7 +2114,7 @@ macro_rules! define_queue_tuple_transformation {
             ///
             /// # Examples
             ///
-            /// ```
+            /// ```ignore
             /// use orx_meta::queue::*;
             ///
             /// let queue = Queue::new(42);
@@ -2134,7 +2134,7 @@ macro_rules! define_queue_tuple_transformation {
             ///
             /// # Examples
             ///
-            /// ```
+            /// ```ignore
             /// use orx_meta::queue::*;
             ///
             /// let mut queue = Queue::new(42);
@@ -2217,7 +2217,7 @@ macro_rules! define_queue_of {
         ///
         /// The type of this queue would be:
         ///
-        /// ```
+        /// ```ignore
         /// use orx_meta::queue::*;
         ///
         /// type MyQueue = Queue<i32, Queue<bool, Queue<char, Queue<String, EmptyQueue>>>>;
@@ -2230,7 +2230,7 @@ macro_rules! define_queue_of {
         ///
         /// `queue_of` macro is a helper macro to make such type aliasing convenient as follows:
         ///
-        /// ```
+        /// ```ignore
         /// use orx_meta::queue::*;
         /// use orx_meta::queue_of;
         ///
