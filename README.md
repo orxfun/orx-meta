@@ -28,7 +28,7 @@ Consider the classical problem about polymorphism, which is also used in rust bo
 
 * We have a `Draw` trait and various components such as button and select box implement this trait.
 * We have a `Screen` which is a collection of components that we can draw.
-Three methods are required for the screen.
+* Three methods are required for the screen.
 * Since screen is a collection of components, we need `new` to create an empty screen and `push` to add a component to it.
 * The third method `draw` is related to the common behavior and draws all components on the screen.
 
