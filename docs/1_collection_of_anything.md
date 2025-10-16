@@ -4,13 +4,9 @@
 
 How do we have a collection of arbitrary types in rust?
 
-> *And why would we ever want that? We park this question for a while. Hopefully, things will get more useful as we proceed.*
-
-Can we have a collection of anything?
-
 ## Dynamic collection of `Any`thing
 
-Yes, we can actually have any collection of elements of arbitrary types by defining our elements as trait objects of the [`Any`](https://doc.rust-lang.org/std/any/trait.Any.html) trait.
+We can actually have many collections of elements of arbitrary types by defining our elements as trait objects of the [`Any`](https://doc.rust-lang.org/std/any/trait.Any.html) trait.
 
 ```rust
 use std::any::Any;
@@ -24,9 +20,7 @@ any_vec.push(Box::new("foo"));
 
 Our vector contains four elements of types `i32`, `bool`, `char` and `&str`.
 
-We cannot do much with elements of `Vec<Box<dyn Any>>` because `Any` does not have any abilities :)
-
-In the following, `element` can be anything. All we know is its type id. This might allow us to make it useful, but only with advanced dynamic techniques.
+We cannot do much with elements of `Vec<Box<dyn Any>>` because `Any` does not have any abilities :) All we know about an element is its type id. This might suffice to make it useful, but only with advanced dynamic techniques.
 
 ```rust
 let element = any_vec.pop().unwrap();
@@ -38,7 +32,7 @@ println!("{:?}", element.type_id());
 The `queue` module of the [orx_meta](https://github.com/orxfun/orx-meta/) crate defines three types:
 
 * [`StQueue`](https://docs.rs/orx-meta/latest/orx_meta/queue/trait.StQueue.html) trait defines meta information and push operation of queues.
-* [`EmptyQueue`](https://docs.rs/orx-meta/latest/orx_meta/queue/struct.EmptyQueue.html) is the first queue implementation and its self-explanatory.
+* [`EmptyQueue`](https://docs.rs/orx-meta/latest/orx_meta/queue/struct.EmptyQueue.html) is the first queue implementation to represent an empty queue.
 * [`Queue`](https://docs.rs/orx-meta/latest/orx_meta/queue/struct.Queue.html), on the other hand, is a non-empty queue.
 
 Let's see how we could define a collection of four elements of types `i32`, `bool`, `char` and `&str` with these types.
@@ -55,7 +49,11 @@ Now, this is quite different from the `any_vec`.
 
 It is statically typed in the sense that you may observe the types of its elements from its signature. The type of the `queue` is `Queue<i32, Queue<bool, Queue<char, Queue<&'static str, EmptyQueue>>>>`.
 
-You may keep pushing elements to the queue. Unlike pushing to a vec that requires `&mut self`, pushing to the queue require `self`. This is nice, the function is pure and the signature allows chaining push calls. But also this is the only way because every time we push to the queue, its type changes. The following break down of the calls reveals the changes in the type.
+You may keep pushing elements to the queue. Unlike pushing to a vec that requires `&mut self`, pushing to the queue requires `self`.
+
+This is nice, the function is pure and the signature allows chaining push calls.
+
+But also this is the only way because every time we push to the queue, its type changes. The following break down of the calls reveals the changes in the queue type.
 
 ```rust
 use orx_meta::queue::*;
@@ -134,7 +132,7 @@ type MyQueue = Queue<i32, Queue<bool, Queue<char, Queue<&'static str, EmptyQueue
 let my_queue = Queue::new(42).push(true).push('x').push("foo");
 ```
 
-The difference is that `MyStruct` is a named type while `MyQueue` is just a type alias for queue. `EmptyQueue` and `Queue` together can represent all possible structs. Therefore, it can be considered as an ad-hoc struct.
+The difference is that `MyStruct` is a named type while `MyQueue` is a type alias for queue. `EmptyQueue` and `Queue` together can represent all possible structs. Therefore, it can be considered as an ad-hoc struct.
 
 > *just like tuples*
 
@@ -155,10 +153,12 @@ So far, this has been fun with types!
 
 You might be thinking:
 
-* we could've represented ad-hoc structs as a stack, rather than a queue so that we could go to `A from B`,
+* we could've represented ad-hoc structs as a stack, rather than a queue so that we could go `to A from B`,
 * or even better, as a double-ended queue so that we could go in both directions,
 * or we could've just worked on extending capabilities of tuples with macros, which are already meant to represent ad-hoc structs.
 
-However, the main goal here is establishing an approach to define adhoc composition, rather than re-defining ad-hoc structs. The queue is a choice to achieve this conveniently.
+However, the main goal here is establishing an approach to define adhoc composition. The queue is a choice to achieve this conveniently.
 
-For the latter, please also see the super useful `HList` macro of the [frunk](https://crates.io/crates/frunk#hlist) crate.
+> See also the super useful `HList` macro from the [frunk](https://crates.io/crates/frunk#hlist) crate.
+
+======[|>](https://github.com/orxfun/orx-meta/blob/main/docs/2_generic_builder.rs)

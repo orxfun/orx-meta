@@ -689,7 +689,7 @@ macro_rules! define_queue_core {
             where
                 Elem: $( $el_bnd $( < $( $el_bnd_g ),* > )? + ) *
             {
-                $pair::from((x, self))
+                $pair::from_fb(x, self)
             }
 
             fn len(&self) -> usize {
@@ -733,28 +733,13 @@ macro_rules! define_queue_core {
             b: Back,
         }
 
-        impl<$($g_lt ,)* F, B, $($g ,)*> From<(F, B)> for $pair<$($g_lt ,)* $($g ,)* F, B>
-        where
-            F: $( $el_bnd $( < $( $el_bnd_g ),* > )? + ) *,
-            B: $q<$($g_lt ,)* $($g ,)*>,
-            $( $g: $( $( $g_bnd $( < $( $g_bnd_g ),* > )? + )* )? ), *
-        {
-            fn from((f, b): (F, B)) -> Self {
-                Self {
-                    phantom: Default::default(),
-                    f,
-                    b,
-                }
-            }
-        }
-
         impl<$($g_lt ,)* F, $($g ,)*> $pair<$($g_lt ,)* $($g ,)* F, $empty<$($g_lt ,)* $($g ,)*>>
         where
             F: $( $el_bnd $( < $( $el_bnd_g ),* > )? + ) *,
             $( $g: $( $( $g_bnd $( < $( $g_bnd_g ),* > )? + )* )? ), *
         {
             pub fn new(front: F) -> Self {
-                (front, $empty::new()).into()
+                $pair::from_fb(front, $empty::new())
             }
         }
 
@@ -764,6 +749,13 @@ macro_rules! define_queue_core {
             B: $q<$($g_lt ,)* $($g ,)*>,
             $( $g: $( $( $g_bnd $( < $( $g_bnd_g ),* > )? + )* )? ), *
         {
+            fn from_fb(f: F, b: B) -> Self {
+                Self {
+                    phantom: Default::default(),
+                    f,
+                    b,
+                }
+            }
 
             // ref
 
@@ -1041,7 +1033,7 @@ macro_rules! define_queue_core {
             where
                 Elem: $( $el_bnd $( < $( $el_bnd_g ),* > )? + ) *
             {
-                $pair::from((self.f, self.b.push(x)))
+                $pair::from_fb(self.f, self.b.push(x))
             }
 
             fn len(&self) -> usize {
@@ -1511,7 +1503,7 @@ macro_rules! define_queue_tuple_transformation {
             $( $g: $( $( $g_bnd $( < $( $g_bnd_g ),* > )? + )* )? ), *
         {
             fn from(x: (X1, X2)) -> Self {
-                (x.0, $pair::new(x.1)).into()
+                $pair::from_fb(x.0, $pair::new(x.1))
             }
         }
 
@@ -1610,7 +1602,7 @@ macro_rules! define_queue_tuple_transformation {
             $( $g: $( $( $g_bnd $( < $( $g_bnd_g ),* > )? + )* )? ), *
         {
             fn from(x: (X1, X2, X3)) -> Self {
-                (x.0, (x.1, $pair::new(x.2)).into()).into()
+                $pair::from_fb(x.0, $pair::from_fb(x.1, $pair::new(x.2)))
             }
         }
 
@@ -1715,7 +1707,7 @@ macro_rules! define_queue_tuple_transformation {
             $( $g: $( $( $g_bnd $( < $( $g_bnd_g ),* > )? + )* )? ), *
         {
             fn from(x: (X1, X2, X3, X4)) -> Self {
-                (x.0, (x.1, (x.2, $pair::new(x.3)).into()).into()).into()
+                $pair::from_fb(x.0, $pair::from_fb(x.1, $pair::from_fb(x.2, $pair::new(x.3))))
             }
         }
 
@@ -1826,7 +1818,7 @@ macro_rules! define_queue_tuple_transformation {
             $( $g: $( $( $g_bnd $( < $( $g_bnd_g ),* > )? + )* )? ), *
         {
             fn from(x: (X1, X2, X3, X4, X5)) -> Self {
-                (x.0, (x.1, (x.2, (x.3, $pair::new(x.4)).into()).into()).into()).into()
+                $pair::from_fb(x.0, $pair::from_fb(x.1, $pair::from_fb(x.2, $pair::from_fb(x.3, $pair::new(x.4)))))
             }
         }
 
@@ -1943,7 +1935,7 @@ macro_rules! define_queue_tuple_transformation {
             $( $g: $( $( $g_bnd $( < $( $g_bnd_g ),* > )? + )* )? ), *
         {
             fn from(x: (X1, X2, X3, X4, X5, X6)) -> Self {
-                (x.0, (x.1, (x.2, (x.3, (x.4, $pair::new(x.5)).into()).into()).into()).into()).into()
+                $pair::from_fb(x.0, $pair::from_fb(x.1, $pair::from_fb(x.2, $pair::from_fb(x.3, $pair::from_fb(x.4, $pair::new(x.5))))))
             }
         }
 
@@ -2066,7 +2058,7 @@ macro_rules! define_queue_tuple_transformation {
             $( $g: $( $( $g_bnd $( < $( $g_bnd_g ),* > )? + )* )? ), *
         {
             fn from(x: (X1, X2, X3, X4, X5, X6, X7)) -> Self {
-                (x.0, (x.1, (x.2, (x.3, (x.4, (x.5, $pair::new(x.6)).into()).into()).into()).into()).into()).into()
+                $pair::from_fb(x.0, $pair::from_fb(x.1, $pair::from_fb(x.2, $pair::from_fb(x.3, $pair::from_fb(x.4, $pair::from_fb(x.5, $pair::new(x.6)))))))
             }
         }
 
@@ -2195,7 +2187,7 @@ macro_rules! define_queue_tuple_transformation {
             $( $g: $( $( $g_bnd $( < $( $g_bnd_g ),* > )? + )* )? ), *
         {
             fn from(x: (X1, X2, X3, X4, X5, X6, X7, X8)) -> Self {
-                (x.0, (x.1, (x.2, (x.3, (x.4, (x.5, (x.6, $pair::new(x.7)).into()).into()).into()).into()).into()).into()).into()
+                $pair::from_fb(x.0, $pair::from_fb(x.1, $pair::from_fb(x.2, $pair::from_fb(x.3, $pair::from_fb(x.4, $pair::from_fb(x.5, $pair::from_fb(x.6, $pair::new(x.7))))))))
             }
         }
     };

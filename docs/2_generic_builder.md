@@ -51,7 +51,7 @@ let val: MyQueue = QueueBuilder::<MyQueue>::new()
     .push(true)
     .push('x')
     .push("foo".to_string())
-    .finish();1
+    .finish();
 assert_eq!(val.as_tuple(), (&42, &true, &'x', &"foo".to_string()));
 ```
 
@@ -98,3 +98,5 @@ assert_eq!(
     }
 );
 ```
+
+[<|](https://github.com/orxfun/orx-meta/blob/main/docs/1_collection_of_anything.rs)======[|>](https://github.com/orxfun/orx-meta/blob/main/docs/3_composition_idea.rs)
