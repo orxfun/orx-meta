@@ -2,12 +2,12 @@
 
 > *you may find the example code [here](https://github.com/orxfun/orx-meta/blob/main/examples/5_solution_with_macros.rs)*
 
-The following are our conclusions from the previous chapter:
+The following are our notes on the problem from the previous chapter:
 
 * It is as simple as string replacement.
 * Unfortunately, we are not able to represent this with the type system.
 
-When we hear these two, macros are the obvious solution.
+When we hear these two, macros come to the rescue.
 
 **orx_meta** crate defines the non-restricted queue types `StQueue`, `EmptyQueue` and `Queue` for demonstration and for general use cases.
 

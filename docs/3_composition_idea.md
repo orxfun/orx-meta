@@ -4,30 +4,28 @@
 
 So far, with the queue types we have achieved:
 
-* to define a statically-typed collection of heterogeneous types, or equivalently, to define ad-hoc structs,
+* to define a statically-typed collection of heterogeneous types, or equivalently, to define incremental ad-hoc structs; and
 * to create a generic type-safe builder that lets us build any queue or any struct.
 
 However, we are still far away from the main goal.
 
-The main goal, which is not discussed thus far, is to have a heterogeneous collection of elements with a shared behavior. This collection must have a dynamic feel for ergonomics but must be statically typed for performance.
+The main goal is to have a heterogeneous collection of elements with a shared behavior. This collection must have a dynamic feel for ergonomics but must be statically typed for performance.
 
-If we go with the classical example, which is also used in the rust-book's [trait objects chapter](https://doc.rust-lang.org/book/ch18-02-trait-objects.html), we want a heterogeneous collection of things that we can draw, or that implements a trait `Draw`.
+If we go with the classical example, which is also used in the rust-book's [trait objects chapter](https://doc.rust-lang.org/book/ch18-02-trait-objects.html), we want a heterogeneous collection of things that we can draw, or that implement the trait `Draw`.
 
 The example goes as follows:
 
 * We have a `Draw` trait defined by the `fn draw(&self)` method.
-* A bunch of types implement this trait such as `Button` or `SelectBox`.
+* A bunch of components implement this trait such as `Button` or `SelectBox`.
 * Finally, we have a `Screen` which holds a heterogeneous collection of components implementing `Draw`. This allows the screen to draw all components.
 
 We will approach to this problem from a very different perspective than the one in the book.
 
 ## Defining Identity and Composition for Draw
 
-Let's define our `Screen` as a queue of heterogeneous types all of which implement `Draw`.
+Let's define our `Screen` as a queue of heterogeneous types, all of which implement `Draw`.
 
-The key idea of this approach is related to the question:
-
-> *what if we also require queue implementations to implement `Draw`?*
+***What if we also require queue implementations to implement `Draw`?***
 
 In other words, we require `StQueue: Draw`. Recall that we have two concrete queue implementations: `EmptyQueue` and non-empty `Queue`.
 
@@ -36,7 +34,7 @@ In other words, we require `StQueue: Draw`. Recall that we have two concrete que
 What should `EmptyQueue::draw(&self)` do?
 
 * This is where we define the **identity**.
-* The sensible thing to do for the draw example seems to be nothing.
+* For the draw example, the sensible thing to do is nothing.
 
 ```rust
 impl Draw for EmptyQueue {
@@ -57,9 +55,9 @@ Back to the question.
 What should `Queue:draw(&self)` do?
 
 * This is where we define **composition**.
-* A queue is composed of a front element that is `Draw` and a back queue that is also `Draw`. The right thing to do is probably to draw them both. You may decide on the order if it matters.
+* The right thing to do is probably to draw them both. You may decide on the order if it matters.
 
-The **back** being a queue might make it a bit confusing in order to how to implement this. An easy way to think about is to consider back as a single `Draw` element; This will be the case when the queue has two elements anyways. And if you properly define the composition for two shapes, it will work for any number of shapes.
+The **back** being a queue might make it a bit confusing. An easy way to think about is to consider the back as a single `Draw` element. This is the case when the queue has two elements anyways. And if we properly define the composition for two shapes, it will work for any number of shapes.
 
 ```rust
 impl<F, B> Draw for Queue<F, B>
@@ -236,14 +234,12 @@ let screen = Screen::new()
 screen.run();
 ```
 
-Pretty dynamic look and feel!
+Pretty dynamic look and feel.
 
-But strongly typed.
+But strongly typed!
 
 No box and no virtual function calls, whenever it matters.
 
-> Recall the interpretation of the queue as an ad-hoc struct. The `screen` above is as if we'd hand-written a particular screen struct with two button fields and one select box field.
-
-This is a very strong pattern.
+This is a very useful pattern.
 
 But there is a problem. You might've noticed that we do not import the queues from the **orx_meta** crate in the [example file]((https://github.com/orxfun/orx-meta/blob/main/examples/3_composition_idea.rs)). Instead, we re-implemented them. The problem is described in the next section, and then comes the solution.

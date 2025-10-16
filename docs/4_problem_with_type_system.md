@@ -30,9 +30,9 @@ struct EmptyQueue;
 impl StQueue for EmptyQueue {
     type PushBack<T> = Queue<T, EmptyQueue>; // a queue of 1 element
 
-    type Front = Self; // will never be accessed
+    type Front = Self;
 
-    type Back = Self; // will never be accessed
+    type Back = Self;
 
     fn push<T>(self, element: T) -> Self::PushBack<T> {
         Queue { front: element, back: EmptyQueue }
@@ -69,7 +69,7 @@ where
 
 ## Desired: Queue of Heterogeneous Elements with a Shared Behavior
 
-This time, we want all elements belong to a class of types, rather than anything. Without loss of generalization, let's say we want them all to implement the `CommonBehavior` trait.
+This time, we want all elements to belong to a class of types, rather than anything. Without loss of generalization, let's say we want them all to implement the `CommonBehavior` trait.
 
 We *almost* end up with the same implementations. The differences are highlighted with comments.
 
@@ -172,7 +172,7 @@ where
   * We want heterogeneous types with the restriction that all of them must implement `CommonBehavior`.
 - **# 2: we can only push/have elements implementing CommonBehavior**
   * To make sure that the queue only contains elements implementing `CommonBehavior`, we need to constraint the element type on the `push` method. Similarly, the front of the non-empty queue must implement the common behavior trait.
-- 3. **# 3: we require both of the queue implementations to implement CommonBehavior**
+- **# 3: we require both of the queue implementations to implement CommonBehavior**
   * Following up on the ideation described in the previous section, we require our queue implementations to implement the common behavior as well. This allows us to define composition. We need two implementations.
   * **3-a:** we implement the common behavior for the empty queue, this defines the identity behavior.
   * **3-b:** we also implement it for the non-empty queue to describes how to composed multiple elements for the common behavior.
@@ -219,7 +219,7 @@ trait StQueue<X>: X {
 }
 ```
 
-Here, the generic `X` is not a concrete type but it is a **generic trait**.
+Here, the generic `X` is not a concrete type but it is a **trait**.
 
 We want our `StQueue` trait to be generic over another trait `X`.
 

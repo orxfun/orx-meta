@@ -51,7 +51,7 @@ let val: MyQueue = QueueBuilder::<MyQueue>::new()
     .push(true)
     .push('x')
     .push("foo".to_string())
-    .finish();1
+    .finish();
 assert_eq!(val.as_tuple(), (&42, &true, &'x', &"foo".to_string()));
 ```
 
