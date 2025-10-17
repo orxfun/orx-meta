@@ -6,7 +6,7 @@
 
 Meta structures such as statically typed queues of heterogeneous elements.
 
-## queue module
+## A. queue module
 
 For detailed documentation, please see the sections:
 1. [Collection of Anything](https://github.com/orxfun/orx-meta/blob/main/docs/1_collection_of_anything.md)
@@ -16,7 +16,7 @@ For detailed documentation, please see the sections:
 5. [Solution with Macros](https://github.com/orxfun/orx-meta/blob/main/docs/5_solution_with_macros.md)
 6. [Summary](https://github.com/orxfun/orx-meta/blob/main/docs/6_summary.md)
 
-The queue module defines a statically typed queue of heterogeneous elements. Further, it provides a macro to define these queue types which are bounded by a specific set of traits; i.e., common behavior of the elements.
+The queue module defines a statically typed queue of heterogeneous elements. Further, it provides a macro to define these queue types which are bounded by a specific set of traits representing the common behavior of elements.
 
 These definitions are a bit confusing, it is better to see what we can achieve with some examples.
 
@@ -26,18 +26,21 @@ Please see the [zero-cost composition article](https://orxfun.github.io/orxfun-n
 
 Consider the classical problem about polymorphism, which is also used in rust book's [trait objects chapter](https://doc.rust-lang.org/book/ch18-02-trait-objects.html).
 
-* We have a `Draw` trait and various components such as button and select box implement this trait.
-* We have a `Screen` which is a collection of components that we can draw.
+* We have a `Draw` trait and various components, such as button and select box, implement this trait.
+* The `Screen` is a collection of components that we can draw.
 * Three methods are required for the screen.
-* Since screen is a collection of components, we need `new` to create an empty screen and `push` to add a component to it.
+* Screen is sort of a collection, so we need `new` to create an empty screen and `push` to add components.
 * The third method `draw` is related to the common behavior and draws all components on the screen.
 
-We can solve this problem using trait objects or using enums.
+Two well-known and different solutions are the trait object & enum solutions.
 
-Using the composition idea described here, we can also solve this with statically-typed queue as follows:
+Composition idea with statically-typed queues leads to a third approach which is considerably different.
+
+We first set up the draw trait and a couple of implementations for demonstration. Then, we provide the solution.
 
 ```rust
-// set up
+// # SET UP
+
 pub trait Draw {
     fn draw(&self);
 }
@@ -80,7 +83,7 @@ impl Draw for SelectBox {
     }
 }
 
-// solution by zero-cost composition
+// # SOLUTION
 
 orx_meta::define_queue!(
     elements => [ Draw ];
@@ -108,37 +111,42 @@ let screen = EmptyScreen::new()
 screen.draw();
 ```
 
-The [`define_queue`](https://docs.rs/orx-meta/latest/orx_meta/macro.define_queue.html) macro contains two blocks:
+The solution looks concise and ergonomic, similar to the alternative approaches with trait objects or enums.
 
-* The `queue` block is straightforward. We just provides the names of the three types. We name the statically typed queue trait as `StScreen`, the empty queue struct as `EmptyScreen` and the non-empty queue struct as `Screen`.
-* The `elements` block is central to the zero-cost composition idea. We provide a comma-separated list of traits that each of the heterogeneous elements of the queue must implement. This prevents us from pushing an element without `Draw` implementation to the screen.
+This implementation provides us the following properties.
 
-Furthermore, we require the empty queue and non-empty queue structs to implement the common behavior.
+#### **<span style="color:green">pros</span>**
+
+* It is open for extension. Another codebase can define a new component, implement `Draw` for it and add it to the screen.
+* No heap allocation required for the components. There is not even an allocation for a `Vec`.
+* No virtual method calls, all draw calls are statically dispatched. Further, there is no run-time branching. screen.draw() call can completely be inlined by the compiler as `btn1.draw(); btn2.draw(); sbox.draw(); btn3.draw();`.
+* No boilerplate code is required. We only define the **identity** and **composition** definitions of the shared behavior, `Draw`.
+
+#### **<span style="color:red">cons</span>**
+
+* `Screen` is a new type specific to the `Draw` trait, it has two generic parameters and it is more complex than the `Vec` wrappers that can be used in the alternative solutions.
+
+#### The Macro
+
+[`define_queue`](https://docs.rs/orx-meta/latest/orx_meta/macro.define_queue.html) macro contains two blocks:
+
+* The `queue` block is just giving names to (i) the statically-typed queue trait, (ii) empty queue struct and (iii) non-empty queue struct.
+* The `elements` block is the important part. Here, we provide a comma-separated list of traits that define the common behavior of heterogeneous elements of the queue.
+
+Then, the macro defines the queue types exactly as we saw in the expansion with only one difference. It adds the traits listed in elements as requirements to elements of the queues, and it requires the queues to implement these traits themselves.
 
 * We implement `Draw for EmptyScreen` where we define the behavior in the absence of an element.
 * We implement `Draw for Screen` where we define how to compose the common behavior when there are multiple elements.
 
-And this is sufficient to achieve the following **<span style="color:green">pros</span>**:
-
-* It is open for extension. Another codebase can implement a new component and add it to the screen.
-* No heap allocation required. Memory layout of the `screen` above is identical to the `struct MyScreen(Button, Button, SelectBox, Button)`. Further, there is not even an allocation for the `Vec`.
-* No virtual method calls, all `draw` calls are statically dispatched. Further, there is no run-time branching. Final `screen.draw()` call can completely be inlined by the compiler as `btn1.draw(); btn2.draw(); sbox.draw(); btn3.draw();`.
-
-On the other hand, this approach has the following **<span style="color:red">con</span>** compared to the alternatives:
-
-* `Screen` is a new type specific to the `Draw` trait, has two generic parameters and it is more complex than the `Vec` wrappers used in the alternative approaches.
-
-Notice that the types and macros defined in this crate aim to overcome this complexity and achieve the convenient use pattern illustrated above.
+Note that it is possible to omit the `elements` block in the macro. In this case, we could've added literally any elements to the queue, while the queue would be statically-typed in its elements.
 
 ### B. Generic Builder
 
-Note that it is possible to omit the `elements` block in the macro. In this case, we could've added literally any elements to the queue, while the queue would be statically-typed in its elements.
+And a statically-typed queue of anything is an ad-hoc struct.
 
-This is an ad-hoc struct.
+We already have tuples for this.
 
-We already have ad-hoc structs though, tuples.
-
-However, the statically-typed queue can still be useful in other ways, one of which is to define a generic type-safe builder for anything.
+However, incremental build capability of queues come in handy. For instance, it allows us to create a generic builder that we can use for any struct. Since the queues are statically-typed in its elements, the builder prevents calling push with wrong types or in wrong order, and prevents us from finishing early or late.
 
 ```rust
 use orx_meta::queue::*;
@@ -178,9 +186,9 @@ assert_eq!(
 );
 ```
 
-Note that each `struct` can be represented as a queue, type of which can be obtained by the [`queue_of`](https://docs.rs/orx-meta/latest/orx_meta/macro.queue_of.html) helper macro.
+Note that any `struct` can be represented as a queue, type of which can be obtained by the [`queue_of`](https://docs.rs/orx-meta/latest/orx_meta/macro.queue_of.html) helper macro.
 
-It is straightforward to implement `From` queue for the struct.
+If we want to use the queue builder, it is helpful and straightforward to provide `From` queue implementation for the complex struct.
 
 Then, we can create a [`QueueBuilder`](https://docs.rs/orx-meta/latest/orx_meta/queue/struct.QueueBuilder.html) with this particular queue type as its generic argument, defining the target type to achieve. And we can safely build our complex type.
 
