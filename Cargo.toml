@@ -11,8 +11,7 @@ keywords = ["queue", "meta", "polymorphism", "type", "recursive"]
 categories = ["data-structures", "rust-patterns", "no-std"]
 
 [dependencies]
-repeated = { version = "0.1.2", registry = "artifactory" }
-repetitive = { version = "0.3.2", registry = "artifactory" }
+# erased-serde = { version = "0.4.8", registry = "artifactory" }
 
 [dev-dependencies]
 criterion = "0.7.0"
@@ -22,6 +21,7 @@ serde = { version = "1.0.219", default-features = false }
 serde_json = { version = "1.0.140", default-features = false, features = [
     "std",
 ] }
+typetag = { version = "0.2.21" }
 
 [[bench]]
 name = "queue_build"

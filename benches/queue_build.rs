@@ -1,6 +1,5 @@
 #![allow(dead_code)]
 use criterion::{BenchmarkId, Criterion, criterion_group, criterion_main};
-use repetitive::repetitive;
 
 const SEED: u64 = 9562;
 
@@ -151,19 +150,6 @@ fn queue() {
     //         }
     //     }
     // }
-
-    repetitive! {
-        @for i in 2..=4 {
-            match (@i as usize).is_multiple_of(3) {
-                false => {
-                    let queue = queue.push(Button::next(@i));
-                },
-                true => {
-                    let queue = queue.push(Button::next(@i));
-                },
-            }
-        }
-    }
 
     let q = queue;
 }

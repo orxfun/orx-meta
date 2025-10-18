@@ -1,49 +1,33 @@
 #![allow(dead_code)]
+use serde::{Deserialize, Serialize};
 
+#[typetag::serde(tag = "type")]
 pub trait Draw {
     fn draw(&self);
 }
 
-#[derive(Debug)]
+#[derive(Debug, Serialize, Deserialize)]
 pub struct Button {
     width: u32,
     height: u32,
     label: String,
 }
 
-impl Button {
-    pub fn new(width: u32, height: u32, label: String) -> Self {
-        Self {
-            width,
-            height,
-            label,
-        }
-    }
-}
-
+#[typetag::serde]
 impl Draw for Button {
     fn draw(&self) {
         println!("{self:?}");
     }
 }
 
-#[derive(Debug)]
+#[derive(Debug, Serialize, Deserialize)]
 pub struct SelectBox {
     width: u32,
     height: u32,
     options: Vec<String>,
 }
 
-impl SelectBox {
-    pub fn new(width: u32, height: u32, options: Vec<String>) -> Self {
-        Self {
-            width,
-            height,
-            options,
-        }
-    }
-}
-
+#[typetag::serde]
 impl Draw for SelectBox {
     fn draw(&self) {
         println!("{self:?}");

@@ -1,0 +1,28 @@
+[
+    {
+        "type": "Button",
+        "width": 3,
+        "height": 4,
+        "label": "home"
+    },
+    {
+        "type": "Button",
+        "width": 5,
+        "height": 4,
+        "label": "about"
+    },
+    {
+        "type": "SelectBox",
+        "width": 5,
+        "height": 4,
+        "options": [
+            "one"
+        ]
+    },
+    {
+        "type": "Button",
+        "width": 6,
+        "height": 6,
+        "label": "login"
+    }
+]

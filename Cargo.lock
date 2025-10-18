@@ -8,16 +8,7 @@ version = "1.1.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "8e60d3430d3a69478ad0993f19238d2df97c507009a52b3c10addcd7f6bcb916"
 dependencies = [
- "memchr 2.7.6 (registry+https://github.com/rust-lang/crates.io-index)",
-]
-
-[[package]]
-name = "aho-corasick"
-version = "1.1.3"
-source = "sparse+https://artifactory.dhl.com/artifactory/api/cargo/cargo-remote/index/"
-checksum = "8e60d3430d3a69478ad0993f19238d2df97c507009a52b3c10addcd7f6bcb916"
-dependencies = [
- "memchr 2.7.6 (sparse+https://artifactory.dhl.com/artifactory/api/cargo/cargo-remote/index/)",
+ "memchr",
 ]
 
 [[package]]
@@ -64,7 +55,7 @@ checksum = "42e69ffd6f0917f5c029256a24d0161db17cea3997d185db0d35926308770f0e"
 dependencies = [
  "ciborium-io",
  "ciborium-ll",
- "serde 1.0.228 (registry+https://github.com/rust-lang/crates.io-index)",
+ "serde",
 ]
 
 [[package]]
@@ -124,8 +115,8 @@ dependencies = [
  "oorandom",
  "plotters",
  "rayon",
- "regex 1.12.2 (registry+https://github.com/rust-lang/crates.io-index)",
- "serde 1.0.228 (registry+https://github.com/rust-lang/crates.io-index)",
+ "regex",
+ "serde",
  "serde_json",
  "tinytemplate",
  "walkdir",
@@ -179,10 +170,15 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "48c757948c5ede0e46177b7add2e67155f70e33c07fea8284df6576da70b3719"
 
 [[package]]
-name = "foldhash"
-version = "0.1.5"
-source = "sparse+https://artifactory.dhl.com/artifactory/api/cargo/cargo-remote/index/"
-checksum = "d9c4f5dac5e15c24eb999c26181a6ca40b39fe946cbe4c263c7209467bc83af2"
+name = "erased-serde"
+version = "0.4.8"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "259d404d09818dec19332e31d94558aeb442fea04c817006456c24b5460bbd4b"
+dependencies = [
+ "serde",
+ "serde_core",
+ "typeid",
+]
 
 [[package]]
 name = "getrandom"
@@ -208,12 +204,12 @@ dependencies = [
 ]
 
 [[package]]
-name = "hashbrown"
-version = "0.15.5"
-source = "sparse+https://artifactory.dhl.com/artifactory/api/cargo/cargo-remote/index/"
-checksum = "9229cfe53dfd69f0609a49f65461bd93001ea1ef889cd5529dd176593f5338a1"
+name = "inventory"
+version = "0.3.21"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "bc61209c082fbeb19919bee74b176221b27223e27b65d781eb91af24eb1fb46e"
 dependencies = [
- "foldhash",
+ "rustversion",
 ]
 
 [[package]]
@@ -242,12 +238,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "lazy_static"
-version = "1.5.0"
-source = "sparse+https://artifactory.dhl.com/artifactory/api/cargo/cargo-remote/index/"
-checksum = "bbd2bcb4c963f2ddae06a2efc7e9f3591312473c50c6685e1f298068316e66fe"
-
-[[package]]
 name = "libc"
 version = "0.2.177"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -263,12 +253,6 @@ checksum = "34080505efa8e45a4b816c349525ebe327ceaa8559756f0356cba97ef3bf7432"
 name = "memchr"
 version = "2.7.6"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "f52b00d39961fc5b2736ea853c9cc86238e165017a493d1d5c8eac6bdc4cc273"
-
-[[package]]
-name = "memchr"
-version = "2.7.6"
-source = "sparse+https://artifactory.dhl.com/artifactory/api/cargo/cargo-remote/index/"
 checksum = "f52b00d39961fc5b2736ea853c9cc86238e165017a493d1d5c8eac6bdc4cc273"
 
 [[package]]
@@ -299,10 +283,9 @@ dependencies = [
  "criterion",
  "rand",
  "rand_chacha",
- "repeated",
- "repetitive",
- "serde 1.0.228 (registry+https://github.com/rust-lang/crates.io-index)",
+ "serde",
  "serde_json",
+ "typetag",
 ]
 
 [[package]]
@@ -348,16 +331,7 @@ version = "1.0.101"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "89ae43fd86e4158d6db51ad8e2b80f313af9cc74f5c0e03ccb87de09998732de"
 dependencies = [
- "unicode-ident 1.0.19 (registry+https://github.com/rust-lang/crates.io-index)",
-]
-
-[[package]]
-name = "proc-macro2"
-version = "1.0.101"
-source = "sparse+https://artifactory.dhl.com/artifactory/api/cargo/cargo-remote/index/"
-checksum = "89ae43fd86e4158d6db51ad8e2b80f313af9cc74f5c0e03ccb87de09998732de"
-dependencies = [
- "unicode-ident 1.0.19 (sparse+https://artifactory.dhl.com/artifactory/api/cargo/cargo-remote/index/)",
+ "unicode-ident",
 ]
 
 [[package]]
@@ -366,16 +340,7 @@ version = "1.0.41"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "ce25767e7b499d1b604768e7cde645d14cc8584231ea6b295e9c9eb22c02e1d1"
 dependencies = [
- "proc-macro2 1.0.101 (registry+https://github.com/rust-lang/crates.io-index)",
-]
-
-[[package]]
-name = "quote"
-version = "1.0.41"
-source = "sparse+https://artifactory.dhl.com/artifactory/api/cargo/cargo-remote/index/"
-checksum = "ce25767e7b499d1b604768e7cde645d14cc8584231ea6b295e9c9eb22c02e1d1"
-dependencies = [
- "proc-macro2 1.0.101 (sparse+https://artifactory.dhl.com/artifactory/api/cargo/cargo-remote/index/)",
+ "proc-macro2",
 ]
 
 [[package]]
@@ -439,22 +404,10 @@ version = "1.12.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "843bc0191f75f3e22651ae5f1e72939ab2f72a4bc30fa80a066bd66edefc24d4"
 dependencies = [
- "aho-corasick 1.1.3 (registry+https://github.com/rust-lang/crates.io-index)",
- "memchr 2.7.6 (registry+https://github.com/rust-lang/crates.io-index)",
- "regex-automata 0.4.13 (registry+https://github.com/rust-lang/crates.io-index)",
- "regex-syntax 0.8.8 (registry+https://github.com/rust-lang/crates.io-index)",
-]
-
-[[package]]
-name = "regex"
-version = "1.12.2"
-source = "sparse+https://artifactory.dhl.com/artifactory/api/cargo/cargo-remote/index/"
-checksum = "843bc0191f75f3e22651ae5f1e72939ab2f72a4bc30fa80a066bd66edefc24d4"
-dependencies = [
- "aho-corasick 1.1.3 (sparse+https://artifactory.dhl.com/artifactory/api/cargo/cargo-remote/index/)",
- "memchr 2.7.6 (sparse+https://artifactory.dhl.com/artifactory/api/cargo/cargo-remote/index/)",
- "regex-automata 0.4.13 (sparse+https://artifactory.dhl.com/artifactory/api/cargo/cargo-remote/index/)",
- "regex-syntax 0.8.8 (sparse+https://artifactory.dhl.com/artifactory/api/cargo/cargo-remote/index/)",
+ "aho-corasick",
+ "memchr",
+ "regex-automata",
+ "regex-syntax",
 ]
 
 [[package]]
@@ -463,20 +416,9 @@ version = "0.4.13"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "5276caf25ac86c8d810222b3dbb938e512c55c6831a10f3e6ed1c93b84041f1c"
 dependencies = [
- "aho-corasick 1.1.3 (registry+https://github.com/rust-lang/crates.io-index)",
- "memchr 2.7.6 (registry+https://github.com/rust-lang/crates.io-index)",
- "regex-syntax 0.8.8 (registry+https://github.com/rust-lang/crates.io-index)",
-]
-
-[[package]]
-name = "regex-automata"
-version = "0.4.13"
-source = "sparse+https://artifactory.dhl.com/artifactory/api/cargo/cargo-remote/index/"
-checksum = "5276caf25ac86c8d810222b3dbb938e512c55c6831a10f3e6ed1c93b84041f1c"
-dependencies = [
- "aho-corasick 1.1.3 (sparse+https://artifactory.dhl.com/artifactory/api/cargo/cargo-remote/index/)",
- "memchr 2.7.6 (sparse+https://artifactory.dhl.com/artifactory/api/cargo/cargo-remote/index/)",
- "regex-syntax 0.8.8 (sparse+https://artifactory.dhl.com/artifactory/api/cargo/cargo-remote/index/)",
+ "aho-corasick",
+ "memchr",
+ "regex-syntax",
 ]
 
 [[package]]
@@ -484,36 +426,6 @@ name = "regex-syntax"
 version = "0.8.8"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "7a2d987857b319362043e95f5353c0535c1f58eec5336fdfcf626430af7def58"
-
-[[package]]
-name = "regex-syntax"
-version = "0.8.8"
-source = "sparse+https://artifactory.dhl.com/artifactory/api/cargo/cargo-remote/index/"
-checksum = "7a2d987857b319362043e95f5353c0535c1f58eec5336fdfcf626430af7def58"
-
-[[package]]
-name = "repeated"
-version = "0.1.2"
-source = "sparse+https://artifactory.dhl.com/artifactory/api/cargo/cargo-remote/index/"
-checksum = "62975ec6e4fea6a60dfa1a6e4e0aa0f92bfcafdf084949264020737b1ad29199"
-dependencies = [
- "lazy_static",
- "proc-macro2 1.0.101 (sparse+https://artifactory.dhl.com/artifactory/api/cargo/cargo-remote/index/)",
- "regex 1.12.2 (sparse+https://artifactory.dhl.com/artifactory/api/cargo/cargo-remote/index/)",
- "syn 1.0.109",
-]
-
-[[package]]
-name = "repetitive"
-version = "0.3.2"
-source = "sparse+https://artifactory.dhl.com/artifactory/api/cargo/cargo-remote/index/"
-checksum = "790e0f3a0b42b52952d5413369ce58d3d9558875592897260a4560416df87188"
-dependencies = [
- "proc-macro2 1.0.101 (sparse+https://artifactory.dhl.com/artifactory/api/cargo/cargo-remote/index/)",
- "quote 1.0.41 (sparse+https://artifactory.dhl.com/artifactory/api/cargo/cargo-remote/index/)",
- "string-interner",
- "syn 2.0.107 (sparse+https://artifactory.dhl.com/artifactory/api/cargo/cargo-remote/index/)",
-]
 
 [[package]]
 name = "rustversion"
@@ -542,17 +454,8 @@ version = "1.0.228"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "9a8e94ea7f378bd32cbbd37198a4a91436180c5bb472411e48b5ec2e2124ae9e"
 dependencies = [
- "serde_core 1.0.228 (registry+https://github.com/rust-lang/crates.io-index)",
- "serde_derive 1.0.228 (registry+https://github.com/rust-lang/crates.io-index)",
-]
-
-[[package]]
-name = "serde"
-version = "1.0.228"
-source = "sparse+https://artifactory.dhl.com/artifactory/api/cargo/cargo-remote/index/"
-checksum = "9a8e94ea7f378bd32cbbd37198a4a91436180c5bb472411e48b5ec2e2124ae9e"
-dependencies = [
- "serde_core 1.0.228 (sparse+https://artifactory.dhl.com/artifactory/api/cargo/cargo-remote/index/)",
+ "serde_core",
+ "serde_derive",
 ]
 
 [[package]]
@@ -561,16 +464,7 @@ version = "1.0.228"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "41d385c7d4ca58e59fc732af25c3983b67ac852c1a25000afe1175de458b67ad"
 dependencies = [
- "serde_derive 1.0.228 (registry+https://github.com/rust-lang/crates.io-index)",
-]
-
-[[package]]
-name = "serde_core"
-version = "1.0.228"
-source = "sparse+https://artifactory.dhl.com/artifactory/api/cargo/cargo-remote/index/"
-checksum = "41d385c7d4ca58e59fc732af25c3983b67ac852c1a25000afe1175de458b67ad"
-dependencies = [
- "serde_derive 1.0.228 (sparse+https://artifactory.dhl.com/artifactory/api/cargo/cargo-remote/index/)",
+ "serde_derive",
 ]
 
 [[package]]
@@ -579,20 +473,9 @@ version = "1.0.228"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "d540f220d3187173da220f885ab66608367b6574e925011a9353e4badda91d79"
 dependencies = [
- "proc-macro2 1.0.101 (registry+https://github.com/rust-lang/crates.io-index)",
- "quote 1.0.41 (registry+https://github.com/rust-lang/crates.io-index)",
- "syn 2.0.107 (registry+https://github.com/rust-lang/crates.io-index)",
-]
-
-[[package]]
-name = "serde_derive"
-version = "1.0.228"
-source = "sparse+https://artifactory.dhl.com/artifactory/api/cargo/cargo-remote/index/"
-checksum = "d540f220d3187173da220f885ab66608367b6574e925011a9353e4badda91d79"
-dependencies = [
- "proc-macro2 1.0.101 (sparse+https://artifactory.dhl.com/artifactory/api/cargo/cargo-remote/index/)",
- "quote 1.0.41 (sparse+https://artifactory.dhl.com/artifactory/api/cargo/cargo-remote/index/)",
- "syn 2.0.107 (sparse+https://artifactory.dhl.com/artifactory/api/cargo/cargo-remote/index/)",
+ "proc-macro2",
+ "quote",
+ "syn",
 ]
 
 [[package]]
@@ -602,31 +485,10 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "402a6f66d8c709116cf22f558eab210f5a50187f702eb4d7e5ef38d9a7f1c79c"
 dependencies = [
  "itoa",
- "memchr 2.7.6 (registry+https://github.com/rust-lang/crates.io-index)",
+ "memchr",
  "ryu",
- "serde 1.0.228 (registry+https://github.com/rust-lang/crates.io-index)",
- "serde_core 1.0.228 (registry+https://github.com/rust-lang/crates.io-index)",
-]
-
-[[package]]
-name = "string-interner"
-version = "0.19.0"
-source = "sparse+https://artifactory.dhl.com/artifactory/api/cargo/cargo-remote/index/"
-checksum = "23de088478b31c349c9ba67816fa55d9355232d63c3afea8bf513e31f0f1d2c0"
-dependencies = [
- "hashbrown",
- "serde 1.0.228 (sparse+https://artifactory.dhl.com/artifactory/api/cargo/cargo-remote/index/)",
-]
-
-[[package]]
-name = "syn"
-version = "1.0.109"
-source = "sparse+https://artifactory.dhl.com/artifactory/api/cargo/cargo-remote/index/"
-checksum = "72b64191b275b66ffe2469e8af2c1cfe3bafa67b529ead792a6d0160888b4237"
-dependencies = [
- "proc-macro2 1.0.101 (sparse+https://artifactory.dhl.com/artifactory/api/cargo/cargo-remote/index/)",
- "quote 1.0.41 (sparse+https://artifactory.dhl.com/artifactory/api/cargo/cargo-remote/index/)",
- "unicode-ident 1.0.19 (sparse+https://artifactory.dhl.com/artifactory/api/cargo/cargo-remote/index/)",
+ "serde",
+ "serde_core",
 ]
 
 [[package]]
@@ -635,20 +497,9 @@ version = "2.0.107"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "2a26dbd934e5451d21ef060c018dae56fc073894c5a7896f882928a76e6d081b"
 dependencies = [
- "proc-macro2 1.0.101 (registry+https://github.com/rust-lang/crates.io-index)",
- "quote 1.0.41 (registry+https://github.com/rust-lang/crates.io-index)",
- "unicode-ident 1.0.19 (registry+https://github.com/rust-lang/crates.io-index)",
-]
-
-[[package]]
-name = "syn"
-version = "2.0.107"
-source = "sparse+https://artifactory.dhl.com/artifactory/api/cargo/cargo-remote/index/"
-checksum = "2a26dbd934e5451d21ef060c018dae56fc073894c5a7896f882928a76e6d081b"
-dependencies = [
- "proc-macro2 1.0.101 (sparse+https://artifactory.dhl.com/artifactory/api/cargo/cargo-remote/index/)",
- "quote 1.0.41 (sparse+https://artifactory.dhl.com/artifactory/api/cargo/cargo-remote/index/)",
- "unicode-ident 1.0.19 (sparse+https://artifactory.dhl.com/artifactory/api/cargo/cargo-remote/index/)",
+ "proc-macro2",
+ "quote",
+ "unicode-ident",
 ]
 
 [[package]]
@@ -657,20 +508,44 @@ version = "1.2.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "be4d6b5f19ff7664e8c98d03e2139cb510db9b0a60b55f8e8709b689d939b6bc"
 dependencies = [
- "serde 1.0.228 (registry+https://github.com/rust-lang/crates.io-index)",
+ "serde",
  "serde_json",
+]
+
+[[package]]
+name = "typeid"
+version = "1.0.3"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "bc7d623258602320d5c55d1bc22793b57daff0ec7efc270ea7d55ce1d5f5471c"
+
+[[package]]
+name = "typetag"
+version = "0.2.21"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "be2212c8a9b9bcfca32024de14998494cf9a5dfa59ea1b829de98bac374b86bf"
+dependencies = [
+ "erased-serde",
+ "inventory",
+ "once_cell",
+ "serde",
+ "typetag-impl",
+]
+
+[[package]]
+name = "typetag-impl"
+version = "0.2.21"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "27a7a9b72ba121f6f1f6c3632b85604cac41aedb5ddc70accbebb6cac83de846"
+dependencies = [
+ "proc-macro2",
+ "quote",
+ "syn",
 ]
 
 [[package]]
 name = "unicode-ident"
 version = "1.0.19"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "f63a545481291138910575129486daeaf8ac54aee4387fe7906919f7830c7d9d"
-
-[[package]]
-name = "unicode-ident"
-version = "1.0.19"
-source = "sparse+https://artifactory.dhl.com/artifactory/api/cargo/cargo-remote/index/"
 checksum = "f63a545481291138910575129486daeaf8ac54aee4387fe7906919f7830c7d9d"
 
 [[package]]
@@ -713,9 +588,9 @@ checksum = "671c9a5a66f49d8a47345ab942e2cb93c7d1d0339065d4f8139c486121b43b19"
 dependencies = [
  "bumpalo",
  "log",
- "proc-macro2 1.0.101 (registry+https://github.com/rust-lang/crates.io-index)",
- "quote 1.0.41 (registry+https://github.com/rust-lang/crates.io-index)",
- "syn 2.0.107 (registry+https://github.com/rust-lang/crates.io-index)",
+ "proc-macro2",
+ "quote",
+ "syn",
  "wasm-bindgen-shared",
 ]
 
@@ -725,7 +600,7 @@ version = "0.2.104"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "7ca60477e4c59f5f2986c50191cd972e3a50d8a95603bc9434501cf156a9a119"
 dependencies = [
- "quote 1.0.41 (registry+https://github.com/rust-lang/crates.io-index)",
+ "quote",
  "wasm-bindgen-macro-support",
 ]
 
@@ -735,9 +610,9 @@ version = "0.2.104"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "9f07d2f20d4da7b26400c9f4a0511e6e0345b040694e8a75bd41d578fa4421d7"
 dependencies = [
- "proc-macro2 1.0.101 (registry+https://github.com/rust-lang/crates.io-index)",
- "quote 1.0.41 (registry+https://github.com/rust-lang/crates.io-index)",
- "syn 2.0.107 (registry+https://github.com/rust-lang/crates.io-index)",
+ "proc-macro2",
+ "quote",
+ "syn",
  "wasm-bindgen-backend",
  "wasm-bindgen-shared",
 ]
@@ -748,7 +623,7 @@ version = "0.2.104"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "bad67dc8b2a1a6e5448428adec4c3e84c43e561d8c9ee8a9e5aabeb193ec41d1"
 dependencies = [
- "unicode-ident 1.0.19 (registry+https://github.com/rust-lang/crates.io-index)",
+ "unicode-ident",
 ]
 
 [[package]]
@@ -806,7 +681,7 @@ version = "0.8.27"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "88d2b8d9c68ad2b9e4340d7832716a4d21a22a1154777ad56ea55c51a9cf3831"
 dependencies = [
- "proc-macro2 1.0.101 (registry+https://github.com/rust-lang/crates.io-index)",
- "quote 1.0.41 (registry+https://github.com/rust-lang/crates.io-index)",
- "syn 2.0.107 (registry+https://github.com/rust-lang/crates.io-index)",
+ "proc-macro2",
+ "quote",
+ "syn",
 ]
