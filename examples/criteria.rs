@@ -11,11 +11,11 @@ pub struct Status {
     violations: Vec<String>,
 }
 
-pub trait Criteria {
+pub trait Criterion {
     fn evaluate(&self, tour: &Tour, previous_status: Status) -> Status;
 }
 
-// duration
+// distance
 
 pub struct Distance {
     distances: HashMap<(City, City), u64>,
@@ -46,7 +46,7 @@ impl Distance {
     }
 }
 
-impl Criteria for Distance {
+impl Criterion for Distance {
     fn evaluate(&self, tour: &Tour, mut status: Status) -> Status {
         for (a, b) in tour.0.iter().zip(tour.0.iter().skip(1)) {
             let distance_km = self.distances.get(&(*a, *b)).unwrap();
@@ -74,7 +74,7 @@ impl Capacity {
     }
 }
 
-impl Criteria for Capacity {
+impl Criterion for Capacity {
     fn evaluate(&self, tour: &Tour, mut status: Status) -> Status {
         let vehicle_capacity = self.vehicle_capacity as i64;
         let mut current_capacity = 0;
@@ -83,7 +83,7 @@ impl Criteria for Capacity {
             current_capacity += volume;
             if current_capacity > vehicle_capacity {
                 let violation = format!(
-                    "Capacity reached {} at some point while vehicle capacity is {}.",
+                    "Capacity reached {} while vehicle capacity is {}.",
                     current_capacity, self.vehicle_capacity
                 );
                 status.violations.push(violation);
@@ -109,7 +109,7 @@ impl Precedence {
     }
 }
 
-impl Criteria for Precedence {
+impl Criterion for Precedence {
     fn evaluate(&self, tour: &Tour, mut status: Status) -> Status {
         for (a, b) in &self.must_precede {
             let pos_a = tour.0.iter().position(|x| x == a).unwrap();
@@ -127,19 +127,19 @@ impl Criteria for Precedence {
 // queue
 
 orx_meta::define_queue!(
-    elements => [ Criteria ];
-    queue => [ StRules; EmptyRules, Rules ];
+    elements => [ Criterion ];
+    queue => [ StCriteria; EmptyCriteria, Criteria ];
 );
 
-impl Criteria for EmptyRules {
-    // identity: do nothing
+impl Criterion for EmptyCriteria {
+    // identity: return the previous state
     fn evaluate(&self, _: &Tour, previous_status: Status) -> Status {
         previous_status
     }
 }
 
-impl<F: Criteria, B: StRules> Criteria for Rules<F, B> {
-    // composition: draw them both
+impl<F: Criterion, B: StCriteria> Criterion for Criteria<F, B> {
+    // composition: evaluate them both
     fn evaluate(&self, tour: &Tour, status: Status) -> Status {
         let status = self.f.evaluate(tour, status);
         self.b.evaluate(tour, status)
@@ -152,38 +152,38 @@ fn use_case1() {
     println!("\n\n# Use case with criteria [Distance]");
     let tour = Tour(vec![City(0), City(1), City(2), City(3)]);
 
-    let rules = Rules::new(Distance::new_example());
-    let status = rules.evaluate(&tour, Status::default());
-    dbg!(status);
+    let criteria = Criteria::new(Distance::new_example());
+    let status = criteria.evaluate(&tour, Status::default());
+    println!("{status:?}");
 }
 
 fn use_case2() {
     println!("\n\n# Use case with criteria [Distance, Precedence]");
     let tour = Tour(vec![City(0), City(1), City(2), City(3)]);
 
-    let rules = Rules::new(Distance::new_example()).push(Precedence::new_example());
-    let status = rules.evaluate(&tour, Status::default());
-    dbg!(status);
+    let criteria = Criteria::new(Distance::new_example()).push(Precedence::new_example());
+    let status = criteria.evaluate(&tour, Status::default());
+    println!("{status:?}");
 }
 
 fn use_case3() {
     println!("\n\n# Use case with criteria [Distance, Capacity]");
     let tour = Tour(vec![City(0), City(1), City(2), City(3)]);
 
-    let rules = Rules::new(Distance::new_example()).push(Capacity::new_example());
-    let status = rules.evaluate(&tour, Status::default());
-    dbg!(status);
+    let criteria = Criteria::new(Distance::new_example()).push(Capacity::new_example());
+    let status = criteria.evaluate(&tour, Status::default());
+    println!("{status:?}");
 }
 
 fn use_case4() {
     println!("\n\n# Use case with criteria [Distance, Capacity, Precedence]");
     let tour = Tour(vec![City(0), City(1), City(2), City(3)]);
 
-    let rules = Rules::new(Distance::new_example())
+    let criteria = Criteria::new(Distance::new_example())
         .push(Capacity::new_example())
         .push(Precedence::new_example());
-    let status = rules.evaluate(&tour, Status::default());
-    dbg!(status);
+    let status = criteria.evaluate(&tour, Status::default());
+    println!("{status:?}");
 }
 
 fn main() {
