@@ -124,7 +124,8 @@ This implementation provides us the following properties.
 
 #### **<span style="color:red">cons</span>**
 
-* `Screen` is a new type specific to the `Draw` trait, it has two generic parameters and it is more complex than the `Vec` wrappers that can be used in the alternative solutions.
+* `Screen` with generic parameters is a more complicated type than the `Vec` wrappers used in alternative approaches. On the other hand, we can conveniently work with it without needing its concrete type since it can be used as `impl Draw`.
+* More importantly, it is statically-typed. This means that concrete types of all of its elements must be known at the compile time.
 
 #### The Macro
 
@@ -139,6 +140,156 @@ Then, the macro defines the queue types exactly as we saw in the expansion with 
 * We implement `Draw for Screen` where we define how to compose the common behavior when there are multiple elements.
 
 Note that it is possible to omit the `elements` block in the macro. In this case, we could've added literally any elements to the queue, while the queue would be statically-typed in its elements.
+
+#### Potential Use Case #1: As a Collection
+
+Although it is statically-typed, we can still use the queue as a collection. But recall that we have to know types of all elements during compile time. This fits to situations where we instantiate the collection during the start up of a service.
+
+We often parse configuration files into the collection. For instance, we can have a json file listing components to be included in the screen.
+
+In this case, instead of the following initialization using trait objects:
+
+```rust ignore
+// # json file
+[
+    {
+        "type": "Button",
+        "width": 3,
+        "height": 4,
+        "label": "home"
+    },
+    {
+        "type": "Button",
+        "width": 5,
+        "height": 4,
+        "label": "about"
+    },
+    {
+        "type": "SelectBox",
+        "width": 5,
+        "height": 4,
+        "options": [
+            "one"
+        ]
+    },
+    {
+        "type": "Button",
+        "width": 6,
+        "height": 6,
+        "label": "login"
+    }
+]
+    
+// # start up code (trait objects)
+
+fn new_screen() -> Vec<Box<dyn Draw>> {
+    let data = std::fs::read_to_string("path").unwrap();
+    serde_json::from_str(&data).unwrap()
+}
+```
+
+we can use the following initialization as a statically-typed queue:
+
+```rust ignore
+// # start up code (statically-typed queue)
+
+fn new_screen() -> impl Draw {
+    EmptyScreen::new()
+        .push(Button {
+            width: 3,
+            height: 4,
+            label: "home".to_string(),
+        })
+        .push(Button {
+            width: 5,
+            height: 4,
+            label: "about".to_string(),
+        })
+        .push(SelectBox {
+            width: 5,
+            height: 4,
+            options: vec!["one".to_string()],
+        })
+        .push(Button {
+            width: 6,
+            height: 6,
+            label: "login".to_string(),
+        })
+}
+```
+
+Whenever configuration changes, we must re-compile with the queue approach. On the other hand, initialization can never fail. Further, the queue brings performance and memory advantages.
+
+For a screen containing 200 components with toy draw implementations, statically-typed queue approach is two times faster than trait objects or enum-components approaches. You may see the corresponding benchmarks [here](https://github.com/orxfun/orx-meta/tree/main/benches).
+
+Further, being memory efficient and not requiring heap allocation makes it beneficial for embedded applications.
+
+We must, however, be careful about the queue size. As far as I experienced, the compiler does not seem to be happy for queues with more than 256 elements.
+
+You may see the entire example [here](https://github.com/orxfun/orx-meta/tree/main/examples/screen).
+
+
+#### Potential Use Case #2: Tool to deal with Custom Requirements
+
+This has been the main idea to develop the queues for.
+
+Assume that we are maintaining a performance-critical tool with with, say, 5 features. We want our tool to be useful for as many use cases as possible. Every use case requires a different subset of our features. There exist `2^5-1 = 31` potential use cases. How can we cover them all?
+
+We will not have fun if we need to manually combine the features; or if we lose performance due to abstraction.
+
+On the other hand, if we can define the composition of these features using a statically-typed queue:
+
+* We can work on and maintain each feature in isolation.
+* Implementing the 6-th feature allows us cover 32 more potential use cases, making it well-worth the effort.
+* And we will have access to all combinations of these features without any manual work and without loss of performance.
+
+Assume, for instance, we have different `Criterion` implementations and we define our `Criteria` as a statically-typed queue. Then, we can conveniently create different subsets of criteria to handle different use cases without loss of performance.
+
+```rust ignore
+fn use_case1() {
+    println!("# Use case with criteria [Distance]");
+    let tour = Tour(vec![City(0), City(1), City(2), City(3)]);
+
+    let criteria = Criteria::new(Distance::new_example());
+    let status = criteria.evaluate(&tour, Status::default());
+    println!("{status:?}");
+}
+
+fn use_case2() {
+    println!("# Use case with criteria [Distance, Precedence]");
+    let tour = Tour(vec![City(0), City(1), City(2), City(3)]);
+
+    let criteria = Criteria::new(Distance::new_example()).push(Precedence::new_example());
+    let status = criteria.evaluate(&tour, Status::default());
+    println!("{status:?}");
+}
+
+fn use_case3() {
+    println!("# Use case with criteria [Distance, Capacity]");
+    let tour = Tour(vec![City(0), City(1), City(2), City(3)]);
+
+    let criteria = Criteria::new(Distance::new_example()).push(Capacity::new_example());
+    let status = criteria.evaluate(&tour, Status::default());
+    println!("{status:?}");
+}
+
+fn use_case4() {
+    println!("# Use case with criteria [Distance, Capacity, Precedence]");
+    let tour = Tour(vec![City(0), City(1), City(2), City(3)]);
+
+    let criteria = Criteria::new(Distance::new_example())
+        .push(Capacity::new_example())
+        .push(Precedence::new_example());
+    let status = criteria.evaluate(&tour, Status::default());
+    println!("{status:?}");
+}
+```
+
+You may see the entire example [here](https://github.com/orxfun/orx-meta/tree/main/examples/criteria).
+
+
+
+
 
 ### B. Generic Builder
 

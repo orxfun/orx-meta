@@ -1,6 +1,6 @@
 [package]
 name = "orx-meta"
-version = "1.0.1"
+version = "1.0.2"
 edition = "2024"
 authors = ["orxfun <orx.ugur.arikan@gmail.com>"]
 readme = "README.md"
