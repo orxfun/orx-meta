@@ -1,0 +1,64 @@
+[
+    {
+        "type": "Button",
+        "width": 3,
+        "height": 4,
+        "label": "home"
+    },
+    {
+        "type": "Button",
+        "width": 5,
+        "height": 4,
+        "label": "about"
+    },
+    {
+        "type": "SelectBox",
+        "width": 5,
+        "height": 4,
+        "options": [
+            "one"
+        ]
+    },
+    {
+        "type": "Button",
+        "width": 7,
+        "height": 6,
+        "label": "login"
+    },
+    {
+        "type": "Label",
+        "width": 7,
+        "height": 6,
+        "label": "hello"
+    },
+    {
+        "type": "Label",
+        "width": 11,
+        "height": 2,
+        "label": "world"
+    },
+    {
+        "type": "Button",
+        "width": 1,
+        "height": 7,
+        "label": "contact"
+    },
+    {
+        "type": "CheckBox",
+        "width": 5,
+        "height": 9,
+        "is_checked": true
+    },
+    {
+        "type": "CheckBox",
+        "width": 2,
+        "height": 3,
+        "is_checked": false
+    },
+    {
+        "type": "Button",
+        "width": 7,
+        "height": 1,
+        "label": "contact-2"
+    }
+]
