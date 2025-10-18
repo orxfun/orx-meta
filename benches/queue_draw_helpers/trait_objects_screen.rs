@@ -1,3 +1,5 @@
+#![allow(dead_code)]
+
 use super::trait_objects_components::Draw;
 
 pub fn new_screen_10() -> Vec<Box<dyn Draw>> {

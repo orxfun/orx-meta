@@ -1,3 +1,5 @@
+#![allow(dead_code)]
+
 use super::enum_components::Component;
 
 pub fn new_screen_10() -> Vec<Component> {

@@ -1,3 +1,5 @@
+#![allow(dead_code)]
+
 use super::st_queue_components::*;
 
 orx_meta::define_queue!(
