@@ -36,9 +36,13 @@ impl<F> StQueue for QueueSingle<F> {
 }
 
 impl<F> QueueSingle<F> {
-    /// Creates a new empty queue.
     #[inline(always)]
     pub fn new(element: F) -> Self {
         Self { front: element }
+    }
+
+    #[inline(always)]
+    pub fn pop(self) -> F {
+        self.front
     }
 }

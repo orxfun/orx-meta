@@ -15,19 +15,15 @@ fn main() {
     println!("{:?}", element.type_id());
 
     // # Statically-typed collection of anything
-    use orx_meta::queue::*;
+    use orx_meta::nonempty_queue::*;
 
-    let queue = EmptyQueue::new().push(42).push(true).push('x').push("foo");
-    // or
     let queue = Queue::new(42).push(true).push('x').push("foo");
 
     // break down of types
-    let queue: EmptyQueue = EmptyQueue::new();
-    let queue: Queue<i32, EmptyQueue> = queue.push(42);
-    let queue: Queue<i32, Queue<bool, EmptyQueue>> = queue.push(true);
-    let queue: Queue<i32, Queue<bool, Queue<char, EmptyQueue>>> = queue.push('x');
-    let queue: Queue<i32, Queue<bool, Queue<char, Queue<&'static str, EmptyQueue>>>> =
-        queue.push("foo");
+    let queue: QueueSingle<i32> = Queue::new(42);
+    let queue: Queue<i32, QueueSingle<bool>> = queue.push(true);
+    let queue: Queue<i32, Queue<bool, QueueSingle<char>>> = queue.push('x');
+    let queue: Queue<i32, Queue<bool, Queue<char, QueueSingle<&'static str>>>> = queue.push("foo");
 
     // using elements
     let mut queue = Queue::new(42).push(true).push('x').push("foo");
@@ -54,21 +50,18 @@ fn main() {
     let (ch, queue) = queue.pop();
     assert_eq!(ch, 'x');
 
-    let (name, queue) = queue.pop();
+    let name = queue.pop();
     assert_eq!(name, "foo");
-
-    // queue.pop(); // doesn't compile; pop does not exist for EmptyQueue!
-    assert!(queue.is_empty());
 
     // # Interpretation as an ad-hoc struct
 
     struct MyStruct(i32, bool, char, &'static str);
     let my_struct = MyStruct(42, true, 'x', "foo");
 
-    type MyQueue = Queue<i32, Queue<bool, Queue<char, Queue<&'static str, EmptyQueue>>>>;
+    type MyQueue = Queue<i32, Queue<bool, Queue<char, QueueSingle<&'static str>>>>;
     let my_queue = Queue::new(42).push(true).push('x').push("foo");
 
-    type A = Queue<i32, Queue<bool, Queue<char, EmptyQueue>>>;
+    type A = Queue<i32, Queue<bool, QueueSingle<char>>>;
     type B = <A as StQueue>::PushBack<&'static str>;
 
     let a: A = Queue::new(42).push(true).push('x');

@@ -421,6 +421,11 @@ macro_rules! define_nonempty_queue_core {
                     f: element,
                 }
             }
+
+            #[inline(always)]
+            pub fn pop(self) -> F {
+                self.f
+            }
         }
 
         impl<$($g_lt ,)* F, $($g ,)*> core::fmt::Debug for $empty<$($g_lt ,)* $($g ,)* F>
