@@ -487,12 +487,24 @@ macro_rules! define_nonempty_queue_core {
             b: Back,
         }
 
+        impl<$($g_lt ,)* F, $($g ,)*> $pair<$($g_lt ,)* $($g ,)* F, $empty<$($g_lt ,)* $($g ,)* F>>
+        where
+            F: $( $el_bnd $( < $( $el_bnd_g ),* > )? + ) *,
+            $( $g: $( $( $g_bnd $( < $( $g_bnd_g ),* > )? + )* )? ), *
+        {
+            #[inline(always)]
+            pub fn new(element: F) -> $empty<$($g_lt ,)* $($g ,)* F> {
+                $empty::new(element)
+            }
+        }
+
         impl<$($g_lt ,)* F, B, $($g ,)*> $pair<$($g_lt ,)* $($g ,)* F, B>
         where
             F: $( $el_bnd $( < $( $el_bnd_g ),* > )? + ) *,
             B: $q<$($g_lt ,)* $($g ,)*>,
             $( $g: $( $( $g_bnd $( < $( $g_bnd_g ),* > )? + )* )? ), *
         {
+            #[inline(always)]
             fn from_fb(f: F, b: B) -> Self {
                 Self {
                     phantom: Default::default(),

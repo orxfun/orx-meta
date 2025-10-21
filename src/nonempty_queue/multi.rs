@@ -43,10 +43,18 @@ where
     }
 }
 
+impl<F> Queue<F, QueueSingle<F>> {
+    #[inline(always)]
+    pub fn new(element: F) -> QueueSingle<F> {
+        QueueSingle::new(element)
+    }
+}
+
 impl<F, B> Queue<F, B>
 where
     B: StQueue,
 {
+    #[inline(always)]
     pub(super) fn from_fb(front: F, back: B) -> Self {
         Self { front, back }
     }
