@@ -8,9 +8,9 @@ pub struct QueueSingle<F> {
 impl<F> StQueue for QueueSingle<F> {
     type PushBack<T> = Queue<F, QueueSingle<T>>;
 
-    type Front = Self;
+    type Front = F;
 
-    type Back = Self;
+    type Back = QueueSingle<QueueSingle<F>>;
 
     const LEN: usize = 1;
 

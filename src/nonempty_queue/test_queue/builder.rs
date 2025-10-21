@@ -21,33 +21,38 @@ where
     pub fn push(
         self,
         element: Target::Front,
-    ) -> QueueBuilding<Target::Back, QueueSingle<Target::Front>> {
+    ) -> QueueBuilding<Target, Target::Back, QueueSingle<Target::Front>> {
         QueueBuilding {
+            target: PhantomData,
             remaining: PhantomData,
             current: QueueSingle::new(element),
         }
     }
 }
 
-pub struct QueueBuilding<Remaining, Current>
+pub struct QueueBuilding<Target, Remaining, Current>
 where
+    Target: StQueue,
     Remaining: StQueue,
     Current: StQueue,
 {
+    target: PhantomData<Target>,
     remaining: PhantomData<Remaining>,
     current: Current,
 }
 
-impl<Remaining, Current> QueueBuilding<Remaining, Current>
+impl<Target, Remaining, Current> QueueBuilding<Target, Remaining, Current>
 where
+    Target: StQueue,
     Remaining: StQueue,
     Current: StQueue,
 {
     pub fn push(
         self,
         element: Remaining::Front,
-    ) -> QueueBuilding<Remaining::Back, Current::PushBack<Remaining::Front>> {
+    ) -> QueueBuilding<Target, Remaining::Back, Current::PushBack<Remaining::Front>> {
         QueueBuilding {
+            target: PhantomData,
             remaining: PhantomData,
             current: self.current.push(element),
         }
@@ -55,7 +60,7 @@ where
 
     pub fn finish(self) -> Current
     where
-        Remaining: StQueue<Back = Remaining>,
+        Target: StQueue<Front = Current::Front, Back = Current::Back>,
     {
         self.current
     }
