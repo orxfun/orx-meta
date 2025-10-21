@@ -326,6 +326,451 @@ macro_rules! define_nonempty_queue_builder {
     };
 }
 
+// # 3. tuple
+
+#[doc(hidden)]
+#[macro_export]
+macro_rules! define_nonempty_queue_tuple_transformation {
+    (
+        lt => [$($g_lt:tt), *];
+        generics => [ $( $g:tt $( : $( $g_bnd:ident $( < $( $g_bnd_g:tt ),* > )? )| * )? ), * ];
+        elements => [ $( $el_bnd:ident $( < $( $el_bnd_g:tt ),* > )? )| * ];
+        queue => [$q:ident ; $empty:ident, $pair:ident];
+    ) => {
+        // tuple - 1
+
+        #[allow(dead_code)]
+        impl<$($g_lt ,)* X1, $($g ,)*> $empty<$($g_lt ,)* $($g ,)* X1>
+        where
+            X1: $( $el_bnd $( < $( $el_bnd_g ),* > )? + ) *,
+            $( $g: $( $( $g_bnd $( < $( $g_bnd_g ),* > )? + )* )? ), *
+        {
+            #[inline(always)]
+            pub fn into_tuple(self) -> X1 {
+                self.f
+            }
+
+            #[inline(always)]
+            pub fn as_tuple(&self) -> &X1 {
+                &self.f
+            }
+
+            #[inline(always)]
+            pub fn as_tuple_mut(&mut self) -> &mut X1 {
+                &mut self.f
+            }
+        }
+
+        impl<$($g_lt ,)* $($g ,)* X1> From<X1> for $empty<$($g_lt ,)* $($g ,)* X1>
+        where
+            X1: $( $el_bnd $( < $( $el_bnd_g ),* > )? + ) *,
+            $( $g: $( $( $g_bnd $( < $( $g_bnd_g ),* > )? + )* )? ), *
+        {
+            #[inline(always)]
+            fn from(x: X1) -> Self {
+                $empty::new(x)
+            }
+        }
+
+        // tuple - 2
+
+        #[allow(dead_code)]
+        impl<$($g_lt ,)* $($g ,)* X1, X2> $pair<$($g_lt ,)* $($g ,)* X1, $empty<$($g_lt ,)* $($g ,)* X2>>
+        where
+            X1: $( $el_bnd $( < $( $el_bnd_g ),* > )? + ) *,
+            X2: $( $el_bnd $( < $( $el_bnd_g ),* > )? + ) *,
+            $( $g: $( $( $g_bnd $( < $( $g_bnd_g ),* > )? + )* )? ), *
+        {
+            #[inline(always)]
+            pub fn into_tuple(self) -> (X1, X2) {
+                (self.f, self.b.f)
+            }
+
+            #[inline(always)]
+            pub fn as_tuple(&self) -> (&X1, &X2) {
+                (&self.f, &self.b.f)
+            }
+
+            #[inline(always)]
+            pub fn as_tuple_mut(&mut self) -> (&mut X1, &mut X2) {
+                (&mut self.f, &mut self.b.f)
+            }
+        }
+
+        impl<$($g_lt ,)* $($g ,)* X1, X2> From<(X1, X2)> for $pair<$($g_lt ,)* $($g ,)* X1, $empty<$($g_lt ,)* $($g ,)* X2>>
+        where
+            X1: $( $el_bnd $( < $( $el_bnd_g ),* > )? + ) *,
+            X2: $( $el_bnd $( < $( $el_bnd_g ),* > )? + ) *,
+            $( $g: $( $( $g_bnd $( < $( $g_bnd_g ),* > )? + )* )? ), *
+        {
+            #[inline(always)]
+            fn from(x: (X1, X2)) -> Self {
+                $pair::from_fb(x.0, $empty::new(x.1))
+            }
+        }
+
+        // tuple - 3
+
+        #[allow(dead_code)]
+        impl<$($g_lt ,)* $($g ,)* X1, X2, X3>
+            $pair<$($g_lt ,)* $($g ,)* X1,
+                $pair<$($g_lt ,)* $($g ,)* X2, $empty<$($g_lt ,)* $($g ,)* X3>>
+            >
+        where
+            X1: $( $el_bnd $( < $( $el_bnd_g ),* > )? + ) *,
+            X2: $( $el_bnd $( < $( $el_bnd_g ),* > )? + ) *,
+            X3: $( $el_bnd $( < $( $el_bnd_g ),* > )? + ) *,
+            $( $g: $( $( $g_bnd $( < $( $g_bnd_g ),* > )? + )* )? ), *
+        {
+            #[inline(always)]
+            pub fn into_tuple(self) -> (X1, X2, X3) {
+                (self.f, self.b.f, self.b.b.f)
+            }
+
+            #[inline(always)]
+            pub fn as_tuple(&self) -> (&X1, &X2, &X3) {
+                (&self.f, &self.b.f, &self.b.b.f)
+            }
+
+            #[inline(always)]
+            pub fn as_tuple_mut(&mut self) -> (&mut X1, &mut X2, &mut X3) {
+                (&mut self.f, &mut self.b.f, &mut self.b.b.f)
+            }
+        }
+
+        impl<$($g_lt ,)* $($g ,)* X1, X2, X3> From<(X1, X2, X3)> for
+            $pair<$($g_lt ,)* $($g ,)* X1,
+                $pair<$($g_lt ,)* $($g ,)* X2, $empty<$($g_lt ,)* $($g ,)* X3>>
+            >
+        where
+            X1: $( $el_bnd $( < $( $el_bnd_g ),* > )? + ) *,
+            X2: $( $el_bnd $( < $( $el_bnd_g ),* > )? + ) *,
+            X3: $( $el_bnd $( < $( $el_bnd_g ),* > )? + ) *,
+            $( $g: $( $( $g_bnd $( < $( $g_bnd_g ),* > )? + )* )? ), *
+        {
+            #[inline(always)]
+            fn from(x: (X1, X2, X3)) -> Self {
+                $pair::from_fb(x.0, $pair::from_fb(x.1, $empty::new(x.2)))
+            }
+        }
+
+        // tuple - 4
+
+        #[allow(dead_code)]
+        impl<$($g_lt ,)* $($g ,)* X1, X2, X3, X4>
+            $pair<$($g_lt ,)* $($g ,)* X1,
+                $pair<$($g_lt ,)* $($g ,)* X2,
+                    $pair<$($g_lt ,)* $($g ,)* X3, $empty<$($g_lt ,)* $($g ,)* X4>>
+                >
+            >
+        where
+            X1: $( $el_bnd $( < $( $el_bnd_g ),* > )? + ) *,
+            X2: $( $el_bnd $( < $( $el_bnd_g ),* > )? + ) *,
+            X3: $( $el_bnd $( < $( $el_bnd_g ),* > )? + ) *,
+            X4: $( $el_bnd $( < $( $el_bnd_g ),* > )? + ) *,
+            $( $g: $( $( $g_bnd $( < $( $g_bnd_g ),* > )? + )* )? ), *
+        {
+            #[inline(always)]
+            pub fn into_tuple(self) -> (X1, X2, X3, X4) {
+                (self.f, self.b.f, self.b.b.f, self.b.b.b.f)
+            }
+
+            #[inline(always)]
+            pub fn as_tuple(&self) -> (&X1, &X2, &X3, &X4) {
+                (&self.f, &self.b.f, &self.b.b.f, &self.b.b.b.f)
+            }
+
+            #[inline(always)]
+            pub fn as_tuple_mut(&mut self) -> (&mut X1, &mut X2, &mut X3, &mut X4) {
+                (&mut self.f, &mut self.b.f, &mut self.b.b.f, &mut self.b.b.b.f)
+            }
+        }
+
+        impl<$($g_lt ,)* $($g ,)* X1, X2, X3, X4> From<(X1, X2, X3, X4)> for
+            $pair<$($g_lt ,)* $($g ,)* X1,
+                $pair<$($g_lt ,)* $($g ,)* X2,
+                    $pair<$($g_lt ,)* $($g ,)* X3, $empty<$($g_lt ,)* $($g ,)* X4>>
+                >
+            >
+        where
+            X1: $( $el_bnd $( < $( $el_bnd_g ),* > )? + ) *,
+            X2: $( $el_bnd $( < $( $el_bnd_g ),* > )? + ) *,
+            X3: $( $el_bnd $( < $( $el_bnd_g ),* > )? + ) *,
+            X4: $( $el_bnd $( < $( $el_bnd_g ),* > )? + ) *,
+            $( $g: $( $( $g_bnd $( < $( $g_bnd_g ),* > )? + )* )? ), *
+        {
+            #[inline(always)]
+            fn from(x: (X1, X2, X3, X4)) -> Self {
+                $pair::from_fb(x.0, $pair::from_fb(x.1, $pair::from_fb(x.2, $empty::new(x.3))))
+            }
+        }
+
+        // tuple - 5
+
+        #[allow(dead_code)]
+        impl<$($g_lt ,)* $($g ,)* X1, X2, X3, X4, X5>
+            $pair<$($g_lt ,)* $($g ,)* X1,
+                $pair<$($g_lt ,)* $($g ,)* X2,
+                    $pair<$($g_lt ,)* $($g ,)* X3,
+                        $pair<$($g_lt ,)* $($g ,)* X4, $empty<$($g_lt ,)* $($g ,)* X5>>
+                    >
+                >
+            >
+        where
+            X1: $( $el_bnd $( < $( $el_bnd_g ),* > )? + ) *,
+            X2: $( $el_bnd $( < $( $el_bnd_g ),* > )? + ) *,
+            X3: $( $el_bnd $( < $( $el_bnd_g ),* > )? + ) *,
+            X4: $( $el_bnd $( < $( $el_bnd_g ),* > )? + ) *,
+            X5: $( $el_bnd $( < $( $el_bnd_g ),* > )? + ) *,
+            $( $g: $( $( $g_bnd $( < $( $g_bnd_g ),* > )? + )* )? ), *
+        {
+            #[inline(always)]
+            pub fn into_tuple(self) -> (X1, X2, X3, X4, X5) {
+                (self.f, self.b.f, self.b.b.f, self.b.b.b.f, self.b.b.b.b.f)
+            }
+
+            #[inline(always)]
+            pub fn as_tuple(&self) -> (&X1, &X2, &X3, &X4, &X5) {
+                (&self.f, &self.b.f, &self.b.b.f, &self.b.b.b.f, &self.b.b.b.b.f)
+            }
+
+            #[inline(always)]
+            pub fn as_tuple_mut(&mut self) -> (&mut X1, &mut X2, &mut X3, &mut X4, &mut X5) {
+                (&mut self.f, &mut self.b.f, &mut self.b.b.f, &mut self.b.b.b.f, &mut self.b.b.b.b.f)
+            }
+        }
+
+        impl<$($g_lt ,)* $($g ,)* X1, X2, X3, X4, X5> From<(X1, X2, X3, X4, X5)> for
+            $pair<$($g_lt ,)* $($g ,)* X1,
+                $pair<$($g_lt ,)* $($g ,)* X2,
+                    $pair<$($g_lt ,)* $($g ,)* X3,
+                        $pair<$($g_lt ,)* $($g ,)* X4, $empty<$($g_lt ,)* $($g ,)* X5>>
+                    >
+                >
+            >
+        where
+            X1: $( $el_bnd $( < $( $el_bnd_g ),* > )? + ) *,
+            X2: $( $el_bnd $( < $( $el_bnd_g ),* > )? + ) *,
+            X3: $( $el_bnd $( < $( $el_bnd_g ),* > )? + ) *,
+            X4: $( $el_bnd $( < $( $el_bnd_g ),* > )? + ) *,
+            X5: $( $el_bnd $( < $( $el_bnd_g ),* > )? + ) *,
+            $( $g: $( $( $g_bnd $( < $( $g_bnd_g ),* > )? + )* )? ), *
+        {
+            #[inline(always)]
+            fn from(x: (X1, X2, X3, X4, X5)) -> Self {
+                $pair::from_fb(x.0, $pair::from_fb(x.1, $pair::from_fb(x.2, $pair::from_fb(x.3, $empty::new(x.4)))))
+            }
+        }
+
+        // tuple - 6
+
+        #[allow(dead_code)]
+        impl<$($g_lt ,)* $($g ,)* X1, X2, X3, X4, X5, X6>
+            $pair<$($g_lt ,)* $($g ,)* X1,
+                $pair<$($g_lt ,)* $($g ,)* X2,
+                    $pair<$($g_lt ,)* $($g ,)* X3,
+                        $pair<$($g_lt ,)* $($g ,)* X4,
+                            $pair<$($g_lt ,)* $($g ,)* X5, $empty<$($g_lt ,)* $($g ,)* X6>>
+                        >
+                    >
+                >
+            >
+        where
+            X1: $( $el_bnd $( < $( $el_bnd_g ),* > )? + ) *,
+            X2: $( $el_bnd $( < $( $el_bnd_g ),* > )? + ) *,
+            X3: $( $el_bnd $( < $( $el_bnd_g ),* > )? + ) *,
+            X4: $( $el_bnd $( < $( $el_bnd_g ),* > )? + ) *,
+            X5: $( $el_bnd $( < $( $el_bnd_g ),* > )? + ) *,
+            X6: $( $el_bnd $( < $( $el_bnd_g ),* > )? + ) *,
+            $( $g: $( $( $g_bnd $( < $( $g_bnd_g ),* > )? + )* )? ), *
+        {
+            #[inline(always)]
+            pub fn into_tuple(self) -> (X1, X2, X3, X4, X5, X6) {
+                (self.f, self.b.f, self.b.b.f, self.b.b.b.f, self.b.b.b.b.f, self.b.b.b.b.b.f)
+            }
+
+            #[inline(always)]
+            pub fn as_tuple(&self) -> (&X1, &X2, &X3, &X4, &X5, &X6) {
+                (&self.f, &self.b.f, &self.b.b.f, &self.b.b.b.f, &self.b.b.b.b.f, &self.b.b.b.b.b.f)
+            }
+
+            #[inline(always)]
+            pub fn as_tuple_mut(&mut self) -> (&mut X1, &mut X2, &mut X3, &mut X4, &mut X5, &mut X6) {
+                (&mut self.f, &mut self.b.f, &mut self.b.b.f, &mut self.b.b.b.f, &mut self.b.b.b.b.f, &mut self.b.b.b.b.b.f)
+            }
+        }
+
+        impl<$($g_lt ,)* $($g ,)* X1, X2, X3, X4, X5, X6> From<(X1, X2, X3, X4, X5, X6)> for
+            $pair<$($g_lt ,)* $($g ,)* X1,
+                $pair<$($g_lt ,)* $($g ,)* X2,
+                    $pair<$($g_lt ,)* $($g ,)* X3,
+                        $pair<$($g_lt ,)* $($g ,)* X4,
+                            $pair<$($g_lt ,)* $($g ,)* X5, $empty<$($g_lt ,)* $($g ,)* X6>>
+                        >
+                    >
+                >
+            >
+        where
+            X1: $( $el_bnd $( < $( $el_bnd_g ),* > )? + ) *,
+            X2: $( $el_bnd $( < $( $el_bnd_g ),* > )? + ) *,
+            X3: $( $el_bnd $( < $( $el_bnd_g ),* > )? + ) *,
+            X4: $( $el_bnd $( < $( $el_bnd_g ),* > )? + ) *,
+            X5: $( $el_bnd $( < $( $el_bnd_g ),* > )? + ) *,
+            X6: $( $el_bnd $( < $( $el_bnd_g ),* > )? + ) *,
+            $( $g: $( $( $g_bnd $( < $( $g_bnd_g ),* > )? + )* )? ), *
+        {
+            #[inline(always)]
+            fn from(x: (X1, X2, X3, X4, X5, X6)) -> Self {
+                $pair::from_fb(x.0, $pair::from_fb(x.1, $pair::from_fb(x.2, $pair::from_fb(x.3, $pair::from_fb(x.4, $empty::new(x.5))))))
+            }
+        }
+
+        // tuple - 7
+
+        #[allow(dead_code)]
+        impl<$($g_lt ,)* $($g ,)* X1, X2, X3, X4, X5, X6, X7>
+            $pair<$($g_lt ,)* $($g ,)* X1,
+                $pair<$($g_lt ,)* $($g ,)* X2,
+                    $pair<$($g_lt ,)* $($g ,)* X3,
+                        $pair<$($g_lt ,)* $($g ,)* X4,
+                            $pair<$($g_lt ,)* $($g ,)* X5,
+                                $pair<$($g_lt ,)* $($g ,)* X6, $empty<$($g_lt ,)* $($g ,)* X7>>
+                            >
+                        >
+                    >
+                >
+            >
+        where
+            X1: $( $el_bnd $( < $( $el_bnd_g ),* > )? + ) *,
+            X2: $( $el_bnd $( < $( $el_bnd_g ),* > )? + ) *,
+            X3: $( $el_bnd $( < $( $el_bnd_g ),* > )? + ) *,
+            X4: $( $el_bnd $( < $( $el_bnd_g ),* > )? + ) *,
+            X5: $( $el_bnd $( < $( $el_bnd_g ),* > )? + ) *,
+            X6: $( $el_bnd $( < $( $el_bnd_g ),* > )? + ) *,
+            X7: $( $el_bnd $( < $( $el_bnd_g ),* > )? + ) *,
+            $( $g: $( $( $g_bnd $( < $( $g_bnd_g ),* > )? + )* )? ), *
+        {
+            #[inline(always)]
+            pub fn into_tuple(self) -> (X1, X2, X3, X4, X5, X6, X7) {
+                (self.f, self.b.f, self.b.b.f, self.b.b.b.f, self.b.b.b.b.f, self.b.b.b.b.b.f, self.b.b.b.b.b.b.f)
+            }
+
+            #[inline(always)]
+            pub fn as_tuple(&self) -> (&X1, &X2, &X3, &X4, &X5, &X6, &X7) {
+                (&self.f, &self.b.f, &self.b.b.f, &self.b.b.b.f, &self.b.b.b.b.f, &self.b.b.b.b.b.f, &self.b.b.b.b.b.b.f)
+            }
+
+            #[inline(always)]
+            pub fn as_tuple_mut(&mut self) -> (&mut X1, &mut X2, &mut X3, &mut X4, &mut X5, &mut X6, &mut X7) {
+                (&mut self.f, &mut self.b.f, &mut self.b.b.f, &mut self.b.b.b.f, &mut self.b.b.b.b.f, &mut self.b.b.b.b.b.f, &mut self.b.b.b.b.b.b.f)
+            }
+        }
+
+        impl<$($g_lt ,)* $($g ,)* X1, X2, X3, X4, X5, X6, X7> From<(X1, X2, X3, X4, X5, X6, X7)> for
+            $pair<$($g_lt ,)* $($g ,)* X1,
+                $pair<$($g_lt ,)* $($g ,)* X2,
+                    $pair<$($g_lt ,)* $($g ,)* X3,
+                        $pair<$($g_lt ,)* $($g ,)* X4,
+                            $pair<$($g_lt ,)* $($g ,)* X5,
+                                $pair<$($g_lt ,)* $($g ,)* X6, $empty<$($g_lt ,)* $($g ,)* X7>>
+                            >
+                        >
+                    >
+                >
+            >
+        where
+            X1: $( $el_bnd $( < $( $el_bnd_g ),* > )? + ) *,
+            X2: $( $el_bnd $( < $( $el_bnd_g ),* > )? + ) *,
+            X3: $( $el_bnd $( < $( $el_bnd_g ),* > )? + ) *,
+            X4: $( $el_bnd $( < $( $el_bnd_g ),* > )? + ) *,
+            X5: $( $el_bnd $( < $( $el_bnd_g ),* > )? + ) *,
+            X6: $( $el_bnd $( < $( $el_bnd_g ),* > )? + ) *,
+            X7: $( $el_bnd $( < $( $el_bnd_g ),* > )? + ) *,
+            $( $g: $( $( $g_bnd $( < $( $g_bnd_g ),* > )? + )* )? ), *
+        {
+            #[inline(always)]
+            fn from(x: (X1, X2, X3, X4, X5, X6, X7)) -> Self {
+                $pair::from_fb(x.0, $pair::from_fb(x.1, $pair::from_fb(x.2, $pair::from_fb(x.3, $pair::from_fb(x.4, $pair::from_fb(x.5, $empty::new(x.6)))))))
+            }
+        }
+
+        // tuple - 8
+
+        #[allow(dead_code)]
+        impl<$($g_lt ,)* $($g ,)* X1, X2, X3, X4, X5, X6, X7, X8>
+            $pair<$($g_lt ,)* $($g ,)* X1,
+                $pair<$($g_lt ,)* $($g ,)* X2,
+                    $pair<$($g_lt ,)* $($g ,)* X3,
+                        $pair<$($g_lt ,)* $($g ,)* X4,
+                            $pair<$($g_lt ,)* $($g ,)* X5,
+                                $pair<$($g_lt ,)* $($g ,)* X6,
+                                    $pair<$($g_lt ,)* $($g ,)* X7, $empty<$($g_lt ,)* $($g ,)* X8>>
+                                >
+                            >
+                        >
+                    >
+                >
+            >
+        where
+            X1: $( $el_bnd $( < $( $el_bnd_g ),* > )? + ) *,
+            X2: $( $el_bnd $( < $( $el_bnd_g ),* > )? + ) *,
+            X3: $( $el_bnd $( < $( $el_bnd_g ),* > )? + ) *,
+            X4: $( $el_bnd $( < $( $el_bnd_g ),* > )? + ) *,
+            X5: $( $el_bnd $( < $( $el_bnd_g ),* > )? + ) *,
+            X6: $( $el_bnd $( < $( $el_bnd_g ),* > )? + ) *,
+            X7: $( $el_bnd $( < $( $el_bnd_g ),* > )? + ) *,
+            X8: $( $el_bnd $( < $( $el_bnd_g ),* > )? + ) *,
+            $( $g: $( $( $g_bnd $( < $( $g_bnd_g ),* > )? + )* )? ), *
+        {
+            #[inline(always)]
+            pub fn into_tuple(self) -> (X1, X2, X3, X4, X5, X6, X7, X8) {
+                (self.f, self.b.f, self.b.b.f, self.b.b.b.f, self.b.b.b.b.f, self.b.b.b.b.b.f, self.b.b.b.b.b.b.f, self.b.b.b.b.b.b.b.f)
+            }
+
+            #[inline(always)]
+            pub fn as_tuple(&self) -> (&X1, &X2, &X3, &X4, &X5, &X6, &X7, &X8) {
+                (&self.f, &self.b.f, &self.b.b.f, &self.b.b.b.f, &self.b.b.b.b.f, &self.b.b.b.b.b.f, &self.b.b.b.b.b.b.f, &self.b.b.b.b.b.b.b.f)
+            }
+
+            #[inline(always)]
+            pub fn as_tuple_mut(&mut self) -> (&mut X1, &mut X2, &mut X3, &mut X4, &mut X5, &mut X6, &mut X7, &mut X8) {
+                (&mut self.f, &mut self.b.f, &mut self.b.b.f, &mut self.b.b.b.f, &mut self.b.b.b.b.f, &mut self.b.b.b.b.b.f, &mut self.b.b.b.b.b.b.f, &mut self.b.b.b.b.b.b.b.f)
+            }
+        }
+
+        impl<$($g_lt ,)* $($g ,)* X1, X2, X3, X4, X5, X6, X7, X8> From<(X1, X2, X3, X4, X5, X6, X7, X8)> for
+            $pair<$($g_lt ,)* $($g ,)* X1,
+                $pair<$($g_lt ,)* $($g ,)* X2,
+                    $pair<$($g_lt ,)* $($g ,)* X3,
+                        $pair<$($g_lt ,)* $($g ,)* X4,
+                            $pair<$($g_lt ,)* $($g ,)* X5,
+                                $pair<$($g_lt ,)* $($g ,)* X6,
+                                    $pair<$($g_lt ,)* $($g ,)* X7, $empty<$($g_lt ,)* $($g ,)* X8>>
+                                >
+                            >
+                        >
+                    >
+                >
+            >
+        where
+            X1: $( $el_bnd $( < $( $el_bnd_g ),* > )? + ) *,
+            X2: $( $el_bnd $( < $( $el_bnd_g ),* > )? + ) *,
+            X3: $( $el_bnd $( < $( $el_bnd_g ),* > )? + ) *,
+            X4: $( $el_bnd $( < $( $el_bnd_g ),* > )? + ) *,
+            X5: $( $el_bnd $( < $( $el_bnd_g ),* > )? + ) *,
+            X6: $( $el_bnd $( < $( $el_bnd_g ),* > )? + ) *,
+            X7: $( $el_bnd $( < $( $el_bnd_g ),* > )? + ) *,
+            X8: $( $el_bnd $( < $( $el_bnd_g ),* > )? + ) *,
+            $( $g: $( $( $g_bnd $( < $( $g_bnd_g ),* > )? + )* )? ), *
+        {
+            #[inline(always)]
+            fn from(x: (X1, X2, X3, X4, X5, X6, X7, X8)) -> Self {
+                $pair::from_fb(x.0, $pair::from_fb(x.1, $pair::from_fb(x.2, $pair::from_fb(x.3, $pair::from_fb(x.4, $pair::from_fb(x.5, $pair::from_fb(x.6, $empty::new(x.7))))))))
+            }
+        }
+    };
+}
+
 #[test]
 fn abc() {
     define_nonempty_queue_core!(
@@ -342,6 +787,13 @@ fn abc() {
         builder => QueueBuilder;
     );
 
+    define_nonempty_queue_tuple_transformation!(
+        lt => [];
+        generics => [];
+        elements => [];
+        queue => [ StQueue ; Single, Queue ];
+    );
+
     type Q = Queue<u32, Queue<char, Single<bool>>>;
     let q: Q = QueueBuilder::<Q>::new()
         .push(1)
@@ -349,4 +801,6 @@ fn abc() {
         .push(true)
         .finish();
     let a = Single::new(1).push('x').push(true);
+
+    let (a, b, c) = a.into_tuple();
 }
