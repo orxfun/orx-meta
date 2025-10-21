@@ -1,4 +1,4 @@
-use crate::non_empty_queue::{Queue, StQueue};
+use crate::nonempty_queue::{Queue, StQueue};
 
 #[derive(Clone, Copy, PartialEq, Eq, Debug, Default)]
 pub struct QueueSingle<F> {

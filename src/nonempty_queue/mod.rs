@@ -1,4 +1,5 @@
 mod multi;
+mod queue_of;
 mod single;
 mod st_queue;
 
