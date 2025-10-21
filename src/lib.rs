@@ -14,3 +14,6 @@
 
 /// Module defining statically typed queue of heterogeneous elements.
 pub mod queue;
+
+/// Module defining statically typed non-empty queues of heterogeneous elements.
+pub mod non_empty_queue;
