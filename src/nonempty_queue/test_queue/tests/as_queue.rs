@@ -73,3 +73,16 @@ fn back_access() {
     assert_eq!(q.back().back().front(), &false);
     assert_eq!(q.into_back().into_back().into_front(), false);
 }
+
+#[test]
+fn front_back_mut() {
+    let mut q = QueueSingle::new(42).push('x').push(true);
+
+    let (f, b) = q.front_back_mut();
+    *f += 1;
+    let (f, b) = b.front_back_mut();
+    *f = 'y';
+    *b.front_mut() = false;
+
+    assert_eq!(q.as_tuple(), (&43, &'y', &false));
+}

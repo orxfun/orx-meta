@@ -1,3 +1,4 @@
+#![allow(dead_code)]
 use crate::nonempty_queue::test_queue::{QueueSingle, StQueue};
 
 #[derive(Clone, Copy, PartialEq, Eq, Debug)]
