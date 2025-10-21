@@ -1,4 +1,4 @@
-use crate::nonempty_queue::test_queue::{Queue, QueueSingle, StQueue};
+use crate::nonempty_queue::test_queue::{QueueSingle, StQueue};
 
 #[test]
 fn push_and_pop() {

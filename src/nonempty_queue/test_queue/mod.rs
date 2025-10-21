@@ -6,7 +6,7 @@ mod queue_of;
 mod single;
 mod st_queue;
 
-pub use builder::{QueueBuilder, QueueBuilding};
+pub use builder::QueueBuilder;
 pub use multi::Queue;
 pub use single::QueueSingle;
 pub use st_queue::StQueue;
