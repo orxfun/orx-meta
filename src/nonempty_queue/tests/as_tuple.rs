@@ -1,4 +1,4 @@
-use crate::nonempty_queue::test_queue::*;
+use crate::nonempty_queue::*;
 
 #[test]
 fn into_tuple() {
