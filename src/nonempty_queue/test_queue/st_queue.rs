@@ -11,10 +11,5 @@ pub trait StQueue {
         Self::LEN
     }
 
-    /// Returns true if `queue.len() == 0`.
-    fn is_empty(&self) -> bool {
-        self.len() == 0
-    }
-
     fn push<T>(self, element: T) -> Self::PushBack<T>;
 }

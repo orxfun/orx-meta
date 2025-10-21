@@ -1,4 +1,4 @@
-use crate::nonempty_queue::{Queue, StQueue};
+use crate::nonempty_queue::test_queue::{Queue, StQueue};
 
 #[derive(Clone, Copy, PartialEq, Eq, Debug, Default)]
 pub struct QueueSingle<F> {
@@ -12,16 +12,20 @@ impl<F> StQueue for QueueSingle<F> {
 
     type Back = Self;
 
-    const LEN: usize = 0;
+    const LEN: usize = 1;
 
     fn push<T>(self, element: T) -> Self::PushBack<T> {
         (self.front, QueueSingle::new(element)).into()
     }
 }
 
-impl<T> QueueSingle<T> {
+impl<F> QueueSingle<F> {
     /// Creates a new empty queue.
-    pub fn new(element: T) -> Self {
-        Self::new(element)
+    pub fn new(element: F) -> Self {
+        Self { front: element }
+    }
+
+    pub fn into_inner(self) -> F {
+        self.front
     }
 }
