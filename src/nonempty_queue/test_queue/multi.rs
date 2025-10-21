@@ -21,6 +21,22 @@ where
 
     const LEN: usize = 1 + B::LEN;
 
+    #[inline(always)]
+    fn front(&self) -> &F {
+        &self.front
+    }
+
+    #[inline(always)]
+    fn front_mut(&mut self) -> &mut F {
+        &mut self.front
+    }
+
+    #[inline(always)]
+    fn into_front(self) -> F {
+        self.front
+    }
+
+    #[inline(always)]
     fn push<T>(self, element: T) -> Self::PushBack<T> {
         Queue::from((self.front, self.back.push(element)))
     }
@@ -41,38 +57,31 @@ where
 {
     // ref
 
-    pub fn front(&self) -> &F {
-        &self.front
-    }
-
+    #[inline(always)]
     pub fn back(&self) -> &B {
         &self.back
     }
 
     // mut
 
-    pub fn front_mut(&mut self) -> &mut F {
-        &mut self.front
-    }
-
+    #[inline(always)]
     pub fn back_mut(&mut self) -> &mut B {
         &mut self.back
     }
 
+    #[inline(always)]
     pub fn front_back_mut(&mut self) -> (&mut F, &mut B) {
         (&mut self.front, &mut self.back)
     }
 
     // into
 
-    pub fn into_front(self) -> F {
-        self.front
-    }
-
+    #[inline(always)]
     pub fn into_back(self) -> B {
         self.back
     }
 
+    #[inline(always)]
     pub fn pop(self) -> (F, B) {
         (self.front, self.back)
     }

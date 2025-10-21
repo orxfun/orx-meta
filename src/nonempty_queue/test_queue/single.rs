@@ -14,6 +14,22 @@ impl<F> StQueue for QueueSingle<F> {
 
     const LEN: usize = 1;
 
+    #[inline(always)]
+    fn front(&self) -> &Self::Front {
+        &self.front
+    }
+
+    #[inline(always)]
+    fn front_mut(&mut self) -> &mut Self::Front {
+        &mut self.front
+    }
+
+    #[inline(always)]
+    fn into_front(self) -> Self::Front {
+        self.front
+    }
+
+    #[inline(always)]
     fn push<T>(self, element: T) -> Self::PushBack<T> {
         (self.front, QueueSingle::new(element)).into()
     }
@@ -21,11 +37,8 @@ impl<F> StQueue for QueueSingle<F> {
 
 impl<F> QueueSingle<F> {
     /// Creates a new empty queue.
+    #[inline(always)]
     pub fn new(element: F) -> Self {
         Self { front: element }
-    }
-
-    pub fn into_inner(self) -> F {
-        self.front
     }
 }
