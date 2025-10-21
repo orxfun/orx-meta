@@ -38,7 +38,38 @@ fn push_and_pop() {
 }
 
 #[test]
-fn front_back() {
-    let q = QueueSingle::new(42);
-    assert_eq!(q.front(), &42);
+fn front_access() {
+    let mut q = QueueSingle::new(42);
+    *q.front_mut() += 1;
+    assert_eq!(q.front(), &43);
+    assert_eq!(q.into_front(), 43);
+
+    let mut q = QueueSingle::new(42).push('x');
+    *q.front_mut() += 1;
+    assert_eq!(q.front(), &43);
+    assert_eq!(q.into_front(), 43);
+
+    let mut q = QueueSingle::new(42).push('x').push(true);
+    *q.front_mut() += 1;
+    assert_eq!(q.front(), &43);
+    assert_eq!(q.into_front(), 43);
+}
+
+#[test]
+fn back_access() {
+    let mut q = QueueSingle::new(42).push('x');
+    *q.front_mut() += 1;
+    *q.back_mut().front_mut() = 'y';
+    assert_eq!(q.front(), &43);
+    assert_eq!(q.back().front(), &'y');
+    assert_eq!(q.into_back().into_front(), 'y');
+
+    let mut q = QueueSingle::new(42).push('x').push(true);
+    *q.front_mut() += 1;
+    *q.back_mut().front_mut() = 'y';
+    *q.back_mut().back_mut().front_mut() = false;
+    assert_eq!(q.front(), &43);
+    assert_eq!(q.back().front(), &'y');
+    assert_eq!(q.back().back().front(), &false);
+    assert_eq!(q.into_back().into_back().into_front(), false);
 }
