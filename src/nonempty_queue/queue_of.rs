@@ -1,6 +1,5 @@
-#[doc(hidden)]
 #[macro_export]
-macro_rules! test_nonempty_queue_of {
+macro_rules! nonempty_queue_of {
     ($t1:ty) => {
         QueueSingle<$t1>
     };
