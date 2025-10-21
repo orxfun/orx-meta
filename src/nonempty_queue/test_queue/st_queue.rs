@@ -1,11 +1,13 @@
 pub trait StQueue {
-    type PushBack<T>: StQueue;
+    type PushBack<Elem>: StQueue;
 
     type Front;
 
     type Back: StQueue;
 
     const LEN: usize;
+
+    fn push<Elem>(self, element: Elem) -> Self::PushBack<Elem>;
 
     fn len(&self) -> usize {
         Self::LEN
@@ -16,6 +18,4 @@ pub trait StQueue {
     fn front_mut(&mut self) -> &mut Self::Front;
 
     fn into_front(self) -> Self::Front;
-
-    fn push<T>(self, element: T) -> Self::PushBack<T>;
 }

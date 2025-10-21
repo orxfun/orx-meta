@@ -14,7 +14,7 @@ impl<F, B> StQueue for Queue<F, B>
 where
     B: StQueue,
 {
-    type PushBack<T> = Queue<F, B::PushBack<T>>;
+    type PushBack<Elem> = Queue<F, B::PushBack<Elem>>;
 
     type Front = F;
 
@@ -38,16 +38,16 @@ where
     }
 
     #[inline(always)]
-    fn push<T>(self, element: T) -> Self::PushBack<T> {
-        Queue::from((self.front, self.back.push(element)))
+    fn push<Elem>(self, element: Elem) -> Self::PushBack<Elem> {
+        Queue::from_fb(self.front, self.back.push(element))
     }
 }
 
-impl<F, B> From<(F, B)> for Queue<F, B>
+impl<F, B> Queue<F, B>
 where
     B: StQueue,
 {
-    fn from((front, back): (F, B)) -> Self {
+    pub(super) fn from_fb(front: F, back: B) -> Self {
         Self { front, back }
     }
 }

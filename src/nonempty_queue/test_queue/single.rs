@@ -6,13 +6,18 @@ pub struct QueueSingle<F> {
 }
 
 impl<F> StQueue for QueueSingle<F> {
-    type PushBack<T> = Queue<F, QueueSingle<T>>;
+    type PushBack<Elem> = Queue<F, QueueSingle<Elem>>;
 
     type Front = F;
 
     type Back = Self;
 
     const LEN: usize = 1;
+
+    #[inline(always)]
+    fn push<Elem>(self, element: Elem) -> Self::PushBack<Elem> {
+        Queue::from_fb(self.front, QueueSingle::new(element))
+    }
 
     #[inline(always)]
     fn front(&self) -> &Self::Front {
@@ -27,11 +32,6 @@ impl<F> StQueue for QueueSingle<F> {
     #[inline(always)]
     fn into_front(self) -> Self::Front {
         self.front
-    }
-
-    #[inline(always)]
-    fn push<T>(self, element: T) -> Self::PushBack<T> {
-        (self.front, QueueSingle::new(element)).into()
     }
 }
 
