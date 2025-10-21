@@ -224,6 +224,108 @@ macro_rules! define_nonempty_queue_core {
     };
 }
 
+// # 2. builder
+
+#[doc(hidden)]
+#[macro_export]
+macro_rules! define_nonempty_queue_builder {
+    (
+        lt => [$($g_lt:tt), *];
+        generics => [ $( $g:tt $( : $( $g_bnd:ident $( < $( $g_bnd_g:tt ),* > )? )| * )? ), * ];
+        queue => [$q:ident ; $empty:ident, $pair:ident];
+        builder => $builder:ident;
+    ) => {
+
+        // builder
+
+        pub struct $builder<$($g_lt ,)* $($g ,)* Target>
+        where
+            Target:  $q<$($g_lt ,)* $($g ,)*>,
+            $( $g: $( $( $g_bnd $( < $( $g_bnd_g ),* > )? + )* )? ), *
+        {
+            target: core::marker::PhantomData<Target>,
+        }
+
+        impl<$($g_lt ,)* $($g ,)* Target> Default for $builder<$($g_lt ,)* $($g ,)* Target>
+        where
+            Target:  $q<$($g_lt ,)* $($g ,)*>,
+            $( $g: $( $( $g_bnd $( < $( $g_bnd_g ),* > )? + )* )? ), *
+        {
+            fn default() -> Self {
+                Self::new()
+            }
+        }
+
+        impl<$($g_lt ,)* $($g ,)* Target> $builder<$($g_lt ,)* $($g ,)* Target>
+        where
+            Target:  $q<$($g_lt ,)* $($g ,)*>,
+            $( $g: $( $( $g_bnd $( < $( $g_bnd_g ),* > )? + )* )? ), *
+        {
+            pub fn new() -> Self {
+                Self {
+                    target: Default::default(),
+                }
+            }
+
+            pub fn push(
+                self,
+                element: Target::Front,
+            ) -> QueueBuilding<Target, Target::Back, $empty<$($g_lt ,)* $($g ,)* Target::Front>> {
+                QueueBuilding::new($empty::new(element))
+            }
+        }
+
+        // building
+
+        pub struct QueueBuilding<$($g_lt ,)* $($g ,)* Target, Remaining, Current>
+        where
+            Target:  $q<$($g_lt ,)* $($g ,)*>,
+            Remaining:  $q<$($g_lt ,)* $($g ,)*>,
+            Current:  $q<$($g_lt ,)* $($g ,)*>,
+            $( $g: $( $( $g_bnd $( < $( $g_bnd_g ),* > )? + )* )? ), *
+        {
+            target: core::marker::PhantomData<Target>,
+            remaining: core::marker::PhantomData<Remaining>,
+            current: Current,
+            phantom: core::marker::PhantomData<$(&$g_lt)* ($($g ,)*)>,
+        }
+
+        impl<$($g_lt ,)* $($g ,)* Target, Remaining, Current> QueueBuilding<$($g_lt ,)* $($g ,)* Target, Remaining, Current>
+        where
+            Target:  $q<$($g_lt ,)* $($g ,)*>,
+            Remaining:  $q<$($g_lt ,)* $($g ,)*>,
+            Current:  $q<$($g_lt ,)* $($g ,)*>,
+            $( $g: $( $( $g_bnd $( < $( $g_bnd_g ),* > )? + )* )? ), *
+        {
+            #[inline(always)]
+            fn new(current: Current) -> Self {
+                Self {
+                    target: Default::default(),
+                    remaining: Default::default(),
+                    current: current,
+                    phantom: Default::default(),
+                }
+            }
+
+            #[inline(always)]
+            pub fn push(
+                self,
+                element: Remaining::Front,
+            ) -> QueueBuilding<Target, Remaining::Back, Current::PushBack<Remaining::Front>> {
+                QueueBuilding::new(self.current.push(element))
+            }
+
+            #[inline(always)]
+            pub fn finish(self) -> Current
+            where
+                Target: $q<$($g_lt ,)* $($g ,)* Front = Current::Front, Back = Current::Back>,
+            {
+                self.current
+            }
+        }
+    };
+}
+
 #[test]
 fn abc() {
     define_nonempty_queue_core!(
@@ -233,5 +335,18 @@ fn abc() {
         queue => [ StQueue ; Single, Queue ];
     );
 
+    define_nonempty_queue_builder!(
+        lt => [];
+        generics => [];
+        queue => [ StQueue ; Single, Queue ];
+        builder => QueueBuilder;
+    );
+
+    type Q = Queue<u32, Queue<char, Single<bool>>>;
+    let q: Q = QueueBuilder::<Q>::new()
+        .push(1)
+        .push('x')
+        .push(true)
+        .finish();
     let a = Single::new(1).push('x').push(true);
 }

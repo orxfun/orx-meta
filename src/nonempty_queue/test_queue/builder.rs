@@ -8,13 +8,22 @@ where
     target: PhantomData<Target>,
 }
 
+impl<Target> Default for QueueBuilder<Target>
+where
+    Target: StQueue,
+{
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl<Target> QueueBuilder<Target>
 where
     Target: StQueue,
 {
     pub fn new() -> Self {
         Self {
-            target: PhantomData,
+            target: Default::default(),
         }
     }
 
@@ -22,11 +31,7 @@ where
         self,
         element: Target::Front,
     ) -> QueueBuilding<Target, Target::Back, QueueSingle<Target::Front>> {
-        QueueBuilding {
-            target: PhantomData,
-            remaining: PhantomData,
-            current: QueueSingle::new(element),
-        }
+        QueueBuilding::new(QueueSingle::new(element))
     }
 }
 
@@ -47,15 +52,19 @@ where
     Remaining: StQueue,
     Current: StQueue,
 {
+    fn new(current: Current) -> Self {
+        Self {
+            target: Default::default(),
+            remaining: Default::default(),
+            current,
+        }
+    }
+
     pub fn push(
         self,
         element: Remaining::Front,
     ) -> QueueBuilding<Target, Remaining::Back, Current::PushBack<Remaining::Front>> {
-        QueueBuilding {
-            target: PhantomData,
-            remaining: PhantomData,
-            current: self.current.push(element),
-        }
+        QueueBuilding::new(self.current.push(element))
     }
 
     pub fn finish(self) -> Current
