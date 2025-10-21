@@ -3,6 +3,7 @@ mod define_queue;
 mod empty;
 mod non_empty;
 mod queue_of;
+mod single;
 mod st_queue;
 
 pub use builder::QueueBuilder;
