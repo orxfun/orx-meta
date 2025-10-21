@@ -139,14 +139,16 @@ fn solution_with_enums() {
 fn solution_with_composition() {
     println!("\n# solution_with_composition");
 
-    orx_meta::define_queue!(
+    orx_meta::define_nonempty_queue!(
         elements => [ Draw ];
-        queue => [ StScreen; EmptyScreen, Screen ];
+        queue => [ StScreen; ScreenSingle, Screen ];
     );
 
-    impl Draw for EmptyScreen {
+    impl<F: Draw> Draw for ScreenSingle<F> {
         // identity: do nothing
-        fn draw(&self) {}
+        fn draw(&self) {
+            self.f.draw();
+        }
     }
 
     impl<F: Draw, B: StScreen> Draw for Screen<F, B> {
@@ -157,8 +159,7 @@ fn solution_with_composition() {
         }
     }
 
-    let screen = EmptyScreen::new()
-        .push(Button::new(3, 4, "home".to_string()))
+    let screen = ScreenSingle::new(Button::new(3, 4, "home".to_string()))
         .push(Button::new(5, 4, "about".to_string()))
         .push(SelectBox::new(5, 4, vec!["one".to_string()]))
         .push(Button::new(6, 6, "login".to_string()));
