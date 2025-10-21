@@ -10,7 +10,7 @@ impl<F> StQueue for QueueSingle<F> {
 
     type Front = F;
 
-    type Back = QueueSingle<QueueSingle<F>>;
+    type Back = Self;
 
     const LEN: usize = 1;
 
