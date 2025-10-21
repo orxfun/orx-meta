@@ -1,3 +1,4 @@
+mod builder;
 mod multi;
 mod queue_of;
 mod single;
