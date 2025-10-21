@@ -9,6 +9,7 @@ pub trait StQueue {
 
     fn push<Elem>(self, element: Elem) -> Self::PushBack<Elem>;
 
+    #[inline(always)]
     fn len(&self) -> usize {
         Self::LEN
     }

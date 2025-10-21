@@ -387,6 +387,7 @@ macro_rules! define_nonempty_queue_core {
             where
                 T: $( $el_bnd $( < $( $el_bnd_g ),* > )? + ) *;
 
+            #[inline(always)]
             fn len(&self) -> usize {
                 Self::LEN
             }
