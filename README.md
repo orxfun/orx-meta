@@ -85,14 +85,16 @@ impl Draw for SelectBox {
 
 // # SOLUTION
 
-orx_meta::define_queue!(
+orx_meta::define_nonempty_queue!(
     elements => [ Draw ];
-    queue => [ StScreen; EmptyScreen, Screen ];
+    queue => [ StScreen; ScreenSingle, Screen ];
 );
 
-impl Draw for EmptyScreen {
-    // identity: do nothing
-    fn draw(&self) {}
+impl<F: Draw> Draw for ScreenSingle<F> {
+    // identity: just draw the single element
+    fn draw(&self) {
+        self.f.draw();
+    }
 }
 
 impl<F: Draw, B: StScreen> Draw for Screen<F, B> {
@@ -103,8 +105,7 @@ impl<F: Draw, B: StScreen> Draw for Screen<F, B> {
     }
 }
 
-let screen = EmptyScreen::new()
-    .push(Button::new(3, 4, "home".to_string()))
+let screen = Screen::new(Button::new(3, 4, "home".to_string()))
     .push(Button::new(5, 4, "about".to_string()))
     .push(SelectBox::new(5, 4, vec!["one".to_string()]))
     .push(Button::new(6, 6, "login".to_string()));
@@ -194,27 +195,26 @@ we can use the following initialization as a statically-typed queue:
 // # start up code (statically-typed queue)
 
 fn new_screen() -> impl Draw {
-    EmptyScreen::new()
-        .push(Button {
-            width: 3,
-            height: 4,
-            label: "home".to_string(),
-        })
-        .push(Button {
-            width: 5,
-            height: 4,
-            label: "about".to_string(),
-        })
-        .push(SelectBox {
-            width: 5,
-            height: 4,
-            options: vec!["one".to_string()],
-        })
-        .push(Button {
-            width: 6,
-            height: 6,
-            label: "login".to_string(),
-        })
+    Screen::new(Button {
+        width: 3,
+        height: 4,
+        label: "home".to_string(),
+    })
+    .push(Button {
+        width: 5,
+        height: 4,
+        label: "about".to_string(),
+    })
+    .push(SelectBox {
+        width: 5,
+        height: 4,
+        options: vec!["one".to_string()],
+    })
+    .push(Button {
+        width: 6,
+        height: 6,
+        label: "login".to_string(),
+    })
 }
 ```
 
@@ -300,8 +300,8 @@ We already have tuples for this.
 However, incremental build capability of queues come in handy. For instance, it allows us to create a generic builder that we can use for any struct. Since the queues are statically-typed in its elements, the builder prevents calling push with wrong types or in wrong order, and prevents us from finishing early or late.
 
 ```rust
-use orx_meta::queue::*;
-use orx_meta::queue_of;
+use orx_meta::nonempty_queue::*;
+use orx_meta::nonempty_queue_of;
 
 #[derive(PartialEq, Eq, Debug)]
 struct ComplexStruct {
@@ -311,14 +311,14 @@ struct ComplexStruct {
     d: String,
 }
 
-impl From<queue_of!(u32, bool, char, String)> for ComplexStruct {
-    fn from(queue: queue_of!(u32, bool, char, String)) -> Self {
+impl From<nonempty_queue_of!(u32, bool, char, String)> for ComplexStruct {
+    fn from(queue: nonempty_queue_of!(u32, bool, char, String)) -> Self {
         let (a, b, c, d) = queue.into_tuple();
         Self { a, b, c, d }
     }
 }
 
-let val: ComplexStruct = QueueBuilder::<queue_of!(u32, bool, char, String)>::new()
+let val: ComplexStruct = QueueBuilder::<nonempty_queue_of!(u32, bool, char, String)>::new()
     .push(42) // cannot call with wrong type, or
     .push(true) // cannot call in wrong order
     .push('x')
