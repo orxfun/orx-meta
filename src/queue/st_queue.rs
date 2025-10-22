@@ -14,6 +14,7 @@
 /// [`define_queue`]: crate::define_queue
 /// [`QueueSingle`]: crate::queue::QueueSingle
 /// [`Queue`]: crate::queue::Queue
+#[allow(clippy::len_without_is_empty)]
 pub trait StQueue {
     /// Type of the queue obtained by adding an element of type `Elem` to this queue.
     type PushBack<Elem>: StQueue;

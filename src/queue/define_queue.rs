@@ -546,6 +546,7 @@ macro_rules! define_queue_core {
         /// [`QueueSingle`]: crate::queue::QueueSingle
         /// [`Queue`]: crate::queue::Queue
         #[allow(dead_code)]
+        #[allow(clippy::len_without_is_empty)]
         pub trait $q<$($g_lt ,)* $($g ,)*>
         where
             Self: $( $el_bnd $( < $( $el_bnd_g ),* > )? + ) *,
