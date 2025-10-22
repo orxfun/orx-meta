@@ -13,8 +13,7 @@
 /// [`EmptyQueue`]: crate::queue::EmptyQueue
 /// [`Queue`]: crate::queue::Queue
 pub trait StQueue {
-    /// Type of the queue obtained by adding an element of type `T` to
-    /// this queue.
+    /// Type of the queue obtained by adding an element of type `T` to this queue.
     type PushBack<T>: StQueue;
 
     /// Type of the element at the front of the queue.
