@@ -728,6 +728,7 @@ macro_rules! define_queue_core {
             /// assert_eq!(queue.len(), 1);
             /// assert_eq!(queue.front(), &42);
             /// ```
+            #[inline(always)]
             pub fn new(element: F) -> Self {
                 Self {
                     phantom: Default::default(),
@@ -868,6 +869,7 @@ macro_rules! define_queue_core {
             ///   = Queue::new(42).push('x').push(true).push("foo".to_string());
             /// assert_eq!(queue.as_tuple(), (&42, &'x', &true, &"foo".to_string()));
             /// ```
+            #[allow(clippy::new_ret_no_self)]
             #[inline(always)]
             pub fn new(element: F) -> $empty<$($g_lt ,)* $($g ,)* F> {
                 $empty::new(element)

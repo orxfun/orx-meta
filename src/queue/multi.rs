@@ -88,6 +88,7 @@ impl<F> Queue<F, QueueSingle<F>> {
     /// assert_eq!(queue.as_tuple(), (&42, &'x', &true, &"foo".to_string()));
     /// ```
     #[inline(always)]
+    #[allow(clippy::new_ret_no_self)]
     pub fn new(element: F) -> QueueSingle<F> {
         QueueSingle::new(element)
     }
