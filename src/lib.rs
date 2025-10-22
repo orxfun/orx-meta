@@ -12,8 +12,5 @@
 )]
 #![cfg_attr(not(test), no_std)]
 
-// /// Module defining statically typed queue of heterogeneous elements.
-// pub mod queue;
-
 /// Module defining statically typed non-empty queues of heterogeneous elements.
 pub mod nonempty_queue;
