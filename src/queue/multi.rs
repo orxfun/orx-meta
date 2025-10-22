@@ -289,6 +289,22 @@ where
 type S<F> = QueueSingle<F>;
 
 impl<X1> S<X1> {
+    /// Converts the queue into its flat tuple representation.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use orx_meta::queue::*;
+    ///
+    /// let queue = Queue::new(42);
+    /// assert_eq!(queue.into_tuple(), 42);
+    ///
+    /// let queue = Queue::new(42).push(true);
+    /// assert_eq!(queue.into_tuple(), (42, true));
+    ///
+    /// let queue = Queue::new(42).push(true).push('x').push("foo");
+    /// assert_eq!(queue.into_tuple(), (42, true, 'x', "foo"));
+    /// ```
     pub fn into_tuple(self) -> X1 {
         self.front
     }
@@ -301,6 +317,22 @@ impl<X1> S<X1> {
 }
 
 impl<X1, X2> Queue<X1, S<X2>> {
+    /// Converts the queue into its flat tuple representation.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use orx_meta::queue::*;
+    ///
+    /// let queue = Queue::new(42);
+    /// assert_eq!(queue.into_tuple(), 42);
+    ///
+    /// let queue = Queue::new(42).push(true);
+    /// assert_eq!(queue.into_tuple(), (42, true));
+    ///
+    /// let queue = Queue::new(42).push(true).push('x').push("foo");
+    /// assert_eq!(queue.into_tuple(), (42, true, 'x', "foo"));
+    /// ```
     pub fn into_tuple(self) -> (X1, X2) {
         (self.f, self.b.front)
     }
@@ -313,6 +345,22 @@ impl<X1, X2> Queue<X1, S<X2>> {
 }
 
 impl<X1, X2, X3> Queue<X1, Queue<X2, S<X3>>> {
+    /// Converts the queue into its flat tuple representation.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use orx_meta::queue::*;
+    ///
+    /// let queue = Queue::new(42);
+    /// assert_eq!(queue.into_tuple(), 42);
+    ///
+    /// let queue = Queue::new(42).push(true);
+    /// assert_eq!(queue.into_tuple(), (42, true));
+    ///
+    /// let queue = Queue::new(42).push(true).push('x').push("foo");
+    /// assert_eq!(queue.into_tuple(), (42, true, 'x', "foo"));
+    /// ```
     pub fn into_tuple(self) -> (X1, X2, X3) {
         (self.f, self.b.f, self.b.b.front)
     }
@@ -325,6 +373,22 @@ impl<X1, X2, X3> Queue<X1, Queue<X2, S<X3>>> {
 }
 
 impl<X1, X2, X3, X4> Queue<X1, Queue<X2, Queue<X3, S<X4>>>> {
+    /// Converts the queue into its flat tuple representation.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use orx_meta::queue::*;
+    ///
+    /// let queue = Queue::new(42);
+    /// assert_eq!(queue.into_tuple(), 42);
+    ///
+    /// let queue = Queue::new(42).push(true);
+    /// assert_eq!(queue.into_tuple(), (42, true));
+    ///
+    /// let queue = Queue::new(42).push(true).push('x').push("foo");
+    /// assert_eq!(queue.into_tuple(), (42, true, 'x', "foo"));
+    /// ```
     pub fn into_tuple(self) -> (X1, X2, X3, X4) {
         (self.f, self.b.f, self.b.b.f, self.b.b.b.front)
     }
@@ -342,6 +406,22 @@ impl<X1, X2, X3, X4> Queue<X1, Queue<X2, Queue<X3, S<X4>>>> {
 }
 
 impl<X1, X2, X3, X4, X5> Queue<X1, Queue<X2, Queue<X3, Queue<X4, S<X5>>>>> {
+    /// Converts the queue into its flat tuple representation.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use orx_meta::queue::*;
+    ///
+    /// let queue = Queue::new(42);
+    /// assert_eq!(queue.into_tuple(), 42);
+    ///
+    /// let queue = Queue::new(42).push(true);
+    /// assert_eq!(queue.into_tuple(), (42, true));
+    ///
+    /// let queue = Queue::new(42).push(true).push('x').push("foo");
+    /// assert_eq!(queue.into_tuple(), (42, true, 'x', "foo"));
+    /// ```
     pub fn into_tuple(self) -> (X1, X2, X3, X4, X5) {
         (
             self.f,
@@ -372,6 +452,22 @@ impl<X1, X2, X3, X4, X5> Queue<X1, Queue<X2, Queue<X3, Queue<X4, S<X5>>>>> {
 }
 
 impl<X1, X2, X3, X4, X5, X6> Queue<X1, Queue<X2, Queue<X3, Queue<X4, Queue<X5, S<X6>>>>>> {
+    /// Converts the queue into its flat tuple representation.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use orx_meta::queue::*;
+    ///
+    /// let queue = Queue::new(42);
+    /// assert_eq!(queue.into_tuple(), 42);
+    ///
+    /// let queue = Queue::new(42).push(true);
+    /// assert_eq!(queue.into_tuple(), (42, true));
+    ///
+    /// let queue = Queue::new(42).push(true).push('x').push("foo");
+    /// assert_eq!(queue.into_tuple(), (42, true, 'x', "foo"));
+    /// ```
     pub fn into_tuple(self) -> (X1, X2, X3, X4, X5, X6) {
         (
             self.f,
@@ -407,6 +503,22 @@ impl<X1, X2, X3, X4, X5, X6> Queue<X1, Queue<X2, Queue<X3, Queue<X4, Queue<X5, S
 impl<X1, X2, X3, X4, X5, X6, X7>
     Queue<X1, Queue<X2, Queue<X3, Queue<X4, Queue<X5, Queue<X6, S<X7>>>>>>>
 {
+    /// Converts the queue into its flat tuple representation.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use orx_meta::queue::*;
+    ///
+    /// let queue = Queue::new(42);
+    /// assert_eq!(queue.into_tuple(), 42);
+    ///
+    /// let queue = Queue::new(42).push(true);
+    /// assert_eq!(queue.into_tuple(), (42, true));
+    ///
+    /// let queue = Queue::new(42).push(true).push('x').push("foo");
+    /// assert_eq!(queue.into_tuple(), (42, true, 'x', "foo"));
+    /// ```
     pub fn into_tuple(self) -> (X1, X2, X3, X4, X5, X6, X7) {
         (
             self.f,
@@ -455,6 +567,22 @@ impl<X1, X2, X3, X4, X5, X6, X7>
 impl<X1, X2, X3, X4, X5, X6, X7, X8>
     Queue<X1, Queue<X2, Queue<X3, Queue<X4, Queue<X5, Queue<X6, Queue<X7, S<X8>>>>>>>>
 {
+    /// Converts the queue into its flat tuple representation.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use orx_meta::queue::*;
+    ///
+    /// let queue = Queue::new(42);
+    /// assert_eq!(queue.into_tuple(), 42);
+    ///
+    /// let queue = Queue::new(42).push(true);
+    /// assert_eq!(queue.into_tuple(), (42, true));
+    ///
+    /// let queue = Queue::new(42).push(true).push('x').push("foo");
+    /// assert_eq!(queue.into_tuple(), (42, true, 'x', "foo"));
+    /// ```
     pub fn into_tuple(self) -> (X1, X2, X3, X4, X5, X6, X7, X8) {
         (
             self.f,

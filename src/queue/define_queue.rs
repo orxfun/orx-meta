@@ -1074,6 +1074,22 @@ macro_rules! define_nonempty_queue_tuple_transformation {
             X1: $( $el_bnd $( < $( $el_bnd_g ),* > )? + ) *,
             $( $g: $( $( $g_bnd $( < $( $g_bnd_g ),* > )? + )* )? ), *
         {
+            /// Converts the queue into its flat tuple representation.
+            ///
+            /// # Examples
+            ///
+            /// ```ignore
+            /// use orx_meta::queue::*;
+            ///
+            /// let queue = Queue::new(42);
+            /// assert_eq!(queue.into_tuple(), 42);
+            ///
+            /// let queue = Queue::new(42).push(true);
+            /// assert_eq!(queue.into_tuple(), (42, true));
+            ///
+            /// let queue = Queue::new(42).push(true).push('x').push("foo");
+            /// assert_eq!(queue.into_tuple(), (42, true, 'x', "foo"));
+            /// ```
             #[inline(always)]
             pub fn into_tuple(self) -> X1 {
                 self.f
@@ -1110,6 +1126,22 @@ macro_rules! define_nonempty_queue_tuple_transformation {
             X2: $( $el_bnd $( < $( $el_bnd_g ),* > )? + ) *,
             $( $g: $( $( $g_bnd $( < $( $g_bnd_g ),* > )? + )* )? ), *
         {
+            /// Converts the queue into its flat tuple representation.
+            ///
+            /// # Examples
+            ///
+            /// ```ignore
+            /// use orx_meta::queue::*;
+            ///
+            /// let queue = Queue::new(42);
+            /// assert_eq!(queue.into_tuple(), 42);
+            ///
+            /// let queue = Queue::new(42).push(true);
+            /// assert_eq!(queue.into_tuple(), (42, true));
+            ///
+            /// let queue = Queue::new(42).push(true).push('x').push("foo");
+            /// assert_eq!(queue.into_tuple(), (42, true, 'x', "foo"));
+            /// ```
             #[inline(always)]
             pub fn into_tuple(self) -> (X1, X2) {
                 (self.f, self.b.f)
@@ -1151,6 +1183,22 @@ macro_rules! define_nonempty_queue_tuple_transformation {
             X3: $( $el_bnd $( < $( $el_bnd_g ),* > )? + ) *,
             $( $g: $( $( $g_bnd $( < $( $g_bnd_g ),* > )? + )* )? ), *
         {
+            /// Converts the queue into its flat tuple representation.
+            ///
+            /// # Examples
+            ///
+            /// ```ignore
+            /// use orx_meta::queue::*;
+            ///
+            /// let queue = Queue::new(42);
+            /// assert_eq!(queue.into_tuple(), 42);
+            ///
+            /// let queue = Queue::new(42).push(true);
+            /// assert_eq!(queue.into_tuple(), (42, true));
+            ///
+            /// let queue = Queue::new(42).push(true).push('x').push("foo");
+            /// assert_eq!(queue.into_tuple(), (42, true, 'x', "foo"));
+            /// ```
             #[inline(always)]
             pub fn into_tuple(self) -> (X1, X2, X3) {
                 (self.f, self.b.f, self.b.b.f)
@@ -1199,6 +1247,22 @@ macro_rules! define_nonempty_queue_tuple_transformation {
             X4: $( $el_bnd $( < $( $el_bnd_g ),* > )? + ) *,
             $( $g: $( $( $g_bnd $( < $( $g_bnd_g ),* > )? + )* )? ), *
         {
+            /// Converts the queue into its flat tuple representation.
+            ///
+            /// # Examples
+            ///
+            /// ```ignore
+            /// use orx_meta::queue::*;
+            ///
+            /// let queue = Queue::new(42);
+            /// assert_eq!(queue.into_tuple(), 42);
+            ///
+            /// let queue = Queue::new(42).push(true);
+            /// assert_eq!(queue.into_tuple(), (42, true));
+            ///
+            /// let queue = Queue::new(42).push(true).push('x').push("foo");
+            /// assert_eq!(queue.into_tuple(), (42, true, 'x', "foo"));
+            /// ```
             #[inline(always)]
             pub fn into_tuple(self) -> (X1, X2, X3, X4) {
                 (self.f, self.b.f, self.b.b.f, self.b.b.b.f)
@@ -1253,6 +1317,22 @@ macro_rules! define_nonempty_queue_tuple_transformation {
             X5: $( $el_bnd $( < $( $el_bnd_g ),* > )? + ) *,
             $( $g: $( $( $g_bnd $( < $( $g_bnd_g ),* > )? + )* )? ), *
         {
+            /// Converts the queue into its flat tuple representation.
+            ///
+            /// # Examples
+            ///
+            /// ```ignore
+            /// use orx_meta::queue::*;
+            ///
+            /// let queue = Queue::new(42);
+            /// assert_eq!(queue.into_tuple(), 42);
+            ///
+            /// let queue = Queue::new(42).push(true);
+            /// assert_eq!(queue.into_tuple(), (42, true));
+            ///
+            /// let queue = Queue::new(42).push(true).push('x').push("foo");
+            /// assert_eq!(queue.into_tuple(), (42, true, 'x', "foo"));
+            /// ```
             #[inline(always)]
             pub fn into_tuple(self) -> (X1, X2, X3, X4, X5) {
                 (self.f, self.b.f, self.b.b.f, self.b.b.b.f, self.b.b.b.b.f)
@@ -1313,6 +1393,22 @@ macro_rules! define_nonempty_queue_tuple_transformation {
             X6: $( $el_bnd $( < $( $el_bnd_g ),* > )? + ) *,
             $( $g: $( $( $g_bnd $( < $( $g_bnd_g ),* > )? + )* )? ), *
         {
+            /// Converts the queue into its flat tuple representation.
+            ///
+            /// # Examples
+            ///
+            /// ```ignore
+            /// use orx_meta::queue::*;
+            ///
+            /// let queue = Queue::new(42);
+            /// assert_eq!(queue.into_tuple(), 42);
+            ///
+            /// let queue = Queue::new(42).push(true);
+            /// assert_eq!(queue.into_tuple(), (42, true));
+            ///
+            /// let queue = Queue::new(42).push(true).push('x').push("foo");
+            /// assert_eq!(queue.into_tuple(), (42, true, 'x', "foo"));
+            /// ```
             #[inline(always)]
             pub fn into_tuple(self) -> (X1, X2, X3, X4, X5, X6) {
                 (self.f, self.b.f, self.b.b.f, self.b.b.b.f, self.b.b.b.b.f, self.b.b.b.b.b.f)
@@ -1379,6 +1475,22 @@ macro_rules! define_nonempty_queue_tuple_transformation {
             X7: $( $el_bnd $( < $( $el_bnd_g ),* > )? + ) *,
             $( $g: $( $( $g_bnd $( < $( $g_bnd_g ),* > )? + )* )? ), *
         {
+            /// Converts the queue into its flat tuple representation.
+            ///
+            /// # Examples
+            ///
+            /// ```ignore
+            /// use orx_meta::queue::*;
+            ///
+            /// let queue = Queue::new(42);
+            /// assert_eq!(queue.into_tuple(), 42);
+            ///
+            /// let queue = Queue::new(42).push(true);
+            /// assert_eq!(queue.into_tuple(), (42, true));
+            ///
+            /// let queue = Queue::new(42).push(true).push('x').push("foo");
+            /// assert_eq!(queue.into_tuple(), (42, true, 'x', "foo"));
+            /// ```
             #[inline(always)]
             pub fn into_tuple(self) -> (X1, X2, X3, X4, X5, X6, X7) {
                 (self.f, self.b.f, self.b.b.f, self.b.b.b.f, self.b.b.b.b.f, self.b.b.b.b.b.f, self.b.b.b.b.b.b.f)
@@ -1451,6 +1563,22 @@ macro_rules! define_nonempty_queue_tuple_transformation {
             X8: $( $el_bnd $( < $( $el_bnd_g ),* > )? + ) *,
             $( $g: $( $( $g_bnd $( < $( $g_bnd_g ),* > )? + )* )? ), *
         {
+            /// Converts the queue into its flat tuple representation.
+            ///
+            /// # Examples
+            ///
+            /// ```ignore
+            /// use orx_meta::queue::*;
+            ///
+            /// let queue = Queue::new(42);
+            /// assert_eq!(queue.into_tuple(), 42);
+            ///
+            /// let queue = Queue::new(42).push(true);
+            /// assert_eq!(queue.into_tuple(), (42, true));
+            ///
+            /// let queue = Queue::new(42).push(true).push('x').push("foo");
+            /// assert_eq!(queue.into_tuple(), (42, true, 'x', "foo"));
+            /// ```
             #[inline(always)]
             pub fn into_tuple(self) -> (X1, X2, X3, X4, X5, X6, X7, X8) {
                 (self.f, self.b.f, self.b.b.f, self.b.b.b.f, self.b.b.b.b.f, self.b.b.b.b.b.f, self.b.b.b.b.b.b.f, self.b.b.b.b.b.b.b.f)
