@@ -8,7 +8,7 @@ fn main() {
 
     // # 1. Type Alias Helper
 
-    type Q = Queue<i32, Queue<bool, Queue<char, Queue<String, EmptyQueue>>>>;
+    type Q = Queue<i32, Queue<bool, Queue<char, QueueSingle<String>>>>;
     let q: Q = Queue::new(42).push(true).push('x').push("foo".to_string());
 
     type R = queue_of!(i32, bool, char, String); // R == Q

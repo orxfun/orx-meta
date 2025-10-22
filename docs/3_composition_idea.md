@@ -7,13 +7,9 @@ So far, with the queue types we have achieved:
 * to define a statically-typed collection of heterogeneous types, or equivalently, to define incremental ad-hoc structs; and
 * to create a generic type-safe builder that lets us build any queue or any struct.
 
-However, we are still far away from the main goal.
+However, the main goal is to have a heterogeneous collection of elements with **a shared behavior**.
 
-The main goal is to have a heterogeneous collection of elements with a shared behavior. This collection must have a dynamic feel for ergonomics but must be statically typed for performance.
-
-If we go with the classical example, which is also used in the rust-book's [trait objects chapter](https://doc.rust-lang.org/book/ch18-02-trait-objects.html), we want a heterogeneous collection of things that we can draw, or that implement the trait `Draw`.
-
-The example goes as follows:
+If we go with the classical example, which is also used in the rust-book's [trait objects chapter](https://doc.rust-lang.org/book/ch18-02-trait-objects.html), we want a heterogeneous collection of things that we can draw:
 
 * We have a `Draw` trait defined by the `fn draw(&self)` method.
 * A bunch of components implement this trait such as `Button` or `SelectBox`.
@@ -27,37 +23,39 @@ Let's define our `Screen` as a queue of heterogeneous types, all of which implem
 
 ***What if we also require queue implementations to implement `Draw`?***
 
-In other words, we require `StQueue: Draw`. Recall that we have two concrete queue implementations: `EmptyQueue` and non-empty `Queue`.
+In other words, we require `StQueue: Draw`. Recall that we have two concrete queue implementations: `QueueSingle` and non-empty `Queue`.
 
-### Draw on an empty queue
+### Draw on a queue with single element
 
-What should `EmptyQueue::draw(&self)` do?
+What should `QueueSingle::<F>::draw(&self)`?
 
+* Trivial! It does what `F: Draw` would've done.
 * This is where we define the **identity**.
-* For the draw example, the sensible thing to do is nothing.
 
 ```rust
-impl Draw for EmptyQueue {
-    fn draw(&self) {}
+impl<F: Draw> Draw for QueueSingle<F> {
+    fn draw(&self) {
+        self.f.draw();
+    }
 }
 ```
 
-### Draw a non-empty queue
+### Draw on a multiple-element queue
 
-Recall that a non-empty `Queue` is composed of two parts, the **front** element, and the **back** defining the queue of remaining elements.
+Recall that a multiple-element `Queue` is composed of two parts, the **front** element, and the **back** defining the queue of remaining elements.
 
 As we mentioned in the beginning, all elements in the queue implement `Draw`, and so does the **front**.
 
-Further, since the **back** itself is a queue and we additionally require every queue implementation to implement `Draw`, **back** also has the draw implementation.
+Further, since the **back** itself is a queue and all queues are required to implement `Draw`.
 
 Back to the question.
 
 What should `Queue:draw(&self)` do?
 
 * This is where we define **composition**.
-* The right thing to do is probably to draw them both. You may decide on the order if it matters.
+* The sensible thing to do for this example is probably to draw them both. You may decide on the order if it matters.
 
-The **back** being a queue might make it a bit confusing. An easy way to think about is to consider the back as a single `Draw` element. This is the case when the queue has two elements anyways. And if we properly define the composition for two shapes, it will work for any number of shapes.
+The **back** being a queue might make it a bit confusing. An easy way to think about is to consider the back as a single `Draw` element. This is the case when the queue has two elements anyways. And if we properly define the composition for two shapes, it will work for any number of shapes ([induction](https://en.wikipedia.org/wiki/Mathematical_induction)).
 
 ```rust
 impl<F, B> Draw for Queue<F, B>
@@ -66,17 +64,17 @@ where
     B: StQueue,
 {
     fn draw(&self) {
-        self.front.draw();
-        self.back.draw();
+        self.f.draw();
+        self.b.draw();
     }
 }
 ```
 
 ### A Note on Performance
 
-Notice that `self.front.draw()` is a direct method call.
+Notice that `self.f.draw()` is a direct method call.
 
-How about `self.back.draw()`?
+How about `self.b.draw()`?
 
 The **back** is a statically typed queue, so we know that this is not a virtual call.
 
@@ -84,7 +82,7 @@ Is it recursion?
 
 Also no. Although, it feels recursive, there is no recursion involved. It can completely be inlined as calls to the concrete front elements.
 
-For instance, assume we have a queue of four elements of types `X1`, `X2`, `X3` and `X4`, all implementing `Draw`. Type of our queue is `Queue<X1, Queue<X2, Queue<X3, Queue<X4, EmptyQueue>>>>`.
+For instance, assume we have a queue of four elements of types `X1`, `X2`, `X3` and `X4`, all implementing `Draw`. Type of our queue is `Queue<X1, Queue<X2, Queue<X3, QueueSingle<X4>>>>`.
 
 Now the `draw` implementation that we defined for the non-empty queue on this queue is identical to the `draw_hand_written` implementation below:
 
@@ -98,13 +96,12 @@ impl Draw for X3 { fn draw(&self) {} }
 pub struct X4;
 impl Draw for X4 { fn draw(&self) {} }
 
-impl Queue<X1, Queue<X2, Queue<X3, Queue<X4, EmptyQueue>>>> {
+impl Queue<X1, Queue<X2, Queue<X3, QueueSingle<X4>>>> {
     fn draw_hand_written(&self) {
         self.front.draw();                  // X1
         self.back.front.draw();             // X2
         self.back.back.front.draw();        // X3
         self.back.back.back.front.draw();   // X4
-        self.back.back.back.back.draw();    // EmptyQueue
     }
 }
 ```
@@ -124,9 +121,9 @@ pub trait Sum {
 Various types of numbers that can be turned into `i64` can implement this, since sum of a single number is itself. Then, we can implement the trait for empty and non-empty queues as follows:
 
 ```rust
-impl Sum for EmptyQueue {
+impl<F: Sum> Sum for QueueSingle<F> {
     fn sum(self) -> i64 {
-        0 // identity
+        self.f.sum() // identity
     }
 }
 
@@ -140,8 +137,7 @@ impl<F: Sum, B: StQueue> Sum for Queue<F, B> {
 This would allow to write the following code:
 
 ```rust
-let queue = EmptyQueue::new()
-    .push(1i16)
+let queue = Queue::new(1i16)
     .push(2i32)
     .push(3i32)
     .push(4i64)
@@ -193,9 +189,9 @@ Finally, our screen implementation with `new`, `push` and `run` methods.
 ```rust
 struct Screen<Q: StQueue>(Q);
 
-impl Screen<EmptyQueue> {
-    fn new() -> Self {
-        Self(EmptyQueue::new())
+impl<F: Draw> Screen<QueueSingle<F>> {
+    fn new<F: Draw>(component: F) -> Self {
+        Self(QueueSingle::new(component))
     }
 }
 
@@ -213,22 +209,21 @@ impl<Q: StQueue> Screen<Q> {
 This suffices to achieve the following.
 
 ```rust
-let screen = Screen::new()
-    .push(Button {
-        width: 3,
-        height: 4,
-        label: String::from("login"),
-    })
-    .push(Button {
-        width: 4,
-        height: 5,
-        label: String::from("logout"),
-    })
-    .push(SelectBox {
-        width: 10,
-        height: 6,
-        options: vec![String::from("This"), String::from("that")],
-    });
+let screen = Screen::new(Button {
+    width: 3,
+    height: 4,
+    label: String::from("login"),
+})
+.push(Button {
+    width: 4,
+    height: 5,
+    label: String::from("logout"),
+})
+.push(SelectBox {
+    width: 10,
+    height: 6,
+    options: vec![String::from("This"), String::from("that")],
+});
 
 // draw all components
 screen.run();
@@ -238,7 +233,7 @@ Pretty dynamic look and feel.
 
 But strongly typed!
 
-No box and no virtual function calls, whenever it matters.
+No box, no virtual function calls, an no recursion.
 
 This is a very useful pattern.
 

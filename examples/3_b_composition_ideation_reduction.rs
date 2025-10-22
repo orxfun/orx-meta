@@ -22,12 +22,12 @@ impl Sum for i64 {
 
 orx_meta::define_queue!(
     elements => [ Sum ];
-    queue => [ StQueue ; EmptyQueue, Queue ];
+    queue => [ StQueue ; QueueSingle, Queue ];
 );
 
-impl Sum for EmptyQueue {
+impl<F: Sum> Sum for QueueSingle<F> {
     fn sum(self) -> i64 {
-        0
+        self.f.sum()
     }
 }
 
@@ -38,8 +38,7 @@ impl<F: Sum, B: StQueue> Sum for Queue<F, B> {
 }
 
 fn main() {
-    let queue = EmptyQueue::new()
-        .push(1i16)
+    let queue = QueueSingle::new(1i16)
         .push(2i32)
         .push(3i32)
         .push(4i64)

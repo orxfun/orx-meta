@@ -9,9 +9,9 @@ trait Draw {
 // queue trait
 
 trait StQueue: Draw {
-    type PushBack<T>: StQueue
+    type PushBack<Elem>: StQueue
     where
-        T: Draw;
+        Elem: Draw;
 
     type Front: Draw;
 
@@ -19,55 +19,76 @@ trait StQueue: Draw {
 
     const LEN: usize;
 
+    fn push<Elem>(self, element: Elem) -> Self::PushBack<Elem>
+    where
+        Elem: Draw;
+
     fn len(&self) -> usize {
         Self::LEN
     }
 
-    fn is_empty(&self) -> bool {
-        self.len() == 0
-    }
-
-    fn push<T>(self, element: T) -> Self::PushBack<T>
-    where
-        T: Draw;
+    fn front(&self) -> &Self::Front;
 }
 
-// queue implementations: empty
+// queue implementations: single
 
-struct EmptyQueue;
+struct QueueSingle<F>
+where
+    F: Draw,
+{
+    front: F,
+}
 
-impl StQueue for EmptyQueue {
-    type PushBack<T>
-        = Queue<T, EmptyQueue>
+impl<F> StQueue for QueueSingle<F>
+where
+    F: Draw,
+{
+    type PushBack<Elem>
+        = Queue<F, QueueSingle<Elem>>
     where
-        T: Draw;
+        Elem: Draw;
 
-    type Front = Self;
+    type Front = F;
 
     type Back = Self;
 
-    const LEN: usize = 0;
+    const LEN: usize = 1;
 
-    fn push<T>(self, element: T) -> Self::PushBack<T>
+    fn push<Elem>(self, element: Elem) -> Self::PushBack<Elem>
     where
-        T: Draw,
+        Elem: Draw,
     {
-        Queue::new(element)
+        Queue {
+            front: self.front,
+            back: QueueSingle::new(element),
+        }
+    }
+
+    fn front(&self) -> &Self::Front {
+        &self.front
     }
 }
 
-impl EmptyQueue {
+impl<F> QueueSingle<F>
+where
+    F: Draw,
+{
     /// Creates a new empty queue.
-    pub fn new() -> Self {
-        Self
+    pub fn new(element: F) -> Self {
+        Self { front: element }
     }
 }
 
-impl Draw for EmptyQueue {
-    fn draw(&self) {}
+impl<F> Draw for QueueSingle<F>
+where
+    F: Draw,
+{
+    fn draw(&self) {
+        self.front.draw()
+    }
 }
 
-// queue implementations: non-empty
+// queue implementations: multiple
 
 struct Queue<F, B>
 where
@@ -103,17 +124,19 @@ where
             back: self.back.push(element),
         }
     }
+
+    fn front(&self) -> &Self::Front {
+        &self.front
+    }
 }
 
-impl<F> Queue<F, EmptyQueue>
+impl<F> Queue<F, QueueSingle<F>>
 where
     F: Draw,
 {
-    pub fn new(front: F) -> Self {
-        Self {
-            front,
-            back: EmptyQueue,
-        }
+    #[inline(always)]
+    pub fn new(element: F) -> QueueSingle<F> {
+        QueueSingle::new(element)
     }
 }
 
@@ -160,9 +183,13 @@ impl Draw for SelectBox {
 // screen as a queue
 
 struct Screen<Q: StQueue>(Q);
-impl Screen<EmptyQueue> {
-    fn new() -> Self {
-        Self(EmptyQueue::new())
+
+impl<F> Screen<QueueSingle<F>>
+where
+    F: Draw,
+{
+    fn new(element: F) -> Self {
+        Self(QueueSingle::new(element))
     }
 }
 impl<Q: StQueue> Screen<Q> {
@@ -193,34 +220,32 @@ impl Draw for X4 {
     fn draw(&self) {}
 }
 
-impl Queue<X1, Queue<X2, Queue<X3, Queue<X4, EmptyQueue>>>> {
+impl Queue<X1, Queue<X2, Queue<X3, QueueSingle<X4>>>> {
     // this is identical to Queue::draw
     fn draw_hand_written(&self) {
         self.front.draw(); // X1
         self.back.front.draw(); // X2
         self.back.back.front.draw(); // X3
         self.back.back.back.front.draw(); // X4
-        self.back.back.back.back.draw(); // EmptyQueue
     }
 }
 
 fn main() {
-    let screen = Screen::new()
-        .push(Button {
-            width: 3,
-            height: 4,
-            label: String::from("login"),
-        })
-        .push(Button {
-            width: 4,
-            height: 5,
-            label: String::from("logout"),
-        })
-        .push(SelectBox {
-            width: 10,
-            height: 6,
-            options: vec![String::from("This"), String::from("that")],
-        });
+    let screen = Screen::new(Button {
+        width: 3,
+        height: 4,
+        label: String::from("login"),
+    })
+    .push(Button {
+        width: 4,
+        height: 5,
+        label: String::from("logout"),
+    })
+    .push(SelectBox {
+        width: 10,
+        height: 6,
+        options: vec![String::from("This"), String::from("that")],
+    });
     screen.run();
 
     // prints out:
