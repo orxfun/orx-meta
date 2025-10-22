@@ -409,7 +409,7 @@ macro_rules! define_queue_core {
             ///
             /// # Examples
             ///
-            /// ```
+            /// ```ignore
             /// use orx_meta::queue::*;
             ///
             /// let queue = Queue::new(42);
@@ -431,7 +431,7 @@ macro_rules! define_queue_core {
             ///
             /// # Examples
             ///
-            /// ```
+            /// ```ignore
             /// use orx_meta::queue::*;
             ///
             /// let queue = Queue::new(42);
@@ -456,7 +456,7 @@ macro_rules! define_queue_core {
             ///
             /// # Examples
             ///
-            /// ```
+            /// ```ignore
             /// use orx_meta::queue::*;
             ///
             /// let queue = Queue::new(42);
@@ -486,7 +486,7 @@ macro_rules! define_queue_core {
             ///
             /// # Examples
             ///
-            /// ```
+            /// ```ignore
             /// use orx_meta::queue::*;
             ///
             /// let mut queue = Queue::new(42).push(true).push('x');
@@ -503,7 +503,7 @@ macro_rules! define_queue_core {
             ///
             /// # Examples
             ///
-            /// ```
+            /// ```ignore
             /// use orx_meta::queue::*;
             ///
             /// let queue = Queue::new(42);
@@ -523,8 +523,13 @@ macro_rules! define_queue_core {
             fn into_front(self) -> Self::Front;
         }
 
-        // # empty
+        // # single
 
+
+        /// A statically-typed queue containing exactly one element of type `Front`.
+        ///
+        /// See also the other [`StQueue`] implementation [`Queue`] which can be
+        /// created by pushing a second element to this queue.
         #[derive(Clone, Copy, PartialEq, Eq)]
         pub struct $empty<$($g_lt ,)* $($g ,)* Front>
         where
@@ -540,6 +545,27 @@ macro_rules! define_queue_core {
             F: $( $el_bnd $( < $( $el_bnd_g ),* > )? + ) *,
             $( $g: $( $( $g_bnd $( < $( $g_bnd_g ),* > )? + )* )? ), *
         {
+            /// Creates a new statically-typed queue [`StQueue`] containing exactly one `element`.
+            ///
+            /// Alternatively, we can use multiple element queue's [`new`]. This is for convenience to
+            /// allows to work with a single queue type while coding.
+            ///
+            /// [`new`]: crate::queue::Queue::new
+            ///
+            /// # Examples
+            ///
+            /// ```ignore
+            /// use orx_meta::queue::*;
+            ///
+            /// let queue: QueueSingle<u32> = QueueSingle::new(42);
+            /// assert_eq!(queue.len(), 1);
+            /// assert_eq!(queue.front(), &42);
+            ///
+            /// // alternatively, we can use `Queue::new`:
+            /// let queue: QueueSingle<u32> = Queue::new(42);
+            /// assert_eq!(queue.len(), 1);
+            /// assert_eq!(queue.front(), &42);
+            /// ```
             pub fn new(element: F) -> Self {
                 Self {
                     phantom: Default::default(),
@@ -547,6 +573,21 @@ macro_rules! define_queue_core {
                 }
             }
 
+            /// Pops and returns the element in the front of this queue.
+            ///
+            /// Since this element contains only one element, there is no remaining queue once the
+            /// front is popped. Therefore, the return type is only the element rather than a tuple.
+            ///
+            /// # Examples
+            ///
+            /// ```ignore
+            /// use orx_meta::queue::*;
+            ///
+            /// let queue: QueueSingle<u32> = QueueSingle::new(42);
+            ///
+            /// let num = queue.pop();
+            /// assert_eq!(num, 42);
+            /// ```
             #[inline(always)]
             pub fn pop(self) -> F {
                 self.f

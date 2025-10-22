@@ -4,7 +4,7 @@ use crate::queue::{Queue, StQueue};
 ///
 /// See also the other [`StQueue`] implementation [`Queue`] which can be
 /// created by pushing a second element to this queue.
-#[derive(Clone, Copy, PartialEq, Eq, Debug, Default)]
+#[derive(Clone, Copy, PartialEq, Eq, Debug)]
 pub struct QueueSingle<Front> {
     pub(super) front: Front,
 }
