@@ -646,6 +646,20 @@ macro_rules! define_queue_core {
 
         // # pair
 
+        /// A queue containing multiple (>= 2) elements.
+        ///
+        /// It is composed of two parts:
+        /// * `f: Front` is the element in the front of the queue;
+        /// * `b: Back` is the queue of remaining elements except for the one in the front.
+        ///   It can be:
+        ///   * either a [`QueueSingle`] containing exactly one element in which case length of this
+        ///     queue is 2,
+        ///   * or a [`Queue`] containing multiple elements, in which case length of this queue is
+        ///     greater than 2, `1 + self.b.len()`.
+        ///
+        /// Note that `Queue::new(element)` gives a `QueueSingle` with one element. In order to create
+        /// a queue of multiple elements, we need to push at least one more element, such as
+        /// `Queue::new(elem1).push(elem2)`.
         #[derive(Clone, Copy, PartialEq, Eq)]
         pub struct $pair<$($g_lt ,)* $($g ,)* Front, Back>
         where
@@ -663,6 +677,35 @@ macro_rules! define_queue_core {
             F: $( $el_bnd $( < $( $el_bnd_g ),* > )? + ) *,
             $( $g: $( $( $g_bnd $( < $( $g_bnd_g ),* > )? + )* )? ), *
         {
+            /// Creates a [`QueueSingle`] with exactly one `element`.
+            ///
+            /// Note that `Queue::new` is equivalent to `QueueSingle::new`. It is introduced for
+            /// convenience allowing us to work only with the multiple element queue type `Queue`.
+            ///
+            /// # Examples
+            ///
+            /// ```ignore
+            /// use orx_meta::queue::*;
+            /// use orx_meta::queue_of;
+            ///
+            /// // creates a QueueSingle
+            /// let queue: QueueSingle<u32> = Queue::new(42);
+            /// assert_eq!(queue.len(), 1);
+            /// assert_eq!(queue.front(), &42);
+            ///
+            /// // creates a Queue when we push at least one more element
+            /// let queue: Queue<u32, QueueSingle<char>> = Queue::new(42).push('x');
+            /// assert_eq!(queue.len(), 2);
+            ///
+            /// let queue: Queue<u32, Queue<char, Queue<bool, QueueSingle<String>>>>
+            ///   = Queue::new(42).push('x').push(true).push("foo".to_string());
+            /// assert_eq!(queue.as_tuple(), (&42, &'x', &true, &"foo".to_string()));
+            ///
+            /// // equivalently, we can use the queue_of macro to create the type
+            /// let queue: queue_of!(u32, char, bool, String)
+            ///   = Queue::new(42).push('x').push(true).push("foo".to_string());
+            /// assert_eq!(queue.as_tuple(), (&42, &'x', &true, &"foo".to_string()));
+            /// ```
             #[inline(always)]
             pub fn new(element: F) -> $empty<$($g_lt ,)* $($g ,)* F> {
                 $empty::new(element)
@@ -686,26 +729,171 @@ macro_rules! define_queue_core {
 
             // ref
 
+            /// Returns a reference to the queue including elements of this queue
+            /// excluding the element in the front.
+            ///
+            /// Note that accessing elements of the queue is always by `front`, while
+            /// `back` allows to access elements in all positions of the queue.
+            ///
+            /// # Examples
+            ///
+            /// ```ignore
+            /// use orx_meta::queue::*;
+            ///
+            /// let queue = Queue::new(42);
+            /// assert_eq!(queue.front(), &42);
+            /// // assert_eq!(queue.back(), ??); // wont' compile, QueueSingle has no back
+            ///
+            /// let queue = Queue::new(42).push(true).push('x').push("foo");
+            /// assert_eq!(queue.back(), &Queue::new(true).push('x').push("foo"));
+            /// assert_eq!(queue.front(), &42);
+            /// assert_eq!(queue.back().front(), &true);
+            /// assert_eq!(queue.back().back().front(), &'x');
+            /// assert_eq!(queue.back().back().back().front(), &"foo");
+            ///
+            /// let (num, queue) = queue.pop();
+            /// assert_eq!(num, 42);
+            /// assert_eq!(queue.front(), &true);
+            /// assert_eq!(queue.back(), &Queue::new('x').push("foo"));
+            ///
+            /// let (flag, queue) = queue.pop();
+            /// assert_eq!(flag, true);
+            /// assert_eq!(queue.front(), &'x');
+            /// assert_eq!(queue.back(), &Queue::new("foo"));
+            ///
+            /// let (c, queue) = queue.pop();
+            /// assert_eq!(c, 'x');
+            /// assert_eq!(queue.front(), &"foo");
+            /// // assert_eq!(queue.back(), ??);  // wont' compile, QueueSingle has no back
+            ///
+            /// let s = queue.pop();
+            /// assert_eq!(s, "foo");
+            /// ```
             pub fn back(&self) -> &B {
                 &self.b
             }
 
             // mut
 
+            /// Returns a mutable reference to the queue including elements of this queue
+            /// excluding the element in the front.
+            ///
+            /// Note that mutating elements of the queue is always by `front_mut`, while
+            /// `back_mut` allows to access elements in all positions of the queue.
+            ///
+            /// # Examples
+            ///
+            /// ```ignore
+            /// use orx_meta::queue::*;
+            ///
+            /// let mut queue = Queue::new(42).push(true).push('x');
+            ///
+            /// *queue.front_mut() *= 2;
+            /// *queue.back_mut().front_mut() = false;
+            /// *queue.back_mut().back_mut().front_mut() = 'y';
+            ///
+            /// assert_eq!(queue.as_tuple(), (&84, &false, &'y'));
+            /// ```
             pub fn back_mut(&mut self) -> &mut B {
                 &mut self.b
             }
 
+            /// Returns a pair of mutable references:
+            /// * first to the element in the front of the queue, and
+            /// * second to the back queue containing elements except for the front.
+            ///
+            /// # Safety
+            ///
+            /// Assume we have a queue of three elements and we want to mutate the first and
+            /// third elements as follows.
+            ///
+            /// However, the following code would not compile.
+            ///
+            /// ```compile_fail ignore
+            /// use orx_meta::queue::*;
+            ///
+            /// let mut q = Queue::new(3).push(true).push('x');
+            ///
+            /// let first = q.front_mut();
+            /// let third = q.back_mut().back_mut().front_mut();
+            ///
+            /// // these calls can be made concurrently
+            /// *first *= 2;
+            /// *third = 'y';
+            /// ```
+            ///
+            /// It is perfectly safe to mutate the first and third elements at the same time.
+            /// Actually, we can mutate all of the elements concurrently.
+            ///
+            /// However, we need to help the compiler to figure this out, which is why we get
+            /// the mutable references to the front and back at the same time. With this, the
+            /// compiler understands that there is no overlap between them.
+            ///
+            /// # Examples
+            ///
+            /// So the following code would compile and work expectedly.
+            ///
+            /// ```ignore
+            /// use orx_meta::queue::*;
+            ///
+            /// let mut q = Queue::new(3).push(true).push('x');
+            ///
+            /// let (first, q23) = q.front_back_mut();
+            /// let third = q23.back_mut().front_mut();
+            ///
+            /// // these calls can be made concurrently
+            /// *first *= 2;
+            /// *third = 'y';
+            ///
+            /// assert_eq!(q.as_tuple(), (&6, &true, &'y'));
+            /// ```
             pub fn front_back_mut(&mut self) -> (&mut F, &mut B) {
                 (&mut self.f, &mut self.b)
             }
 
             // into
 
+            /// Consumes the queue and returns the queue including elements of this queue
+            /// except for the element in the front.
+            ///
+            /// Equivalent to `queue.pop().1`.
             pub fn into_back(self) -> B {
                 self.b
             }
 
+            /// Consumes the queue and returns the tuple of its front and back:
+            ///
+            /// * **front** is the element in the front of this queue.
+            /// * **back** is the queue including all elements of this queue except
+            ///   for the front element. In other words, it is the queue obtained by
+            ///   popping the front element.
+            ///
+            /// # Examples
+            ///
+            /// ```ignore
+            /// use orx_meta::queue::*;
+            ///
+            /// let queue = Queue::new(42);
+            /// let num = queue.pop(); // QueueSingle::pop just returns the front
+            /// assert_eq!(num, 42);
+            ///
+            /// let queue = Queue::new(42).push(true).push('x').push("foo");
+            ///
+            /// let (num, queue) = queue.pop(); // Queue::pop returns (front, back)
+            /// assert_eq!(num, 42);
+            /// assert_eq!(queue, Queue::new(true).push('x').push("foo"));
+            ///
+            /// let (flag, queue) = queue.pop();
+            /// assert_eq!(flag, true);
+            /// assert_eq!(queue, Queue::new('x').push("foo"));
+            ///
+            /// let (c, queue) = queue.pop();
+            /// assert_eq!(c, 'x');
+            /// assert_eq!(queue, Queue::new("foo"));
+            ///
+            /// let s = queue.pop();
+            /// assert_eq!(s, "foo");
+            /// ```
             pub fn pop(self) -> (F, B) {
                 (self.f, self.b)
             }
