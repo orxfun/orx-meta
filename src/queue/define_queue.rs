@@ -2065,6 +2065,42 @@ macro_rules! define_queue_of {
         queue => [$q:ident ; $empty:ident, $pair:ident];
         queue_of => $queue_of:ident;
     ) => {
+        /// Recall that there exist two statically-typed queue (`StQueue`) implementations:
+        ///
+        /// * `QueueSingle` which includes exactly one element, and
+        /// * `Queue` containing multiple (>=2) elements.
+        ///
+        /// Queues of all lengths can be represented by these two types:
+        /// * `QueueSingle<T1>` is a queue with one element,
+        /// * `Queue<T1, QueueSingle<T2>>` with two elements,
+        /// * `Queue<T1, Queue<T2, QueueSingle<T3>>>` with three elements,
+        /// * `Queue<T1, Queue<T2, Queue<T3, QueueSingle<T4>>>>` with four elements,
+        /// * and so on, so forth.
+        ///
+        /// This is possible thanks to generic associated types and recursive type definition of the `Queue`.
+        ///
+        /// On the other hand, it might make it difficult to hand-write queue types.
+        ///
+        /// `queue_of` macro is a helper macro to make such type aliasing convenient whenever needed.
+        ///
+        /// # Examples
+        ///
+        /// ```ignore
+        /// use orx_meta::queue::*;
+        /// use orx_meta::queue_of;
+        ///
+        /// // written with recursive type definition
+        /// type Q1 = Queue<i32, Queue<bool, Queue<char, QueueSingle<String>>>>;
+        ///
+        /// let instance: Q1 = Queue::new(42).push(true).push('x').push("foo".to_string());
+        /// assert_eq!(instance.as_tuple(), (&42, &true, &'x', &"foo".to_string()));
+        ///
+        /// // alternatively, using with queue_of macro as a flat list
+        /// type Q2 = queue_of!(i32, bool, char, String);
+        ///
+        /// // notice that Q1 and Q2 are aliases for the same type
+        /// let instance2: Q2 = instance;
+        /// ```
         macro_rules! $queue_of {
             ($t1:ty) => {
                 $empty<$($g_lt ,)* $($g ,)* $t1>
