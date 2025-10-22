@@ -1,3 +1,165 @@
+/// [orx_meta](https://crates.io/crates/orx-meta) crate defines statically-typed queues with heterogeneous elements.
+/// See [`StQueue`], [`QueueSingle`] and [`Queue`].
+/// Further, it provides the [`QueueBuilder`] as a generic builder for complex types and [`queue_of`] for conveniently
+/// aliasing complex queue types.
+///
+/// These are useful for several use cases; however, not sufficient for zero-cost abstraction.
+/// For more information, please see
+/// * examples [3_composition_idea](https://github.com/orxfun/orx-meta/blob/main/docs/3_composition_idea.md)
+///   and [5_solution_with_macros](https://github.com/orxfun/orx-meta/blob/main/docs/5_solution_with_macros.md); and
+/// * the article [zero cost composition](https://orxfun.github.io/orxfun-notes/#/zero-cost-composition-2025-10-15).
+///
+/// The `define_macro` allows us to re-create all above-mentioned queue types and code with the following additions:
+/// * Queue types might have custom generic parameters, and/or lifetime parameters.
+/// * But most importantly, we can limit elements that can be included in the queue with a custom trait or traits.
+///   In other words, we can add trait bounds to elements that can be pushed to the queue. This allows us to achieve
+///   zero-cost composition.
+///
+/// # Example - Recreating and Renaming
+///
+/// The following is the simplest usage of this macro.
+///
+/// ```
+/// orx_meta::define_queue!(
+///     queue => [ MyQueue ; MySingleQueue, MyMultiQueue ];
+/// );
+///
+/// let queue = MyMultiQueue::new(42).push(true).push('x');
+/// assert_eq!(queue.as_tuple(), (&42, &true, &'x'));
+/// ```
+/// It just recreates [`StQueue`] trait with name `MyQueue`, [`QueueSingle`] implementation as `MySingleQueue` and
+/// [`Queue`] implementation as `MyMultiQueue`.
+///
+/// Everything will be the same other than renaming.
+///
+/// Notice that defining the queue builder and `queue_of` macro are optional. In the following, we also define these
+/// again with new names `MyQueueBuilder` and `q_of`.
+///
+/// ```
+/// orx_meta::define_queue!(
+///     queue => [ MyQueue ; MySingleQueue, MyMultiQueue ];
+///     queue_of => q_of;
+///     builder => MyQueueBuilder;
+/// );
+///
+/// let queue = MyQueueBuilder::<q_of!(u32, bool, char)>::new().push(42).push(true).push('x').finish();
+/// assert_eq!(queue.as_tuple(), (&42, &true, &'x'));
+/// ```
+///
+/// # Example - Trait Bounds
+///
+/// The main purpose of this macro; however, is to add trait bounds to the elements that can be contained by the queue.
+///
+/// Assume for instance, we want all our elements to implement the `Draw` trait.
+///
+/// We can define this by providing the `elements => [Draw]` block to the macro. Note that we can define a comma-separated
+/// list of traits within the brackets.
+///
+/// In addition to elements of the queue, the design requires the queue types to implement the `Draw` trait as well.
+/// This is the central idea of zero-composition.
+///
+/// Since there are two implementations of the queue, we need to implement `Draw` for these two types:
+/// * Single-element queue: This is a trivial implementation. Since the queue contains only one element which implements
+///   `Draw`, it exhibits the behavior of that element. This is the **identity**.
+/// * Multi-element queue: Here, the queue contains at least two elements. All elements implement `Draw`. We need to define
+///   what the draw behavior must be whenever there are multiple elements. This is the **composition**.
+///
+/// The following provides the entire example.
+///
+/// ```
+/// // draw
+///
+/// pub trait Draw {
+///     fn draw(&self);
+/// }
+///
+/// // example Draw components
+///
+/// #[derive(Debug)]
+/// pub struct Button {
+///     pub width: u32,
+///     pub height: u32,
+///     pub label: String,
+/// }
+///
+/// impl Draw for Button {
+///     fn draw(&self) {
+///         println!("{self:?}");
+///     }
+/// }
+///
+/// #[derive(Debug)]
+/// #[allow(dead_code)]
+/// struct SelectBox {
+///     pub width: u32,
+///     pub height: u32,
+///     pub options: Vec<String>,
+/// }
+///
+/// impl Draw for SelectBox {
+///     fn draw(&self) {
+///         println!("{self:?}");
+///     }
+/// }
+///
+/// // queue definition
+///
+/// orx_meta::define_queue!(
+///     elements => [ Draw ];
+///     queue => [ StScreen ; ScreenSingle, Screen ];
+/// );
+///
+/// impl<F: Draw> Draw for ScreenSingle<F> {
+///     fn draw(&self) {
+///         self.f.draw();
+///     }
+/// }
+///
+/// impl<F, B> Draw for Screen<F, B>
+/// where
+///     F: Draw,
+///     B: StScreen,
+/// {
+///     fn draw(&self) {
+///         self.f.draw();
+///         self.b.draw();
+///     }
+/// }
+///
+/// let screen = Screen::new(Button {
+///     width: 3,
+///     height: 4,
+///     label: String::from("login"),
+/// })
+/// .push(Button {
+///     width: 4,
+///     height: 5,
+///     label: String::from("logout"),
+/// })
+/// .push(SelectBox {
+///     width: 10,
+///     height: 6,
+///     options: vec![String::from("This"), String::from("that")],
+/// });
+/// screen.draw();
+///
+/// // prints out:
+/// //
+/// // Button { width: 3, height: 4, label: "login" }
+/// // Button { width: 4, height: 5, label: "logout" }
+/// // SelectBox { width: 10, height: 6, options: ["This", "that"] }
+/// ```
+///
+///
+///
+///
+///
+///
+/// [`StQueue`]: crate::queue::StQueue
+/// [`QueueSingle`]: crate::queue::QueueSingle
+/// [`Queue`]: crate::queue::Queue
+/// [`QueueBuilder`]: crate::queue::QueueBuilder
+/// [`queue_of`]: crate::queue_of
 #[macro_export]
 macro_rules! define_queue {
     (
