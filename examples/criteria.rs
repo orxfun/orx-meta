@@ -126,7 +126,7 @@ impl Criterion for Precedence {
 
 // queue
 
-orx_meta::define_nonempty_queue!(
+orx_meta::define_queue!(
     elements => [ Criterion ];
     queue => [ StCriteria; CriteriaSingle, Criteria ];
 );

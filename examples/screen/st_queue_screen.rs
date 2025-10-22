@@ -1,6 +1,6 @@
 use crate::st_queue_components::{Button, Draw, SelectBox};
 
-orx_meta::define_nonempty_queue!(
+orx_meta::define_queue!(
     elements => [ Draw ];
     queue => [ StScreen; Single, Screen ];
 );

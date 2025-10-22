@@ -85,7 +85,7 @@ impl Draw for SelectBox {
 
 // # SOLUTION
 
-orx_meta::define_nonempty_queue!(
+orx_meta::define_queue!(
     elements => [ Draw ];
     queue => [ StScreen; ScreenSingle, Screen ];
 );

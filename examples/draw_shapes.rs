@@ -139,7 +139,7 @@ fn solution_with_enums() {
 fn solution_with_composition() {
     println!("\n# solution_with_composition");
 
-    orx_meta::define_nonempty_queue!(
+    orx_meta::define_queue!(
         elements => [ Draw ];
         queue => [ StScreen; ScreenSingle, Screen ];
     );

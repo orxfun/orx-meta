@@ -2,7 +2,7 @@
 
 use super::st_queue_components::*;
 
-orx_meta::define_nonempty_queue!(
+orx_meta::define_queue!(
     elements => [ Draw ];
     queue => [ StScreen; EmptyScreen, Screen ];
 );

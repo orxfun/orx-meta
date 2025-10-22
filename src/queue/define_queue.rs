@@ -1,5 +1,5 @@
 #[macro_export]
-macro_rules! define_nonempty_queue {
+macro_rules! define_queue {
     (
         lt => [$($g_lt:tt), *];
         generics => [ $( $g:tt $( : $( $g_bnd:ident $( < $( $g_bnd_g:tt ),* > )? )| * )? ), * ];
@@ -9,20 +9,20 @@ macro_rules! define_nonempty_queue {
         queue_of => $queue_of:ident;
         builder => $builder:ident;
     ) => {
-        $crate::define_nonempty_queue_core!(
+        $crate::define_queue_core!(
             lt => [$($g_lt), *];
             generics => [ $( $g $( : $( $g_bnd $( < $( $g_bnd_g ),* > )? )| * )? ), * ];
             elements => [ $( $el_bnd $( < $( $el_bnd_g ),* > )? )| * ];
             queue => [$q ; $empty, $pair];
         );
-        $crate::define_nonempty_queue_of!(
+        $crate::define_queue_of!(
             lt => [$($g_lt), *];
             generics => [ $( $g $( : $( $g_bnd $( < $( $g_bnd_g ),* > )? )| * )? ), * ];
             queue => [$q ; $empty, $pair];
             queue_of => $queue_of;
         );
 
-        $crate::define_nonempty_queue_builder!(
+        $crate::define_queue_builder!(
             lt => [$($g_lt), *];
             generics => [ $( $g $( : $( $g_bnd $( < $( $g_bnd_g ),* > )? )| * )? ), * ];
             queue => [$q ; $empty, $pair];
@@ -41,7 +41,7 @@ macro_rules! define_nonempty_queue {
     (
         queue => [$q:ident ; $empty:ident, $pair:ident];
     ) => {
-        $crate::define_nonempty_queue_core!(
+        $crate::define_queue_core!(
             lt => [];
             generics => [];
             elements => [];
@@ -60,7 +60,7 @@ macro_rules! define_nonempty_queue {
         elements => [ $( $el_bnd:ident $( < $( $el_bnd_g:tt ),* > )? )| * ];
         queue => [$q:ident ; $empty:ident, $pair:ident];
     ) => {
-        $crate::define_nonempty_queue_core!(
+        $crate::define_queue_core!(
             lt => [];
             generics => [];
             elements => [ $( $el_bnd $( < $( $el_bnd_g ),* > )? )| * ];
@@ -80,7 +80,7 @@ macro_rules! define_nonempty_queue {
         elements => [ $( $el_bnd:ident $( < $( $el_bnd_g:tt ),* > )? )| * ];
         queue => [$q:ident ; $empty:ident, $pair:ident];
     ) => {
-        $crate::define_nonempty_queue_core!(
+        $crate::define_queue_core!(
             lt => [$($g_lt), *];
             generics => [];
             elements => [ $( $el_bnd $( < $( $el_bnd_g ),* > )? )| * ];
@@ -101,7 +101,7 @@ macro_rules! define_nonempty_queue {
         queue => [$q:ident ; $empty:ident, $pair:ident];
         queue_of => $queue_of:ident;
     ) => {
-        $crate::define_nonempty_queue_core!(
+        $crate::define_queue_core!(
             lt => [];
             generics => [];
             elements => [];
@@ -113,7 +113,7 @@ macro_rules! define_nonempty_queue {
             elements => [];
             queue => [$q ; $empty, $pair];
         );
-        $crate::define_nonempty_queue_of!(
+        $crate::define_queue_of!(
             lt => [];
             generics => [];
             queue => [$q ; $empty, $pair];
@@ -127,7 +127,7 @@ macro_rules! define_nonempty_queue {
         queue => [$q:ident ; $empty:ident, $pair:ident];
         queue_of => $queue_of:ident;
     ) => {
-        $crate::define_nonempty_queue_core!(
+        $crate::define_queue_core!(
             lt => [];
             generics => [];
             elements => [ $( $el_bnd $( < $( $el_bnd_g ),* > )? )| * ];
@@ -139,7 +139,7 @@ macro_rules! define_nonempty_queue {
             elements => [ $( $el_bnd $( < $( $el_bnd_g ),* > )? )| * ];
             queue => [$q ; $empty, $pair];
         );
-        $crate::define_nonempty_queue_of!(
+        $crate::define_queue_of!(
             lt => [];
             generics => [];
             queue => [$q ; $empty, $pair];
@@ -154,7 +154,7 @@ macro_rules! define_nonempty_queue {
         queue => [$q:ident ; $empty:ident, $pair:ident];
         queue_of => $queue_of:ident;
     ) => {
-        $crate::define_nonempty_queue_core!(
+        $crate::define_queue_core!(
             lt => [$($g_lt), *];
             generics => [];
             elements => [ $( $el_bnd $( < $( $el_bnd_g ),* > )? )| * ];
@@ -166,7 +166,7 @@ macro_rules! define_nonempty_queue {
             elements => [ $( $el_bnd $( < $( $el_bnd_g ),* > )? )| * ];
             queue => [$q ; $empty, $pair];
         );
-        $crate::define_nonempty_queue_of!(
+        $crate::define_queue_of!(
             lt => [$($g_lt), *];
             generics => [];
             queue => [$q ; $empty, $pair];
@@ -181,7 +181,7 @@ macro_rules! define_nonempty_queue {
         queue => [$q:ident ; $empty:ident, $pair:ident];
         builder => $builder:ident;
     ) => {
-        $crate::define_nonempty_queue_core!(
+        $crate::define_queue_core!(
             lt => [];
             generics => [];
             elements => [];
@@ -207,7 +207,7 @@ macro_rules! define_nonempty_queue {
         queue => [$q:ident ; $empty:ident, $pair:ident];
         builder => $builder:ident;
     ) => {
-        $crate::define_nonempty_queue_core!(
+        $crate::define_queue_core!(
             lt => [];
             generics => [];
             elements => [ $( $el_bnd $( < $( $el_bnd_g ),* > )? )| * ];
@@ -234,7 +234,7 @@ macro_rules! define_nonempty_queue {
         queue => [$q:ident ; $empty:ident, $pair:ident];
         builder => $builder:ident;
     ) => {
-        $crate::define_nonempty_queue_core!(
+        $crate::define_queue_core!(
             lt => [$($g_lt), *];
             generics => [];
             elements => [ $( $el_bnd $( < $( $el_bnd_g ),* > )? )| * ];
@@ -262,7 +262,7 @@ macro_rules! define_nonempty_queue {
         queue_of => $queue_of:ident;
         builder => $builder:ident;
     ) => {
-        $crate::define_nonempty_queue_core!(
+        $crate::define_queue_core!(
             lt => [];
             generics => [];
             elements => [];
@@ -274,7 +274,7 @@ macro_rules! define_nonempty_queue {
             elements => [];
             queue => [$q ; $empty, $pair];
         );
-        $crate::define_nonempty_queue_of!(
+        $crate::define_queue_of!(
             lt => [];
             generics => [];
             queue => [$q ; $empty, $pair];
@@ -295,7 +295,7 @@ macro_rules! define_nonempty_queue {
         queue_of => $queue_of:ident;
         builder => $builder:ident;
     ) => {
-        $crate::define_nonempty_queue_core!(
+        $crate::define_queue_core!(
             lt => [];
             generics => [];
             elements => [ $( $el_bnd $( < $( $el_bnd_g ),* > )? )| * ];
@@ -307,7 +307,7 @@ macro_rules! define_nonempty_queue {
             elements => [ $( $el_bnd $( < $( $el_bnd_g ),* > )? )| * ];
             queue => [$q ; $empty, $pair];
         );
-        $crate::define_nonempty_queue_of!(
+        $crate::define_queue_of!(
             lt => [];
             generics => [];
             queue => [$q ; $empty, $pair];
@@ -329,7 +329,7 @@ macro_rules! define_nonempty_queue {
         queue_of => $queue_of:ident;
         builder => $builder:ident;
     ) => {
-        $crate::define_nonempty_queue_core!(
+        $crate::define_queue_core!(
             lt => [$($g_lt), *];
             generics => [];
             elements => [ $( $el_bnd $( < $( $el_bnd_g ),* > )? )| * ];
@@ -341,7 +341,7 @@ macro_rules! define_nonempty_queue {
             elements => [ $( $el_bnd $( < $( $el_bnd_g ),* > )? )| * ];
             queue => [$q ; $empty, $pair];
         );
-        $crate::define_nonempty_queue_of!(
+        $crate::define_queue_of!(
             lt => [$($g_lt), *];
             generics => [];
             queue => [$q ; $empty, $pair];
@@ -360,7 +360,7 @@ macro_rules! define_nonempty_queue {
 
 #[doc(hidden)]
 #[macro_export]
-macro_rules! define_nonempty_queue_core {
+macro_rules! define_queue_core {
     (
         lt => [$($g_lt:tt), *];
         generics => [ $( $g:tt $( : $( $g_bnd:ident $( < $( $g_bnd_g:tt ),* > )? )| * )? ), * ];
@@ -604,7 +604,7 @@ macro_rules! define_nonempty_queue_core {
 
 #[doc(hidden)]
 #[macro_export]
-macro_rules! define_nonempty_queue_builder {
+macro_rules! define_queue_builder {
     (
         lt => [$($g_lt:tt), *];
         generics => [ $( $g:tt $( : $( $g_bnd:ident $( < $( $g_bnd_g:tt ),* > )? )| * )? ), * ];
@@ -1151,7 +1151,7 @@ macro_rules! define_nonempty_queue_tuple_transformation {
 
 #[doc(hidden)]
 #[macro_export]
-macro_rules! define_nonempty_queue_of {
+macro_rules! define_queue_of {
     (
         lt => [$($g_lt:tt), *];
         generics => [ $( $g:tt $( : $( $g_bnd:ident $( < $( $g_bnd_g:tt ),* > )? )| * )? ), * ];

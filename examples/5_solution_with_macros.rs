@@ -1,4 +1,4 @@
-use orx_meta::define_nonempty_queue;
+use orx_meta::define_queue;
 
 // draw
 
@@ -37,7 +37,7 @@ impl Draw for SelectBox {
 
 // queue definition
 
-define_nonempty_queue!(
+define_queue!(
     elements => [ Draw ];
     queue => [ StQueue ; QueueSingle, Queue ];
 );

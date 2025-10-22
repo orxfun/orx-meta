@@ -20,7 +20,7 @@ impl Sum for i64 {
     }
 }
 
-orx_meta::define_nonempty_queue!(
+orx_meta::define_queue!(
     elements => [ Sum ];
     queue => [ StQueue ; QueueSingle, Queue ];
 );
