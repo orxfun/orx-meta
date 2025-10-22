@@ -1,6 +1,6 @@
 [package]
 name = "orx-meta"
-version = "1.0.2"
+version = "1.1.0"
 edition = "2024"
 authors = ["orxfun <orx.ugur.arikan@gmail.com>"]
 readme = "README.md"
@@ -11,7 +11,6 @@ keywords = ["queue", "meta", "polymorphism", "type", "recursive"]
 categories = ["data-structures", "rust-patterns", "no-std"]
 
 [dependencies]
-# erased-serde = { version = "0.4.8", registry = "artifactory" }
 
 [dev-dependencies]
 criterion = "0.7.0"
