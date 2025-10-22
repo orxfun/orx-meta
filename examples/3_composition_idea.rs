@@ -30,7 +30,7 @@ trait StQueue: Draw {
     fn front(&self) -> &Self::Front;
 }
 
-// queue implementations: empty
+// queue implementations: single
 
 struct QueueSingle<F>
 where
@@ -88,7 +88,7 @@ where
     }
 }
 
-// queue implementations: non-empty
+// queue implementations: multiple
 
 struct Queue<F, B>
 where
