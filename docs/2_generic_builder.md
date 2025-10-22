@@ -6,7 +6,7 @@
 
 Before moving on, we will introduce a helper macro to define queue types.
 
-Consider a queue of four elements with signature `Queue<i32, Queue<bool, Queue<char, Queue<&'static str, EmptyQueue>>>>`.
+Consider a queue of four elements with signature `Queue<i32, Queue<bool, Queue<char, QueueSingle<&'static str>>>>`.
 
 The corresponding tuple would be `(i32, bool, char, &'static str)`.
 
@@ -18,7 +18,7 @@ Therefore, the [`queue_of`](https://docs.rs/orx-meta/latest/orx_meta/macro.queue
 use orx_meta::queue::*;
 use orx_meta::queue_of;
 
-type Q = Queue<i32, Queue<bool, Queue<char, Queue<String, EmptyQueue>>>>;
+type Q = Queue<i32, Queue<bool, Queue<char, QueueSingle<String>>>>;
 let q: Q = Queue::new(42).push(true).push('x').push("foo".to_string());
 
 type R = queue_of!(i32, bool, char, String); // R == Q

@@ -32,22 +32,20 @@ println!("{:?}", element.type_id());
 The `queue` module of the [orx_meta](https://github.com/orxfun/orx-meta/) crate defines three types:
 
 * [`StQueue`](https://docs.rs/orx-meta/latest/orx_meta/queue/trait.StQueue.html) trait defines meta information and push operation of queues.
-* [`EmptyQueue`](https://docs.rs/orx-meta/latest/orx_meta/queue/struct.EmptyQueue.html) is the first queue implementation to represent an empty queue.
-* [`Queue`](https://docs.rs/orx-meta/latest/orx_meta/queue/struct.Queue.html), on the other hand, is a non-empty queue.
+* [`QueueSingle`](https://docs.rs/orx-meta/latest/orx_meta/queue/struct.QueueSingle.html) is the first queue implementation to represent a queue with one element.
+* [`Queue`](https://docs.rs/orx-meta/latest/orx_meta/queue/struct.Queue.html) is a multiple-element (>=2) queue.
 
 Let's see how we could define a collection of four elements of types `i32`, `bool`, `char` and `&str` with these types.
 
 ```rust
 use orx_meta::queue::*;
 
-let queue = EmptyQueue::new().push(42).push(true).push('x').push("foo");
-// or
 let queue = Queue::new(42).push(true).push('x').push("foo");
 ```
 
 Now, this is quite different from the `any_vec`.
 
-It is statically typed in the sense that you may observe the types of its elements from its signature. The type of the `queue` is `Queue<i32, Queue<bool, Queue<char, Queue<&'static str, EmptyQueue>>>>`.
+It is statically typed in the sense that you may observe the types of its elements from its signature. The type of the `queue` is `Queue<i32, Queue<bool, Queue<char, QueueSingle<&'static str>>>>`.
 
 You may keep pushing elements to the queue. Unlike pushing to a vec that requires `&mut self`, pushing to the queue requires `self`.
 
@@ -58,11 +56,10 @@ But also this is the only way because every time we push to the queue, its type 
 ```rust
 use orx_meta::queue::*;
 
-let queue: EmptyQueue = EmptyQueue::new();
-let queue: Queue<i32, EmptyQueue> = queue.push(42);
-let queue: Queue<i32, Queue<bool, EmptyQueue>> = queue.push(true);
-let queue: Queue<i32, Queue<bool, Queue<char, EmptyQueue>>> = queue.push('x');
-let queue: Queue<i32, Queue<bool, Queue<char, Queue<&'static str, EmptyQueue>>>> =
+let queue: QueueSingle<i32> = queue.push(42);
+let queue: Queue<i32, QueueSingle<bool>> = queue.push(true);
+let queue: Queue<i32, Queue<bool, QueueSingle<char>>> = queue.push('x');
+let queue: Queue<i32, Queue<bool, Queue<char, QueueSingle<&'static str>>>> =
     queue.push("foo");
 ```
 
@@ -105,11 +102,8 @@ assert_eq!(flag, true);
 let (ch, queue) = queue.pop();
 assert_eq!(ch, 'x');
 
-let (name, queue) = queue.pop();
+let name = queue.pop(); // no remaining queue left
 assert_eq!(name, "foo");
-
-// queue.pop(); // doesn't compile; pop does not exist for EmptyQueue!
-assert!(queue.is_empty());
 ```
 
 # Interpretation as an ad-hoc struct
@@ -128,11 +122,11 @@ use orx_meta::queue::*;
 struct MyStruct(i32, bool, char, &'static str);
 let my_struct = MyStruct(42, true, 'x', "foo");
 
-type MyQueue = Queue<i32, Queue<bool, Queue<char, Queue<&'static str, EmptyQueue>>>>;
+type MyQueue = Queue<i32, Queue<bool, Queue<char, QueueSingle<&'static str>>>>;
 let my_queue = Queue::new(42).push(true).push('x').push("foo");
 ```
 
-The difference is that `MyStruct` is a named type while `MyQueue` is a type alias for queue. `EmptyQueue` and `Queue` together can represent all possible structs. Therefore, it can be considered as an ad-hoc struct.
+The difference is that `MyStruct` is a named type while `MyQueue` is a type alias for queue. `QueueSingle` and `Queue` together can represent all possible structs. Therefore, it can be considered as an ad-hoc struct.
 
 > *just like tuples*
 
@@ -141,7 +135,7 @@ Now consider, a type `A` with three fields `i32, bool, char`; and another type `
 ```rust
 use orx_meta::queue::*;
 
-type A = Queue<i32, Queue<bool, Queue<char, EmptyQueue>>>;
+type A = Queue<i32, Queue<bool, QueueSingle<char>>>;
 type B = <A as StQueue>::PushBack<&'static str>;
 
 let a: A = Queue::new(42).push(true).push('x');
@@ -151,7 +145,7 @@ let b: B = a.push("foo"); // B from A
 
 So far, this has been fun with types!
 
-You might be thinking:
+You might also notice that:
 
 * we could've represented ad-hoc structs as a stack, rather than a queue so that we could go `to A from B`,
 * or even better, as a double-ended queue so that we could go in both directions,
