@@ -300,8 +300,8 @@ We already have tuples for this.
 However, incremental build capability of queues come in handy. For instance, it allows us to create a generic builder that we can use for any struct. Since the queues are statically-typed in its elements, the builder prevents calling push with wrong types or in wrong order, and prevents us from finishing early or late.
 
 ```rust
-use orx_meta::nonempty_queue::*;
-use orx_meta::nonempty_queue_of;
+use orx_meta::queue::*;
+use orx_meta::queue_of;
 
 #[derive(PartialEq, Eq, Debug)]
 struct ComplexStruct {
@@ -311,14 +311,14 @@ struct ComplexStruct {
     d: String,
 }
 
-impl From<nonempty_queue_of!(u32, bool, char, String)> for ComplexStruct {
-    fn from(queue: nonempty_queue_of!(u32, bool, char, String)) -> Self {
+impl From<queue_of!(u32, bool, char, String)> for ComplexStruct {
+    fn from(queue: queue_of!(u32, bool, char, String)) -> Self {
         let (a, b, c, d) = queue.into_tuple();
         Self { a, b, c, d }
     }
 }
 
-let val: ComplexStruct = QueueBuilder::<nonempty_queue_of!(u32, bool, char, String)>::new()
+let val: ComplexStruct = QueueBuilder::<queue_of!(u32, bool, char, String)>::new()
     .push(42) // cannot call with wrong type, or
     .push(true) // cannot call in wrong order
     .push('x')
