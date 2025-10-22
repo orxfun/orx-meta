@@ -1095,6 +1095,22 @@ macro_rules! define_nonempty_queue_tuple_transformation {
                 self.f
             }
 
+            /// Returns a flat tuple representation of references to elements in the queue.
+            ///
+            /// # Examples
+            ///
+            /// ```ignore
+            /// use orx_meta::queue::*;
+            ///
+            /// let queue = Queue::new(42);
+            /// assert_eq!(queue.as_tuple(), &42);
+            ///
+            /// let queue = Queue::new(42).push(true);
+            /// assert_eq!(queue.as_tuple(), (&42, &true));
+            ///
+            /// let queue = Queue::new(42).push(true).push('x').push("foo");
+            /// assert_eq!(queue.as_tuple(), (&42, &true, &'x', &"foo"));
+            /// ```
             #[inline(always)]
             pub fn as_tuple(&self) -> &X1 {
                 &self.f
@@ -1147,6 +1163,22 @@ macro_rules! define_nonempty_queue_tuple_transformation {
                 (self.f, self.b.f)
             }
 
+            /// Returns a flat tuple representation of references to elements in the queue.
+            ///
+            /// # Examples
+            ///
+            /// ```ignore
+            /// use orx_meta::queue::*;
+            ///
+            /// let queue = Queue::new(42);
+            /// assert_eq!(queue.as_tuple(), &42);
+            ///
+            /// let queue = Queue::new(42).push(true);
+            /// assert_eq!(queue.as_tuple(), (&42, &true));
+            ///
+            /// let queue = Queue::new(42).push(true).push('x').push("foo");
+            /// assert_eq!(queue.as_tuple(), (&42, &true, &'x', &"foo"));
+            /// ```
             #[inline(always)]
             pub fn as_tuple(&self) -> (&X1, &X2) {
                 (&self.f, &self.b.f)
@@ -1204,6 +1236,22 @@ macro_rules! define_nonempty_queue_tuple_transformation {
                 (self.f, self.b.f, self.b.b.f)
             }
 
+            /// Returns a flat tuple representation of references to elements in the queue.
+            ///
+            /// # Examples
+            ///
+            /// ```ignore
+            /// use orx_meta::queue::*;
+            ///
+            /// let queue = Queue::new(42);
+            /// assert_eq!(queue.as_tuple(), &42);
+            ///
+            /// let queue = Queue::new(42).push(true);
+            /// assert_eq!(queue.as_tuple(), (&42, &true));
+            ///
+            /// let queue = Queue::new(42).push(true).push('x').push("foo");
+            /// assert_eq!(queue.as_tuple(), (&42, &true, &'x', &"foo"));
+            /// ```
             #[inline(always)]
             pub fn as_tuple(&self) -> (&X1, &X2, &X3) {
                 (&self.f, &self.b.f, &self.b.b.f)
@@ -1268,6 +1316,22 @@ macro_rules! define_nonempty_queue_tuple_transformation {
                 (self.f, self.b.f, self.b.b.f, self.b.b.b.f)
             }
 
+            /// Returns a flat tuple representation of references to elements in the queue.
+            ///
+            /// # Examples
+            ///
+            /// ```ignore
+            /// use orx_meta::queue::*;
+            ///
+            /// let queue = Queue::new(42);
+            /// assert_eq!(queue.as_tuple(), &42);
+            ///
+            /// let queue = Queue::new(42).push(true);
+            /// assert_eq!(queue.as_tuple(), (&42, &true));
+            ///
+            /// let queue = Queue::new(42).push(true).push('x').push("foo");
+            /// assert_eq!(queue.as_tuple(), (&42, &true, &'x', &"foo"));
+            /// ```
             #[inline(always)]
             pub fn as_tuple(&self) -> (&X1, &X2, &X3, &X4) {
                 (&self.f, &self.b.f, &self.b.b.f, &self.b.b.b.f)
@@ -1338,6 +1402,22 @@ macro_rules! define_nonempty_queue_tuple_transformation {
                 (self.f, self.b.f, self.b.b.f, self.b.b.b.f, self.b.b.b.b.f)
             }
 
+            /// Returns a flat tuple representation of references to elements in the queue.
+            ///
+            /// # Examples
+            ///
+            /// ```ignore
+            /// use orx_meta::queue::*;
+            ///
+            /// let queue = Queue::new(42);
+            /// assert_eq!(queue.as_tuple(), &42);
+            ///
+            /// let queue = Queue::new(42).push(true);
+            /// assert_eq!(queue.as_tuple(), (&42, &true));
+            ///
+            /// let queue = Queue::new(42).push(true).push('x').push("foo");
+            /// assert_eq!(queue.as_tuple(), (&42, &true, &'x', &"foo"));
+            /// ```
             #[inline(always)]
             pub fn as_tuple(&self) -> (&X1, &X2, &X3, &X4, &X5) {
                 (&self.f, &self.b.f, &self.b.b.f, &self.b.b.b.f, &self.b.b.b.b.f)
@@ -1414,6 +1494,22 @@ macro_rules! define_nonempty_queue_tuple_transformation {
                 (self.f, self.b.f, self.b.b.f, self.b.b.b.f, self.b.b.b.b.f, self.b.b.b.b.b.f)
             }
 
+            /// Returns a flat tuple representation of references to elements in the queue.
+            ///
+            /// # Examples
+            ///
+            /// ```ignore
+            /// use orx_meta::queue::*;
+            ///
+            /// let queue = Queue::new(42);
+            /// assert_eq!(queue.as_tuple(), &42);
+            ///
+            /// let queue = Queue::new(42).push(true);
+            /// assert_eq!(queue.as_tuple(), (&42, &true));
+            ///
+            /// let queue = Queue::new(42).push(true).push('x').push("foo");
+            /// assert_eq!(queue.as_tuple(), (&42, &true, &'x', &"foo"));
+            /// ```
             #[inline(always)]
             pub fn as_tuple(&self) -> (&X1, &X2, &X3, &X4, &X5, &X6) {
                 (&self.f, &self.b.f, &self.b.b.f, &self.b.b.b.f, &self.b.b.b.b.f, &self.b.b.b.b.b.f)
@@ -1496,6 +1592,22 @@ macro_rules! define_nonempty_queue_tuple_transformation {
                 (self.f, self.b.f, self.b.b.f, self.b.b.b.f, self.b.b.b.b.f, self.b.b.b.b.b.f, self.b.b.b.b.b.b.f)
             }
 
+            /// Returns a flat tuple representation of references to elements in the queue.
+            ///
+            /// # Examples
+            ///
+            /// ```ignore
+            /// use orx_meta::queue::*;
+            ///
+            /// let queue = Queue::new(42);
+            /// assert_eq!(queue.as_tuple(), &42);
+            ///
+            /// let queue = Queue::new(42).push(true);
+            /// assert_eq!(queue.as_tuple(), (&42, &true));
+            ///
+            /// let queue = Queue::new(42).push(true).push('x').push("foo");
+            /// assert_eq!(queue.as_tuple(), (&42, &true, &'x', &"foo"));
+            /// ```
             #[inline(always)]
             pub fn as_tuple(&self) -> (&X1, &X2, &X3, &X4, &X5, &X6, &X7) {
                 (&self.f, &self.b.f, &self.b.b.f, &self.b.b.b.f, &self.b.b.b.b.f, &self.b.b.b.b.b.f, &self.b.b.b.b.b.b.f)
@@ -1584,6 +1696,22 @@ macro_rules! define_nonempty_queue_tuple_transformation {
                 (self.f, self.b.f, self.b.b.f, self.b.b.b.f, self.b.b.b.b.f, self.b.b.b.b.b.f, self.b.b.b.b.b.b.f, self.b.b.b.b.b.b.b.f)
             }
 
+            /// Returns a flat tuple representation of references to elements in the queue.
+            ///
+            /// # Examples
+            ///
+            /// ```ignore
+            /// use orx_meta::queue::*;
+            ///
+            /// let queue = Queue::new(42);
+            /// assert_eq!(queue.as_tuple(), &42);
+            ///
+            /// let queue = Queue::new(42).push(true);
+            /// assert_eq!(queue.as_tuple(), (&42, &true));
+            ///
+            /// let queue = Queue::new(42).push(true).push('x').push("foo");
+            /// assert_eq!(queue.as_tuple(), (&42, &true, &'x', &"foo"));
+            /// ```
             #[inline(always)]
             pub fn as_tuple(&self) -> (&X1, &X2, &X3, &X4, &X5, &X6, &X7, &X8) {
                 (&self.f, &self.b.f, &self.b.b.f, &self.b.b.b.f, &self.b.b.b.b.f, &self.b.b.b.b.b.f, &self.b.b.b.b.b.b.f, &self.b.b.b.b.b.b.b.f)
