@@ -1,4 +1,4 @@
-use crate::nonempty_queue::{QueueSingle, StQueue};
+use crate::queue::{QueueSingle, StQueue};
 use core::marker::PhantomData;
 
 pub struct QueueBuilder<Target>

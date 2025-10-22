@@ -1,5 +1,5 @@
 #![allow(dead_code)]
-use crate::nonempty_queue::{QueueSingle, StQueue};
+use crate::queue::{QueueSingle, StQueue};
 
 #[derive(Clone, Copy, PartialEq, Eq, Debug)]
 pub struct Queue<F, B>

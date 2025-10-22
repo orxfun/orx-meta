@@ -1,4 +1,4 @@
-use crate::{nonempty_queue::*, nonempty_queue_of};
+use crate::{nonempty_queue_of, queue::*};
 
 #[test]
 fn alias_with_queue_of() {

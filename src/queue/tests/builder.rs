@@ -1,6 +1,6 @@
 use crate::{
-    nonempty_queue::{Queue, QueueBuilder, QueueSingle},
     nonempty_queue_of,
+    queue::{Queue, QueueBuilder, QueueSingle},
 };
 
 #[test]

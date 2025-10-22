@@ -15,7 +15,7 @@ fn main() {
     println!("{:?}", element.type_id());
 
     // # Statically-typed collection of anything
-    use orx_meta::nonempty_queue::*;
+    use orx_meta::queue::*;
 
     let queue = Queue::new(42).push(true).push('x').push("foo");
 

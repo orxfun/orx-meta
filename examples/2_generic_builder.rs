@@ -3,8 +3,8 @@
 #[allow(unused_variables, dead_code)]
 
 fn main() {
-    use orx_meta::nonempty_queue::*;
     use orx_meta::nonempty_queue_of;
+    use orx_meta::queue::*;
 
     // # 1. Type Alias Helper
 
