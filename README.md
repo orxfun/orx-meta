@@ -16,7 +16,7 @@ For detailed documentation, please see the sections:
 5. [Solution with Macros](https://github.com/orxfun/orx-meta/blob/main/docs/5_solution_with_macros.md)
 6. [Summary](https://github.com/orxfun/orx-meta/blob/main/docs/6_summary.md)
 
-The queue module defines a statically typed queue of heterogeneous elements. Further, it provides a macro to define these queue types which are bounded by a specific set of traits representing the common behavior of elements.
+The queue module defines a statically typed queue of heterogeneous elements. Further, it provides a macro to define these queue types which are bounded by a specific set of traits representing the **common behavior of elements**.
 
 These definitions are a bit confusing, it is better to see what we can achieve with some examples.
 
@@ -137,14 +137,12 @@ This implementation provides us the following properties.
 
 Then, the macro defines the queue types exactly as we saw in the expansion with only one difference. It adds the traits listed in elements as requirements to elements of the queues, and it requires the queues to implement these traits themselves.
 
-* We implement `Draw for EmptyScreen` where we define the behavior in the absence of an element.
-* We implement `Draw for Screen` where we define how to compose the common behavior when there are multiple elements.
-
-Note that it is possible to omit the `elements` block in the macro. In this case, we could've added literally any elements to the queue, while the queue would be statically-typed in its elements.
+* We provide the straightforward **identity** definition with `Draw for ScreenSingle` implementation.
+* We implement `Draw for Screen` where we define how to **compose** the common behavior when there are multiple elements.
 
 #### Potential Use Case #1: As a Collection
 
-Although it is statically-typed, we can still use the queue as a collection. But recall that we have to know types of all elements during compile time. This fits to situations where we instantiate the collection during the start up of a service.
+Although it is statically-typed, we can still use the queue as a collection of heterogeneous types when we know types of all elements during compile time. This fits to situations where we instantiate the collection during the start up of a service.
 
 We often parse configuration files into the collection. For instance, we can have a json file listing components to be included in the screen.
 
@@ -218,13 +216,13 @@ fn new_screen() -> impl Draw {
 }
 ```
 
-Whenever configuration changes, we must re-compile with the queue approach. On the other hand, initialization can never fail. Further, the queue brings performance and memory advantages.
+With the queue approach, we need to re-compile the code every time the configuration changes. And due to compiler limitations, the queue cannot have too many elements. As far as I experienced, the compiler seems to struggle when we add more than 256 elements.
+
+On the other hand, initialization can never fail, runtime errors are not possible. Further, the queue brings performance and memory advantages.
 
 For a screen containing 200 components with toy draw implementations, statically-typed queue approach is two times faster than trait objects or enum-components approaches. You may see the corresponding benchmarks [here](https://github.com/orxfun/orx-meta/tree/main/benches).
 
 Further, being memory efficient and not requiring heap allocation makes it beneficial for embedded applications.
-
-We must, however, be careful about the queue size. As far as I experienced, the compiler does not seem to be happy for queues with more than 256 elements.
 
 You may see the entire example [here](https://github.com/orxfun/orx-meta/tree/main/examples/screen).
 
@@ -233,7 +231,7 @@ You may see the entire example [here](https://github.com/orxfun/orx-meta/tree/ma
 
 This has been the main idea to develop the queues for.
 
-Assume that we are maintaining a performance-critical tool with with, say, 5 features. We want our tool to be useful for as many use cases as possible. Every use case requires a different subset of our features. There exist `2^5-1 = 31` potential use cases. How can we cover them all?
+Assume that we are maintaining a performance-critical tool with with, say, 5 features. We want our tool to be useful for as many use cases as possible. Every use case requires a different subset of our features. There exist `2^5-1 = 31` potential use cases. But can we cover them all?
 
 We will not have fun if we need to manually combine the features; or if we lose performance due to abstraction.
 
@@ -250,7 +248,7 @@ fn use_case1() {
     println!("# Use case with criteria [Distance]");
     let tour = Tour(vec![City(0), City(1), City(2), City(3)]);
 
-    let criteria = Criteria::new(Distance::new_example());
+    let criteria = Criteria::new(Distance::new());
     let status = criteria.evaluate(&tour, Status::default());
     println!("{status:?}");
 }
@@ -259,7 +257,7 @@ fn use_case2() {
     println!("# Use case with criteria [Distance, Precedence]");
     let tour = Tour(vec![City(0), City(1), City(2), City(3)]);
 
-    let criteria = Criteria::new(Distance::new_example()).push(Precedence::new_example());
+    let criteria = Criteria::new(Distance::new()).push(Precedence::new());
     let status = criteria.evaluate(&tour, Status::default());
     println!("{status:?}");
 }
@@ -268,7 +266,7 @@ fn use_case3() {
     println!("# Use case with criteria [Distance, Capacity]");
     let tour = Tour(vec![City(0), City(1), City(2), City(3)]);
 
-    let criteria = Criteria::new(Distance::new_example()).push(Capacity::new_example());
+    let criteria = Criteria::new(Distance::new()).push(Capacity::new());
     let status = criteria.evaluate(&tour, Status::default());
     println!("{status:?}");
 }
@@ -277,9 +275,9 @@ fn use_case4() {
     println!("# Use case with criteria [Distance, Capacity, Precedence]");
     let tour = Tour(vec![City(0), City(1), City(2), City(3)]);
 
-    let criteria = Criteria::new(Distance::new_example())
-        .push(Capacity::new_example())
-        .push(Precedence::new_example());
+    let criteria = Criteria::new(Distance::new())
+        .push(Capacity::new())
+        .push(Precedence::new());
     let status = criteria.evaluate(&tour, Status::default());
     println!("{status:?}");
 }
@@ -290,14 +288,11 @@ You may see the entire example [here](https://github.com/orxfun/orx-meta/tree/ma
 
 
 
-
 ### B. Generic Builder
 
-And a statically-typed queue of anything is an ad-hoc struct.
+A statically-typed queue of anything is an ad-hoc struct.
 
-We already have tuples for this.
-
-However, incremental build capability of queues come in handy. For instance, it allows us to create a generic builder that we can use for any struct. Since the queues are statically-typed in its elements, the builder prevents calling push with wrong types or in wrong order, and prevents us from finishing early or late.
+Therefore, incremental build capability of queues is useful for constructing structs. For instance, it allows us to create a generic builder that we can use for any struct. Since the queues are statically-typed in its elements, the builder prevents calling push with wrong types or in wrong order, and prevents us from finishing early or late.
 
 ```rust
 use orx_meta::queue::*;
@@ -336,8 +331,6 @@ assert_eq!(
     }
 );
 ```
-
-Note that any `struct` can be represented as a queue, type of which can be obtained by the [`queue_of`](https://docs.rs/orx-meta/latest/orx_meta/macro.queue_of.html) helper macro.
 
 If we want to use the queue builder, it is helpful and straightforward to provide `From` queue implementation for the complex struct.
 

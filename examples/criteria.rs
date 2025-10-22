@@ -23,7 +23,7 @@ pub struct Distance {
 }
 
 impl Distance {
-    fn new_example() -> Self {
+    fn new() -> Self {
         Distance {
             distances: [
                 ((City(0), City(1)), 10),
@@ -64,7 +64,7 @@ pub struct Capacity {
 }
 
 impl Capacity {
-    fn new_example() -> Self {
+    fn new() -> Self {
         Self {
             vehicle_capacity: 10,
             shipment_volumes: [(City(0), 5), (City(1), 7), (City(2), -4), (City(3), -8)]
@@ -101,7 +101,7 @@ pub struct Precedence {
 }
 
 impl Precedence {
-    fn new_example() -> Self {
+    fn new() -> Self {
         Self {
             must_precede: vec![(City(2), City(0))],
             penalty_per_violation: 100,
@@ -152,7 +152,7 @@ fn use_case1() {
     println!("\n\n# Use case with criteria [Distance]");
     let tour = Tour(vec![City(0), City(1), City(2), City(3)]);
 
-    let criteria = Criteria::new(Distance::new_example());
+    let criteria = Criteria::new(Distance::new());
     let status = criteria.evaluate(&tour, Status::default());
     println!("{status:?}");
 }
@@ -161,7 +161,7 @@ fn use_case2() {
     println!("\n\n# Use case with criteria [Distance, Precedence]");
     let tour = Tour(vec![City(0), City(1), City(2), City(3)]);
 
-    let criteria = Criteria::new(Distance::new_example()).push(Precedence::new_example());
+    let criteria = Criteria::new(Distance::new()).push(Precedence::new());
     let status = criteria.evaluate(&tour, Status::default());
     println!("{status:?}");
 }
@@ -170,7 +170,7 @@ fn use_case3() {
     println!("\n\n# Use case with criteria [Distance, Capacity]");
     let tour = Tour(vec![City(0), City(1), City(2), City(3)]);
 
-    let criteria = Criteria::new(Distance::new_example()).push(Capacity::new_example());
+    let criteria = Criteria::new(Distance::new()).push(Capacity::new());
     let status = criteria.evaluate(&tour, Status::default());
     println!("{status:?}");
 }
@@ -179,9 +179,9 @@ fn use_case4() {
     println!("\n\n# Use case with criteria [Distance, Capacity, Precedence]");
     let tour = Tour(vec![City(0), City(1), City(2), City(3)]);
 
-    let criteria = Criteria::new(Distance::new_example())
-        .push(Capacity::new_example())
-        .push(Precedence::new_example());
+    let criteria = Criteria::new(Distance::new())
+        .push(Capacity::new())
+        .push(Precedence::new());
     let status = criteria.evaluate(&tour, Status::default());
     println!("{status:?}");
 }
