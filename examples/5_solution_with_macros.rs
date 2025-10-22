@@ -1,4 +1,4 @@
-use orx_meta::define_queue;
+use orx_meta::define_nonempty_queue;
 
 // draw
 
@@ -37,13 +37,15 @@ impl Draw for SelectBox {
 
 // queue definition
 
-define_queue!(
+define_nonempty_queue!(
     elements => [ Draw ];
-    queue => [ StQueue ; EmptyQueue, Queue ];
+    queue => [ StQueue ; QueueSingle, Queue ];
 );
 
-impl Draw for EmptyQueue {
-    fn draw(&self) {}
+impl<F: Draw> Draw for QueueSingle<F> {
+    fn draw(&self) {
+        self.f.draw();
+    }
 }
 
 impl<F, B> Draw for Queue<F, B>
@@ -60,11 +62,16 @@ where
 // screen as a queue
 
 struct Screen<Q: StQueue>(Q);
-impl Screen<EmptyQueue> {
-    fn new() -> Self {
-        Self(EmptyQueue::new())
+
+impl<F> Screen<QueueSingle<F>>
+where
+    F: Draw,
+{
+    fn new(element: F) -> Self {
+        Self(QueueSingle::new(element))
     }
 }
+
 impl<Q: StQueue> Screen<Q> {
     fn push<S: Draw>(self, component: S) -> Screen<Q::PushBack<S>> {
         Screen(self.0.push(component))
@@ -75,22 +82,21 @@ impl<Q: StQueue> Screen<Q> {
 }
 
 fn main() {
-    let screen = Screen::new()
-        .push(Button {
-            width: 3,
-            height: 4,
-            label: String::from("login"),
-        })
-        .push(Button {
-            width: 4,
-            height: 5,
-            label: String::from("logout"),
-        })
-        .push(SelectBox {
-            width: 10,
-            height: 6,
-            options: vec![String::from("This"), String::from("that")],
-        });
+    let screen = Screen::new(Button {
+        width: 3,
+        height: 4,
+        label: String::from("login"),
+    })
+    .push(Button {
+        width: 4,
+        height: 5,
+        label: String::from("logout"),
+    })
+    .push(SelectBox {
+        width: 10,
+        height: 6,
+        options: vec![String::from("This"), String::from("that")],
+    });
     screen.run();
 
     // prints out:
