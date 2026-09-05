@@ -27,6 +27,8 @@ jobs:
 
     - name: Install 32bit target
       run: rustup target add i686-unknown-linux-musl
+    - name: Install musl tools
+      run: sudo apt-get update && sudo apt-get install -y musl-tools
     - name: Install wasm target
       run: rustup target add wasm32-unknown-unknown
     - name: Install miri
