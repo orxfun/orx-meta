@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.3.0](https://github.com/orxfun/orx-meta/compare/v1.2.0...v1.3.0) - 2026-09-05
+
+### Added
+
+- *(queue)* allow-generics-in-queue-macro ([#24](https://github.com/orxfun/orx-meta/pull/24))
+
 ## [1.2.0](https://github.com/orxfun/orx-meta/compare/v1.1.0...v1.2.0) - 2026-09-05
 
 ### Added
