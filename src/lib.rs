@@ -12,5 +12,9 @@
 )]
 #![cfg_attr(not(test), no_std)]
 
+extern crate self as orx_meta;
+
+pub use orx_meta_macros::queue;
+
 /// Module defining statically typed non-empty queues of heterogeneous elements.
 pub mod queue;
