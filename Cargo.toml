@@ -11,7 +11,7 @@ keywords = ["queue", "meta", "polymorphism", "type", "recursive"]
 categories = ["data-structures", "rust-patterns", "no-std"]
 
 [dependencies]
-orx-meta-macros = { path = "../orx-meta-macros" }
+orx-meta-macros = { version = "1.1" }
 
 [dev-dependencies]
 criterion = "0.7.0"
